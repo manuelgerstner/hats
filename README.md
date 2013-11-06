@@ -8,4 +8,16 @@ Built with Play 2.2.1
 * Add &lt;directory/**bin**&gt; to PATH variable
 * Clone this Repository and type `play run` to run app
 * For use with Eclipse, type `play eclipse` to create files to *Import as Existing Project*
-* Guide to configure your IDE is [here](http://scala-ide.org/docs/tutorials/play/), this part is important:![image](http://scala-ide.org/docs/_images/refresh-on-access.png)
+* Guide to configure your IDE is [here](http://scala-ide.org/docs/tutorials/play/), this part is important:  
+
+![image](http://scala-ide.org/docs/_images/refresh-on-access.png)
+
+###Running/Debugging the Application:
+* Navigate to application directory
+* Run `play debug run` to start the application
+* In Eclipse, add a new Debug Configuration with the parameters:
+	* Remote Java Application
+	* Connection Type: Standard (Socket Attach)
+	* Host: `localhost`
+	* Port: `9999`
+	

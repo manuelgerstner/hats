@@ -1,7 +1,14 @@
-@(message: String)
+@(message: String, items: List[String])
 
 @main("Test") {
 
    <h1>@message</h1>
+
+	<ul>
+		@items.map { item =>
+			<li>@item</li>
+		} 
+	</ul>
+	
 
 }

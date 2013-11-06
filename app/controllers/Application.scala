@@ -10,7 +10,12 @@ object Application extends Controller {
   }
 
   def test = Action {
-    Ok(views.html.test("Dom's Test"))
+
+    // Lists are immutable
+    val items = List("One", "Two", "Three")
+
+    // adding an item
+    Ok(views.html.test("Dom's Test", items :+ "Four"))
   }
 
 }
