@@ -20,4 +20,36 @@ Built with Play 2.2.1
 	* Connection Type: Standard (Socket Attach)
 	* Host: `localhost`
 	* Port: `9999`
-	
+
+##Git & Collab
+
+###Branches & Forks
+For a clean and proper collaboration the following workflow is used:
+
+* Set you git to `no-ff` merges by `git config --global --add merge.ff false`
+* The original (doque's) repo will be the central repository called `upstream`
+* Everybody forks the repo and clone his/her own fork to local
+* Branches: `master` is a stable (i.e. release) branch, `develop` is something between alpha and RC and there will be several `featureXYZ` branches.
+* For every feature (or feature group) you create a branch based on the current `develop` (i.e. your `develop` branch based on the most recent `upstream/development` branch). If necessary `pull`, `fetch` & `merge` or `rebase` your `develop` on `upstream/develop` before you create the new feature branch
+* When a branch is ready to be merged you `fetch upstream/develop` and `rebase` your branch on it and then create a pull request. If there are conflicts **you** have to solve them before creating the pull request to `upstream/develop`
+
+If you care why we decided to do it like this refer to [here for branching patterns](https://blogs.atlassian.com/2013/05/git-branching-and-forking-in-the-enterprise-why-fork/) and [here for no-ff](http://www.relativesanity.com/articles/ffwd)
+
+###Commits
+
+For commit messages a simple pattern is used:
+
+* First line contains a classification and a short description. The classification may be refactor, style, fix, feature, documentation (mey be extended later on). Limit the first line to 50 characters, so it will be displayed nicely on github
+* After that there will be a blank line followed a more detailed description in the 3rd line (and any further lines).
+
+For example:
+
+```
+docu: adds info about git
+    
+Gives info about branching pattern, fork behaviour
+and git settings and commit messages
+```
+
+Using this pattern will make the overall log is very readable and it is easy to automate the change log creation
+
