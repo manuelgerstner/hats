@@ -26,7 +26,7 @@ Built with Play 2.2.1
 ###Branches & Forks
 For a clean and proper collaboration the following workflow is used:
 
-* Set you git to `no-ff` merges by `git config --global --add merge.ff false`
+* Set your git to `no-ff` merges by `git config --global --add merge.ff false`
 * The original (doque's) repo will be the central repository called `upstream`
 * Everybody forks the repo and clone his/her own fork to local
 * Branches: `master` is a stable (i.e. release) branch, `develop` is something between alpha and RC and there will be several `featureXYZ` branches.
