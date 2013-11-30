@@ -83,4 +83,11 @@ object ThinkingSession {
       ).executeUpdate()
     }
   }
+
+  /**
+   * Dummy Session for dev purposes
+   */
+  def getDummer(): ThinkingSession = {
+    all() head
+  }
 }

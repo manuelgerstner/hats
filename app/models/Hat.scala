@@ -47,4 +47,11 @@ object Hat {
   def getById(id: Long): Hat = {
     all() filter ((hat: Hat) => hat.id == id) head
   }
+
+  /**
+   * for development purposes this will return the white hat by default
+   */
+  def getDummyHat(): Hat = {
+    all() head
+  }
 }
