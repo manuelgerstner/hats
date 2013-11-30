@@ -27,7 +27,7 @@ object Cards extends Controller {
    */
   def addCard(thinkingSessionId: Long) = Action { implicit request =>
     val formCard = cardForm.bindFromRequest.get
-    Card.creatFromFormCard(formCard, ThinkingSession.getById(thinkingSessionId), Hat.getDummyHat, User.getDummtUser1)
+    Card.createFromFormCard(formCard, ThinkingSession.getById(thinkingSessionId), Hat.getDummyHat, User.getDummyUser1)
 
     Redirect(routes.ThinkingSessions.index(thinkingSessionId))
   }
@@ -59,8 +59,6 @@ object Cards extends Controller {
    */
   val cardForm = Form(
     mapping(
-      "content" -> nonEmptyText
-    )(FormCard.apply)(FormCard.unapply)
-  )
+      "content" -> nonEmptyText)(FormCard.apply)(FormCard.unapply))
 
 }
