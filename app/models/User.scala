@@ -72,4 +72,23 @@ object User {
       ).executeUpdate()
     }
   }
+
+  /**
+   * some dummy users for dev purposes
+   */
+  def getDummtUser1(): User = {
+    all() head
+  }
+
+  def getDummtUser2(): User = {
+    (all() tail) head
+  }
+
+  def getDummtUser3(): User = {
+    ((all() tail) tail) head
+  }
+
+  def getDummtUser4(): User = {
+    (((all() tail) tail) tail) head
+  }
 }
