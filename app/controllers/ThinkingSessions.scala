@@ -1,12 +1,16 @@
 package controllers
-import play.api.mvc.Controller
+
+import play.api._
+import play.api.mvc._
 
 object ThinkingSessions extends Controller {
 
   /**
    * TODO: Show the the dashboard for the current session
    */
-  def index(id: Long) = TODO
+  def index(id: Long) = Action {
+    Ok(views.html.cards(id))
+  }
 
   /**
    * TODO: Update Session state to respective hat, show session index of new hat.

@@ -1,3 +1,22 @@
-@* cards Template File *@
-@(param: Any)
-Huhuhu
+@(sessionId: Long)
+@import helper._
+@import Cards._
+
+@main("Cards") {
+	
+	<h1>Create a new Card here</h1>
+	
+	@helper.form(action = routes.Cards.addCard(sessionId)) {
+		@helper.inputText(cardForm("content"))
+	}
+	
+
+	@*<h1>Existing Cards</h1>
+	<ul>
+		@cards.map { card =>
+			<li>@card.content</li>
+		}
+	</ul>
+	*@
+
+}
