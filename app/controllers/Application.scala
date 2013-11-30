@@ -3,19 +3,24 @@ package controllers
 import play.api._
 import play.api.mvc._
 
+/**
+ * Reponsible for all ThinkingSession setup and creation.
+ * If we ever add user accounts this controller should handle them too
+ */
 object Application extends Controller {
 
+  /**
+   * TODO: Homepage, offer ThinkingSession creation and joining a running session (only if allowed, invited)
+   */
   def index = Action {
-    Ok(views.html.index("Your new application is ready."))
+    Ok(views.html.test("Your new application is ready."))
   }
 
+  /**
+   * Used for testing
+   */
   def test = Action {
-
-    // Lists are immutable
-    val items = List("One", "Two", "Three")
-
-    // adding an item
-    Ok(views.html.test("Dom's Test", items :+ "Four"))
+    Ok(views.html.test("Welcome to the Six Thinking Hats!"))
   }
 
 }

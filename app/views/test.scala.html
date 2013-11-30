@@ -1,14 +1,7 @@
-@(message: String, items: List[String])
+@(message: String)
 
-@main("Test") {
+@main("Six Thinking Hats") {
 
-   <h1>@message</h1>
-
-	<ul>
-		@items.map { item =>
-			<li>@item</li>
-		} 
-	</ul>
-	
+   <h1>@message</h1>	
 
 }
