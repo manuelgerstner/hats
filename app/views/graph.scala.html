@@ -13,35 +13,40 @@
       	<circle class="process_bubble white" cx="35" cy="50" r="24" style="fill:#ffffff;"/>
 
       	<!-- Green circles -->
-      	<circle id="1" class="process_bubble green" title="test" cx="100" cy="50" r="18" style="fill:#00cc00;"/>
-      	<circle id="1" class="process_bubble green" cx="150" cy="50" r="12" style="fill:#00cc00;"/>
-      	<circle id="1" class="process_bubble green" cx="200" cy="50" r="14" style="fill:#00cc00;"/>
+      	<circle id="1" class="process_bubble green" title="Green: Anamika added a new card" cx="100" cy="50" r="18" style="fill:#00cc00;"/>
+      	<circle id="1" class="process_bubble green" title="Something happened here!" cx="150" cy="50" r="12" style="fill:#00cc00;"/>
+      	<circle id="1" class="process_bubble green" title="Something happened here!" cx="200" cy="50" r="14" style="fill:#00cc00;"/>
 
       	<!-- Red circles -->
-      	<circle id="1" class="process_bubble red" cx="260" cy="50" r="12" style="fill:#ff0000;"/>
-      	<circle id="1" class="process_bubble red" cx="300" cy="50" r="16" style="fill:#ff0000;"/>
+      	<circle id="1" class="process_bubble red" title="Something happened here!" cx="260" cy="50" r="12" style="fill:#ff0000;"/>
+      	<circle id="1" class="process_bubble red" title="Something happened here!" cx="300" cy="50" r="16" style="fill:#ff0000;"/>
 
       	<!-- Yellow circles -->
-      	<circle id="1" class="process_bubble yellow" cx="360" cy="50" r="14" style="fill:#ffff00;"/>
-      	<circle id="1" class="process_bubble yellow" cx="400" cy="50" r="12" style="fill:#ffff00;"/>
-      	<circle id="1" class="process_bubble yellow" cx="440" cy="50" r="16" style="fill:#ffff00;"/>
+      	<circle id="1" class="process_bubble yellow" title="Something happened here!" cx="360" cy="50" r="14" style="fill:#ffff00;"/>
+      	<circle id="1" class="process_bubble yellow" title="Something happened here!" cx="400" cy="50" r="12" style="fill:#ffff00;"/>
+      	<circle id="1" class="process_bubble yellow" title="Something happened here!" cx="440" cy="50" r="16" style="fill:#ffff00;"/>
 
       	<!-- Black circles -->
-      	<circle id="1" class="process_bubble black" cx="500" cy="50" r="16" style="fill:#000000;"/>
-      	<circle id="1" class="process_bubble black" cx="570" cy="50" r="18" style="fill:#000000;"/>
-      	<circle id="1" class="process_bubble black" cx="630" cy="50" r="12" style="fill:#000000;"/>
+      	<circle id="1" class="process_bubble black" title="Something happened here!" cx="500" cy="50" r="16" style="fill:#000000;"/>
+      	<circle id="1" class="process_bubble black" title="Something happened here!" cx="570" cy="50" r="18" style="fill:#000000;"/>
+      	<circle id="1" class="process_bubble black" title="Something happened here!" cx="630" cy="50" r="12" style="fill:#000000;"/>
 
 		<!-- Blue circles -->
-      	<circle id="1" class="process_bubble blue" cx="750" cy="50" r="18" style="fill:#0000ff;"/>
-      	<circle id="1" class="process_bubble blue" cx="700" cy="50" r="12" style="fill:#0000ff;"/>
+      	<circle id="1" class="process_bubble blue" title="Something happened here!" cx="750" cy="50" r="18" style="fill:#0000ff;"/>
+      	<circle id="1" class="process_bubble blue" title="Something happened here!" cx="700" cy="50" r="12" style="fill:#0000ff;"/>
 
 
 	</svg>
 
 	<script type="text/javascript">
 		$(function() {
-			$(document).tooltip();
-		}
+			$(document).tooltip({
+				position: {
+					my: "center+20 bottom-20",
+					at: "center top"
+				}
+			});
+		});
 	</script>
 
 }
