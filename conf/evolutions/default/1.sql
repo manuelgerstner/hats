@@ -30,7 +30,7 @@ CREATE TABLE thinking_session (
   current_hat				integer REFERENCES hat(id))
 );
 
-INSERT INTO thinking_session VALUES (1,1,'Manu's Birthday Present (Should be something awesome...)',1);
+INSERT INTO thinking_session VALUES (1,1,'Manu\'s Birthday Present (Should be something awesome...)',1);
 
 
 CREATE SEQUENCE card_id_seq;
