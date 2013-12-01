@@ -98,7 +98,7 @@ object Card {
    * Convenience function creating a new Card from a foromCard with bound values from a HTML form and the
    * creating user.
    */
-  def creatFromFormCard(formCard: FormCard, thinkingSession: ThinkingSession, hat: Hat, user: User) = {
+  def createFromFormCard(formCard: FormCard, thinkingSession: ThinkingSession, hat: Hat, user: User) = {
     create(formCard.content, thinkingSession, hat, user)
   }
 
