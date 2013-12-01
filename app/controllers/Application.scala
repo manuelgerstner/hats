@@ -14,5 +14,9 @@ object Application extends Controller {
     // adding an item
     Ok(views.html.test("Welcome to the Six Thinking Hats!"))
   }
+  
+  def graph = Action {
+    Ok(views.html.graph("This is gonna be the process outline"))
+  }
 
 }
