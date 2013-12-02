@@ -24,7 +24,7 @@ object Card {
    */
   val simple = {
     get[Long]("id") ~
-      get[Long]("thinking_session") ~
+      get[Long]("thinking_session_id") ~
       get[String]("content") ~
       get[Long]("hat") ~
       get[Long]("creator") map {
