@@ -4,6 +4,8 @@
 # Home page
 GET     /                           controllers.Application.index
 
+GET 	/test						controllers.Application.test
+
 # Cards in a Sessions
 # should be HTTP PUT, but play fucks with REST here...
 POST	/:id/addCard				controllers.Cards.addCard(id: Long)
@@ -19,7 +21,7 @@ POST	/:id/indicateReady			controllers.ThinkingSessions.indicateReady(id: Long)
 POST	/:id/closeSession			controllers.ThinkingSessions.closeSession(id: Long)
 
 
-GET 	/test						controllers.Application.test
+
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
