@@ -1,9 +1,13 @@
-@(sessionId: Long)
+@(sessionId: Long, cards: List[Card])
+
 @import helper._
+@import models._
 @import Cards._
+
 
 @main("Cards") {
 	
+	<p>you're logged in with session id @sessionId</p>
 	<h1>Create a new Card here</h1>
 	
 	@helper.form(action = routes.Cards.addCard(sessionId)) {
@@ -11,12 +15,11 @@
 	}
 	
 
-	@*<h1>Existing Cards</h1>
+	<h1>Existing Cards</h1>
 	<ul>
 		@cards.map { card =>
 			<li>@card.content</li>
 		}
 	</ul>
-	*@
 
 }
