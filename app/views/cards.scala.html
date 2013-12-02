@@ -2,24 +2,29 @@
 
 @import helper._
 @import models._
-@import Cards._
+@import views._
 
 
 @main("Cards") {
 	
-	<p>you're logged in with session id @sessionId</p>
-	<h1>Create a new Card here</h1>
-	
-	@helper.form(action = routes.Cards.addCard(sessionId)) {
-		@helper.inputText(cardForm("content"))
+	@if(cards.isEmpty) {
+		<h3>No cards yet!</h3>
+	} else {
+		<h3>Existing Cards:</h3>
+		<ul>
+			@cards.map { card =>
+				<li>@card.content</li>
+			}
+		</ul>
 	}
 	
-
-	<h1>Existing Cards</h1>
-	<ul>
-		@cards.map { card =>
-			<li>@card.content</li>
-		}
-	</ul>
-
+	<h3>Create a new Card here:</h3>
+	
+	@helper.form(action = routes.Cards.addCard(sessionId)) {
+		<label for="content">Content:</label>
+		<input type="text" name="content" required/>
+	}
+	
+	@graph.render
+	
 }

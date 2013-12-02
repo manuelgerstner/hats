@@ -22,9 +22,5 @@ object Application extends Controller {
   def test = Action {
     Ok(views.html.test("Welcome to the Six Thinking Hats!"))
   }
-  
-  def graph = Action {
-    Ok(views.html.graph("This is gonna be the process outline"))
-  }
 
 }
