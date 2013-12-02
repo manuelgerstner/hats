@@ -47,8 +47,7 @@ object Card {
   def getThinkingSessionCards(thinkingSessionId: Long): List[Card] = {
     DB.withConnection { implicit connection =>
       SQL("select * from card where thinking_session_id = {id}").on(
-        'id -> thinkingSessionId
-      ).as(Card.simple *)
+        'id -> thinkingSessionId).as(Card.simple *)
     }
   }
 
@@ -58,8 +57,7 @@ object Card {
   def getUserCards(user: User): List[Card] = {
     DB.withConnection { implicit connection =>
       SQL("select * from card where creator = {id}").on(
-        'id -> user.id
-      ).as(Card.simple *)
+        'id -> user.id).as(Card.simple *)
     }
   }
 
@@ -68,10 +66,9 @@ object Card {
    */
   def getUserCardsIndSession(user: User, session: ThinkingSession): List[Card] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from card where creator = {userId} and thinking_session ={sessionId}").on(
+      SQL("select * from card where creator = {userId} and thinking_session_id ={sessionId}").on(
         'userId -> user.id,
-        'sessionId -> session.id
-      ).as(Card.simple *)
+        'sessionId -> session.id).as(Card.simple *)
     }
   }
 
@@ -85,12 +82,11 @@ object Card {
    */
   def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User) = {
     DB.withConnection { implicit connection =>
-      SQL("insert into card (content,thinking_session,hat,creator) values ({content},{thinkingSessionId},{hat},{creatorId})").on(
+      SQL("insert into card (content,thinking_session_id,hat,creator) values ({content},{thinkingSessionId},{hat},{creatorId})").on(
         'content -> content,
         'thinkingSessionId -> thinkingSession.id,
         'hat -> hat.id,
-        'creatorId -> creator.id
-      ).executeUpdate()
+        'creatorId -> creator.id).executeUpdate()
     }
   }
 
@@ -108,8 +104,7 @@ object Card {
   def delete(card: Card) = {
     DB.withConnection { implicit connection =>
       SQL("delete from card where id = {id}").on(
-        'id -> card.id
-      ).executeUpdate()
+        'id -> card.id).executeUpdate()
     }
   }
 

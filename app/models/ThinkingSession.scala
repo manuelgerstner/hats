@@ -21,9 +21,8 @@ object ThinkingSession {
   val simple = {
     get[Long]("id") ~
       get[Long]("owner") ~
-      get[Long]("current_hat") ~
-      get[String]("content") map {
-        case id ~ ownerId ~ hatId ~ content => ThinkingSession(id, User.getById(ownerId), Card.getThinkingSessionCards(id), Hat.getById(hatId));
+      get[Long]("current_hat") map {
+        case id ~ ownerId ~ hatId => ThinkingSession(id, User.getById(ownerId), Card.getThinkingSessionCards(id), Hat.getById(hatId));
       }
   }
 
@@ -42,8 +41,7 @@ object ThinkingSession {
   def getById(id: Long): ThinkingSession = {
     DB.withConnection { implicit connection =>
       SQL("select * from thinking_session where id = {id}").on(
-        'id -> id
-      ).as(ThinkingSession.simple *) head
+        'id -> id).as(ThinkingSession.simple *) head
     }
   }
 
@@ -53,8 +51,7 @@ object ThinkingSession {
   def getSessionsByOwner(owner: User): List[ThinkingSession] = {
     DB.withConnection { implicit connection =>
       SQL("select * from thinking_session where owner = {ownerId}").on(
-        'ownerId -> owner.id
-      ).as(ThinkingSession.simple *)
+        'ownerId -> owner.id).as(ThinkingSession.simple *)
     }
   }
 
@@ -68,8 +65,7 @@ object ThinkingSession {
     DB.withConnection { implicit connection =>
       SQL("insert into thinking_Session (owner,current_hat) values ({ownerId},{hatId})").on(
         'ownerId -> owner.id,
-        'hatId -> hat.id
-      ).executeUpdate()
+        'hatId -> hat.id).executeUpdate()
     }
   }
 
@@ -79,8 +75,7 @@ object ThinkingSession {
   def delete(session: ThinkingSession) = {
     DB.withConnection { implicit connection =>
       SQL("delete from card where id = {id}").on(
-        'id -> session.id
-      ).executeUpdate()
+        'id -> session.id).executeUpdate()
     }
   }
 
