@@ -7,24 +7,38 @@
 
 @main("Cards") {
 	
-	@if(cards.isEmpty) {
-		<h3>No cards yet!</h3>
-	} else {
-		<h3>Existing Cards:</h3>
-		<ul>
-			@cards.map { card =>
-				<li>@card.content</li>
+	
+	<div id="cards">
+		<div id="cards-list">
+			@if(cards.isEmpty) {
+				<h3>No cards yet!</h3>
+			} else {
+				<h3>Existing Cards:</h3>
+				<ul>
+					@cards.map { card =>
+						<li>
+							<div class="card hat-@Hat.getHatName(card.hat.id)">
+								@card.content
+							</div>
+						</li>
+					}
+				</ul>
 			}
-		</ul>
-	}
+		</div>
+		<div id="cards-create">
+			<h3>Create a new Card here:</h3>
+			@helper.form(action = routes.Cards.addCard(sessionId), 'class -> "form-horizontal") {
+				<div class="form-group">
+					<label for="content" class="control-label">Content:</label>
+					<textarea class="form-control" name="content" rows="3" required placeholder="Card content"></textarea>
+					<button type="submit" class="btn btn-success">Add Card &raquo;</button>
+				</div>
+			}
+		</div>
+	</div>
 	
-	<h3>Create a new Card here:</h3>
-	
-	@helper.form(action = routes.Cards.addCard(sessionId)) {
-		<label for="content">Content:</label>
-		<input type="text" name="content" required/>
-	}
-	
-	@progressbar.render
-	
+	<div id="progressbar">
+		@progressbar.render
+	</div>
+		
 }

@@ -1,0 +1,12 @@
+div.card {
+	border: 1px solid #000;
+	/*position: absolute;*/
+}
+div#cards-list {
+	position: relative;
+}
+div#cards-list ul li {
+	list-style: none;
+	display: inline-block;
+	margin: 0;
+}
