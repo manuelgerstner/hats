@@ -28,7 +28,7 @@ CREATE TABLE thinking_session (
 CREATE SEQUENCE card_id_seq;
 CREATE TABLE card (
   id                        integer NOT NULL DEFAULT nextval('card_id_seq') PRIMARY KEY,
-  thinking_session			integer NOT NULL REFERENCES thinking_session(id),
+  thinking_session_id			integer NOT NULL REFERENCES thinking_session(id),
   content                   text NOT NULL,
   hat						integer REFERENCES hat(id),
   creator					integer REFERENCES `user`(id)
@@ -59,7 +59,7 @@ INSERT INTO thinking_session VALUES (1,1,'Manus Birthday Present (Should be some
 DROP TABLE if exists hat;
 
 DROP TABLE if exists `user`;
-DROP SEQUENCE id EXISTS user_id_seq;
+DROP SEQUENCE if EXISTS user_id_seq;
 
 DROP TABLE if exists thinking_session;
 DROP SEQUENCE if EXISTS thinking_session_id_seq;

@@ -3,13 +3,15 @@ package controllers
 import play.api._
 import play.api.mvc._
 
+import models._
+
 object ThinkingSessions extends Controller {
 
   /**
    * TODO: Show the the dashboard for the current session
    */
   def index(id: Long) = Action {
-    Ok(views.html.cards(id))
+    Ok(views.html.cards(id, Card.getThinkingSessionCards(id)))
   }
 
   /**
