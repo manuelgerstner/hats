@@ -1,6 +1,7 @@
 #Using Git
 ##Intro
-Ths will be a short step by step guide for the commandline interface of git, as we are all using mac OS X you should be able to use it. Any GUI for git will support the same actions, just find the right menu =p. 
+
+This will be a short step by step guide for the commandline interface of git, as we are all using mac OS X you should be able to use it. Any GUI for git will support the same actions, just find the right menu =p. 
 ##Gettting ready to work
 Scenario: You have a fork on github and nothing else
 To get an intial working copy of the repository you type
