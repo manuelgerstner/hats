@@ -49,6 +49,13 @@ object Hat {
   }
 
   /**
+   * Retrieves the human-readable name for a hat
+   */
+  def getHatName(id: Long): String = {
+    (getById(id).name) toLowerCase
+  }
+
+  /**
    * for development purposes this will return the white hat by default
    */
   def getDummyHat(): Hat = {
