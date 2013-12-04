@@ -4,34 +4,34 @@
 
 # --- !Ups
 CREATE TABLE hat (
-  id                        integer NOT NULL PRIMARY KEY,
-  name                   	varchar(255) NOT NULL
+  id                    integer NOT NULL PRIMARY KEY,
+  name                  varchar(255) NOT NULL
 );
 
 CREATE SEQUENCE user_id_seq;
 -- needs \"\" because user is a reserved SQL table. To keep the Scala Play convention we keep the singular as name
 CREATE TABLE `user` (
-  id                        integer NOT NULL DEFAULT nextval('user_id_seq') PRIMARY KEY,
-  name                   	varchar(255) NOT NULL
+  id                    integer NOT NULL DEFAULT nextval('user_id_seq') PRIMARY KEY,
+  name                  varchar(255) NOT NULL
 );
 
 
 CREATE SEQUENCE thinking_session_id_seq;
 CREATE TABLE thinking_session (
-  id                        integer NOT NULL DEFAULT nextval('thinking_session_id_seq') PRIMARY KEY,
-  owner						integer NOT NULL REFERENCES `user`(id),
-  name                   	varchar(255) NOT NULL,
-  current_hat				integer REFERENCES hat(id)
+  id                    integer NOT NULL DEFAULT nextval('thinking_session_id_seq') PRIMARY KEY,
+  owner						      integer NOT NULL REFERENCES `user`(id),
+  title                 varchar(255) NOT NULL,
+  current_hat				    integer REFERENCES hat(id)
 );
 
 
 CREATE SEQUENCE card_id_seq;
 CREATE TABLE card (
-  id                        integer NOT NULL DEFAULT nextval('card_id_seq') PRIMARY KEY,
-  thinking_session_id			integer NOT NULL REFERENCES thinking_session(id),
-  content                   text NOT NULL,
-  hat						integer REFERENCES hat(id),
-  creator					integer REFERENCES `user`(id)
+  id                    integer NOT NULL DEFAULT nextval('card_id_seq') PRIMARY KEY,
+  thinking_session_id   integer NOT NULL REFERENCES thinking_session(id),
+  content               text NOT NULL,
+  hat						        integer REFERENCES hat(id),
+  creator					      integer REFERENCES `user`(id)
 );
 
   

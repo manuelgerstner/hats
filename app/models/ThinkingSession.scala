@@ -1,28 +1,30 @@
 package models
 
-import play.api.db.DB
-import play.api.db._
+import scala.concurrent.Future
 
-import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
+import play.api.Play.current
+import play.api.db._
+import play.api.mvc.AsyncResult
 
 /**
  * The ThinkingSession models a whole session of the process.
  * @author Nemo
  */
-case class ThinkingSession(id: Long, owner: User, cards: List[Card], currentHat: Hat)
+case class ThinkingSession(id: Long, owner: User, title: String, cards: List[Card], currentHat: Hat)
 
 object ThinkingSession {
 
   /**
    * ORM simple
    */
-  val simple = {
+  val DBParser = {
     get[Long]("id") ~
       get[Long]("owner") ~
+      get[String]("title") ~
       get[Long]("current_hat") map {
-        case id ~ ownerId ~ hatId => ThinkingSession(id, User.getById(ownerId), Card.getThinkingSessionCards(id), Hat.getById(hatId));
+        case id ~ ownerId ~ title ~ hatId => ThinkingSession(id, User.getById(ownerId), title, Card.getThinkingSessionCards(id), Hat.getById(hatId));
       }
   }
 
@@ -30,9 +32,21 @@ object ThinkingSession {
    * Retrieve all Thinking Sessions (not sure if we'll ever need this...)
    */
   def all(): List[ThinkingSession] = {
-    DB.withConnection { implicit connection =>
-      SQL("select * from thinking_session").as(ThinkingSession.simple *)
+
+    //    val conn = DB.getConnection()
+    //    try {
+    //      DB.withConnection { implicit conn =>
+    //        SQL("select * from thinking_session").as(ThinkingSession.DBParser *)
+    //      }
+    //
+    //    } finally {
+    //      conn.close()
+    //    }
+
+    DB.withConnection { implicit conn =>
+      SQL("select * from thinking_session").as(ThinkingSession.DBParser *)
     }
+
   }
 
   /**
@@ -41,7 +55,7 @@ object ThinkingSession {
   def getById(id: Long): ThinkingSession = {
     DB.withConnection { implicit connection =>
       SQL("select * from thinking_session where id = {id}").on(
-        'id -> id).as(ThinkingSession.simple *) head
+        'id -> id).as(ThinkingSession.DBParser *) head
     }
   }
 
@@ -51,7 +65,7 @@ object ThinkingSession {
   def getSessionsByOwner(owner: User): List[ThinkingSession] = {
     DB.withConnection { implicit connection =>
       SQL("select * from thinking_session where owner = {ownerId}").on(
-        'ownerId -> owner.id).as(ThinkingSession.simple *)
+        'ownerId -> owner.id).as(ThinkingSession.DBParser *)
     }
   }
 
@@ -61,10 +75,11 @@ object ThinkingSession {
    * parent sessions and there is no nicer way to model the 1:n relations ship with anorm (afaik)
    * This will NOT return the created Thinking Session!
    */
-  def create(owner: User, hat: Hat) = {
+  def create(owner: User, title: String, hat: Hat) = {
     DB.withConnection { implicit connection =>
-      SQL("insert into thinking_Session (owner,current_hat) values ({ownerId},{hatId})").on(
+      SQL("insert into thinking_Session (owner,title,current_hat) values ({ownerId},{title},{hatId})").on(
         'ownerId -> owner.id,
+        'title -> title,
         'hatId -> hat.id).executeUpdate()
     }
   }
@@ -82,7 +97,7 @@ object ThinkingSession {
   /**
    * Dummy Session for dev purposes
    */
-  def getDummer(): ThinkingSession = {
-    all() head
+  def dummy: ThinkingSession = {
+    (all() head)
   }
 }
