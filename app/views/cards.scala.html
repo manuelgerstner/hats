@@ -27,7 +27,8 @@
 		</div>
 		<div id="cards-create">
 			<h3>Create a new Card here:</h3>
-			@helper.form(action = routes.Cards.addCard(sessionId), 'class -> "form-horizontal") {
+			@*// TODO route to rest controller here*@
+			@helper.form(action = routes.Cards.addCard(sessionId), 'class -> "form-horizontal", 'id -> "card-add") {
 				<div class="form-group">
 					<label for="content" class="control-label">Content:</label>
 					<textarea class="form-control" name="content" rows="3" required placeholder="Card content"></textarea>
