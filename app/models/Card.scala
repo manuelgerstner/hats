@@ -8,6 +8,7 @@ import forms._
 
 import play.api.db._
 import play.api.Play.current
+import play.api.libs.json._
 
 /**
  * Cards models an idea created by a ThinkingSession participant in the course of the 6 Hats process.
@@ -15,10 +16,13 @@ import play.api.Play.current
  * it belongs to and of course the content (for now only text)
  * @author Nemo
  */
-case class Card(id: Long, thinkingSessionId: Long, content: String, hat: Hat, creator: User)
+case class Card(id: Long, thinkingSession: ThinkingSession, content: String, hat: Hat, creator: User)
 
 object Card {
 
+  def getTest: Card = {
+    Card(1, null, "dfsfafsd", null, null);
+  }
   /**
    * ORM simple
    */
@@ -28,7 +32,7 @@ object Card {
       get[String]("content") ~
       get[Long]("hat") ~
       get[Long]("creator") map {
-        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId => Card(id, thinkingSessionId, content, Hat.getById(hatId), User.getById(creatorId));
+        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId => Card(id, ThinkingSession.getById(thinkingSessionId), content, Hat.getById(hatId), User.getById(creatorId));
       }
   }
 
@@ -49,6 +53,10 @@ object Card {
       SQL("select * from card where thinking_session_id = {id}").on(
         'id -> thinkingSessionId).as(Card.simple *)
     }
+  }
+
+  def getThinkingSessionCards(thinkingSession: ThinkingSession): List[Card] = {
+    getThinkingSessionCards(thinkingSession.id)
   }
 
   /**
@@ -106,6 +114,17 @@ object Card {
       SQL("delete from card where id = {id}").on(
         'id -> card.id).executeUpdate()
     }
+  }
+
+  def toJson(card: Card): JsObject = {
+    //case class Card(id: Long, thinkingSessionId: Long, content: String, hat: Hat, creator: User)
+    Json.obj(
+      "id" -> card.id,
+      "thinkingSessionId" -> card.thinkingSession.id,
+      "content" -> card.content
+    //      card.hat
+
+    )
   }
 
 }
