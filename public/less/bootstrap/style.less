@@ -1,0 +1,63 @@
+/*less style sheet*/
+@import "config.less";
+@button-color:#33B7B0;
+@font-style: "Lucida Grande", Geneva, Verdana, Arial, Helvetica, sans-serif;
+
+
+.submit-button {
+  background-color: @button-color;
+  height: 30px;
+  width: 80px;
+  font-family:@font-style;
+  font-size: 12px;
+}
+
+
+/* Font */
+@font-face {
+    font-family: 'AsapRegular';
+    src: url('fonts/Asap-Regular-webfont.eot');
+    src: url('fonts/Asap-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/Asap-Regular-webfont.woff') format('woff'),
+         url('fonts/Asap-Regular-webfont.ttf') format('truetype'),
+         url('fonts/Asap-Regular-webfont.svg#AsapRegular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+/* Body */
+
+nav {
+  margin: 50px auto 0;
+  width: 400px;
+  height: 45px;
+  .border;
+  .shadow;
+  ul {
+    padding: 0;
+    margin: 0;
+    li {
+      display: inline;
+      a {
+        text-decoration: none;
+        display: inline-block;
+        float: left;
+        width: 156px;
+        height: 45px;
+        text-align: center;
+        line-height: 300%;
+        .textcolor(#f2f2f2); // You can change this line
+        .divider;
+        .gradient;
+        &:hover {
+          .hovereffect;
+        }
+      }
+    }
+    li:first-child a {
+      border-left: none;
+    }
+    li:last-child a {
+      border-right: none;
+    }
+  }
+}
