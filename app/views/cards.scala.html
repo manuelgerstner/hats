@@ -7,16 +7,6 @@
 
 @main("Cards") {
 	
-	
-	<script id="card-template" type="text/x-handlebars-template">
-  		// card template tp be used with rest response
-		<li>
-			<div data-cardid="{{id}}" class="card hat-{{hat}}">
-				{{content}}
-			</div>
-		</li>
-	</script>
-	
 	<div id="cards">
 		<div id="cards-list">
 			@if(cards.isEmpty) {
