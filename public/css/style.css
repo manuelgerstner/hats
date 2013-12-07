@@ -30,13 +30,32 @@ div.card {
 
 #hat {
 	/* generally how the card list should look, try and remember the mockup I drew on Monday */
+	
+	height: 600px;
+	width:1000px;
+	background-color: white;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	background-color: rgba(255, 255, 255, 0.7);
+	
+	
+}
+#cards-create {
+	height: 100px;
+	width:250px;	
+	padding-left: 10px;
 }
 
-
+#card-add {
+	padding-left: 10px;
+}
 /* color specific styles below,
 	for example: blue hat would be nice with some clouds, green could be nature etc.
 */
 #hat.blue {
+	background-color: #66A9BF;
+	
+	
 }
 #hat.white {
 }
