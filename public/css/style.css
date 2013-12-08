@@ -2,10 +2,10 @@ div.card {
 	border: 1px solid #000;
 	/*position: absolute;*/
 }
-#hat .cards-list {
+#cards-list {
 	position: relative;
 }
-#hat .cards-list ul li {
+#cards-list ul li {
 	list-style: none;
 	display: inline-block;
 	margin: 0;
@@ -19,11 +19,11 @@ div.card {
 /* color specific styles below,
 	for example: blue hat would be nice with some clouds, green could be nature etc.
 */
-#hat .blue {
+#hat.blue {
 }
-#hat .white {
+#hat.white {
 }
-#hat .yellow {	
+#hat.yellow {	
 }
 #hat .green {
 }
