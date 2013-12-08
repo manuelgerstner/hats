@@ -1,4 +1,4 @@
-@(sessionId: Long, cards: List[Card])
+@(sessionId: Long, cards: List[Card], hat: Hat)
 
 @import helper._
 @import models._
@@ -33,6 +33,11 @@
 					<label for="content" class="control-label">Content:</label>
 					<textarea class="form-control" name="content" rows="3" required placeholder="Card content"></textarea>
 					<button type="submit" class="btn btn-success">Add Card &raquo;</button>
+				</div>
+			}
+			@helper.form(action = routes.ThinkingSessions.changeHat(sessionId), 'class -> "form-horizontal", 'id -> "card-add") {
+				<div class="form-group">
+					<button type="submit" class="btn btn-success">ChangeHat</button>
 				</div>
 			}
 		</div>

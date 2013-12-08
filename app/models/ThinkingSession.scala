@@ -9,7 +9,7 @@ import play.api.db._
 import play.api.mvc.AsyncResult
 
 /**
- * The ThinkingSession models a whole session of the process.
+ * The ThinkingSession models a whole session of the process. Don't read the code, read the comments ;-D
  * @author Nemo
  */
 case class ThinkingSession(id: Long, owner: User, title: String, currentHat: Hat)
@@ -80,10 +80,31 @@ object ThinkingSession {
 
   def create(ownerId: Long, title: String, hatId: Long): Int = {
     DB.withConnection { implicit connection =>
-      SQL("insert into thinking_Session (owner,title,current_hat) values ({ownerId},{title},{hatId})").on(
+      SQL("insert into thinking_session (owner,title,current_hat) values ({ownerId},{title},{hatId})").on(
         'ownerId -> ownerId,
         'title -> title,
         'hatId -> hatId).executeUpdate()
+    }
+  }
+
+  /**
+   * Changes the current Hat of a thinking session in db. Caution: the input model obj will still have the
+   * old hat state (as it is assumed to be an immutable obj). For further use requery the ThinkingSession
+   * from db (e.g. by ThinkginSession.getById([session id]) )
+   */
+  def changeHatTo(session: ThinkingSession, newHat: Hat): Int = {
+    changeHatTo(session.id, newHat.id)
+  }
+
+  def changeHatTo(sessionId: Long, newHatId: Long): Int = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          update thinking_session
+          set current_hat = {newHatId}
+          where id = {sessionId}
+          """).on(
+        'newHatId -> newHatId,
+        'sessionId -> sessionId).executeUpdate()
     }
   }
 

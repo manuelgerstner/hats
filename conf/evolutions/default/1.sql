@@ -1,5 +1,3 @@
-# --- First database schema
-
 -- Author: Nemo
 
 # --- !Ups
