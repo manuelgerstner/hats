@@ -26,9 +26,9 @@ object Cards extends Controller {
    * To use this endpoint see CardForm (below)
    */
   def addCard(thinkingSessionId: Long) = Action { implicit request =>
+    Logger.debug("Cards.addCard")
     val formCard = cardForm.bindFromRequest.get
-    Card.createFromFormCard(formCard, ThinkingSession.getById(thinkingSessionId), Hat.getDummyHat, User.getDummyUser1)
-
+    Card.createFromFormCard(formCard, ThinkingSession.getById(thinkingSessionId), Hat.dummyHat, User.dummyUser1)
     Redirect(routes.ThinkingSessions.index(thinkingSessionId))
   }
 

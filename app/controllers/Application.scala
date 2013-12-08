@@ -13,6 +13,7 @@ object Application extends Controller {
    * TODO: Homepage, offer ThinkingSession creation and joining a running session (only if allowed, invited)
    */
   def index = Action {
+    Logger.debug("Application.index")
     Ok(views.html.index("Six Thinking Hats"))
   }
 

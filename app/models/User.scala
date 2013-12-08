@@ -2,6 +2,7 @@ package models
 
 import play.api.db.DB
 import play.api.db._
+import play.api.Logger
 
 import play.api.Play.current
 import anorm._
@@ -76,19 +77,27 @@ object User {
   /**
    * some dummy users for dev purposes
    */
-  def getDummyUser1(): User = {
+  def dummyUser1(): User = {
     all() head
   }
 
-  def getDummyUser2(): User = {
+  def dummyUser1Id: Long = 1
+
+  def dummyUser2(): User = {
     (all() tail) head
   }
 
-  def getDummyUser3(): User = {
+  def dummyUser2Id: Long = 2
+
+  def dummyUser3(): User = {
     ((all() tail) tail) head
   }
 
-  def getDummyUser4(): User = {
+  def dummyUser3Id: Long = 3
+
+  def dummyUser4(): User = {
     (((all() tail) tail) tail) head
   }
+
+  def dummyUser4Id: Long = 4
 }

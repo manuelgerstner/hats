@@ -2,24 +2,27 @@
 # This file defines all application routes (Higher priority routes first)
 
 # Home page
-GET     /                           controllers.Application.index
+GET    /                                controllers.Application.index
+
 
 # Cards in a Sessions
 # should be HTTP PUT, but play fucks with REST here...
-POST	/:id/addCard				controllers.Cards.addCard(id: Long)
-POST	/:id/editCard/:cardId		controllers.Cards.editCard(id: Long,cardId: Long)
+POST   /:id/addCard                     controllers.Cards.addCard(id: Long)
+POST   /:id/editCard/:cardId            controllers.Cards.editCard(id: Long,cardId: Long)
 # should be HTTP DELETE, but play fucks with REST here...
-POST 	/:id/deleteCard/:cardId		controllers.Cards.deleteCard(id: Long,cardId: Long)
+POST   /:id/deleteCard/:cardId          controllers.Cards.deleteCard(id: Long,cardId: Long)
 
 # Session control
-GET		/:id						controllers.ThinkingSessions.index(id: Long)
+GET    /:id                             controllers.ThinkingSessions.index(id: Long)
 # both hat urls could use the string names of the hats as well (haven't worked out the enum quite yet)
-POST	/:id/changeHat				controllers.ThinkingSessions.changeHat(id: Long)
-POST	/:id/indicateReady			controllers.ThinkingSessions.indicateReady(id: Long)
-POST	/:id/closeSession			controllers.ThinkingSessions.closeSession(id: Long)
+POST   /:id/changeHat                   controllers.ThinkingSessions.changeHat(id: Long)
+POST   /:id/indicateReady               controllers.ThinkingSessions.indicateReady(id: Long)
+POST   /:id/closeSession                controllers.ThinkingSessions.closeSession(id: Long)
 
+# rest
+POST   /rest/:id/hat/:hatId/createCard   controllers.rest.RestCards.createCard(id:Long,hatId: Long)
 
 
 
 # Map static resources from the /public folder to the /assets URL path
-GET     /assets/*file               controllers.Assets.at(path="/public", file)
+GET    /assets/*file                    controllers.Assets.at(path="/public", file)
