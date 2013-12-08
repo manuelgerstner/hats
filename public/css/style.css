@@ -2,20 +2,32 @@ div.card {
 	border: 1px solid #000;
 	/*position: absolute;*/
 }
-div#cards-list {
+#hat .cards-list {
 	position: relative;
 }
-div#cards-list ul li {
+#hat .cards-list ul li {
 	list-style: none;
 	display: inline-block;
 	margin: 0;
 }
 
-body {
-	background-color: #95D9CF;
-	font-family: AsapRegular, sans-serif;  
-    font-size: 11pt; 
-    lighten(@theme, 30%);
+#hat {
+	/* generally how the card list should look, try and remember the mockup I drew on Monday */
 }
 
-#navigation a { display:block; float:left; }
+
+/* color specific styles below,
+	for example: blue hat would be nice with some clouds, green could be nature etc.
+*/
+#hat .blue {
+}
+#hat .white {
+}
+#hat .yellow {	
+}
+#hat .green {
+}
+#hat .black {
+}
+#hat .red {
+}
