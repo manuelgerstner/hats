@@ -20,7 +20,8 @@ POST   /:id/indicateReady               controllers.ThinkingSessions.indicateRea
 POST   /:id/closeSession                controllers.ThinkingSessions.closeSession(id: Long)
 
 # rest
-POST   /rest/:id/hat/:hatId/createCard   controllers.rest.RestCards.createCard(id:Long,hatId: Long)
+POST   /rest/:id/hat/:hatId/createCard  controllers.rest.RestCards.createCard(id:Long,hatId: Long)
+POST   /rest/:id/changeHat   			controllers.rest.RestThinkingSessions.changeHat(id:Long)
 
 
 
