@@ -1,6 +1,13 @@
 // change this variable depending on which hat is worn
 var HAT = 'white';
 
+$.fn.scrollView = function () {
+    return this.each(function () {
+        $('html, body').animate({
+            scrollTop: $(this).offset().top-10
+        }, 1000);
+    });
+}
 
 $(function() {
 	
@@ -9,9 +16,9 @@ $(function() {
 	
 	// enable ajax submit of form-add
 	$('#card-add').ajaxForm({
-		,"dataType": "json"
+		"dataType": "json",
 		 // work directly with json here 
-		,"success": function(data) {
+		"success": function(data) {
 			
 			if (data.error === true) {
 				console.log(data.message);
@@ -26,7 +33,7 @@ $(function() {
 			
 			$('#cards-list').append(compiled);
 		}
-	})
+	});
 	
 	function moveTo(hat) {
 		// change hat class of div
@@ -35,12 +42,6 @@ $(function() {
 		HAT = hat;
 	}
 	
-	$.fn.scrollView = function () {
-    return this.each(function () {
-        $('html, body').animate({
-            scrollTop: $(this).offset().top-10
-        }, 1000);
-    });
-}
+	
 	
 });
