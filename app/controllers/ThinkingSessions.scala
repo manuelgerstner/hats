@@ -34,5 +34,11 @@ object ThinkingSessions extends Controller {
    *
    */
   def indicateReady(id: Long) = TODO
+  
+  /*
+   * Save the configuration for hats
+   * 
+   */
+  def saveConfig() = TODO
 
 }

@@ -3,6 +3,7 @@
 
 # Home page
 GET     /                           controllers.Application.index
+POST    /                           controllers.ThinkingSessions.saveConfig
 
 # Cards in a Sessions
 # should be HTTP PUT, but play fucks with REST here...
