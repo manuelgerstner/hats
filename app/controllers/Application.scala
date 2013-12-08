@@ -13,14 +13,7 @@ object Application extends Controller {
    * TODO: Homepage, offer ThinkingSession creation and joining a running session (only if allowed, invited)
    */
   def index = Action {
-    Ok(views.html.test("Your new application is ready."))
-  }
-
-  /**
-   * Used for testing
-   */
-  def test = Action {
-    Ok(views.html.test("Welcome to the Six Thinking Hats!"))
+    Ok(views.html.index("Six Thinking Hats"))
   }
 
 }

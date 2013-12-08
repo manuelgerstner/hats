@@ -20,5 +20,4 @@ test-result
 server.pid
 *.iml
 *.eml
-RUNNING_PID
 /bin

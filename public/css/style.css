@@ -1,3 +1,20 @@
+body {
+	background: url('/assets/img/img_winter.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    padding-top: 30px;
+}
+
+.configbox {
+	padding-bottom: 20px;
+}
+
+.deactivation {
+	cursor: pointer;
+}
+
 div.card {
 	border: 1px solid #000;
 	/*position: absolute;*/
