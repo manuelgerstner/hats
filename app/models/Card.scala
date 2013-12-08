@@ -23,12 +23,20 @@ object Card {
   def getTest: Card = {
     Card(1, null, "dfsfafsd", null, null);
   }
+
+  /**
+   * id                    	integer NOT NULL DEFAULT nextval('card_id_seq') PRIMARY KEY,
+   * thinking_session       integer NOT NULL REFERENCES thinking_session(id),
+   * content               	text NOT NULL,
+   * hat					integer REFERENCES hat(id),
+   * creator		      	integer REFERENCES `user`(id)
+   */
   /**
    * ORM simple
    */
-  val simple = {
+  val DBParser = {
     get[Long]("id") ~
-      get[Long]("thinking_session_id") ~
+      get[Long]("thinking_session") ~
       get[String]("content") ~
       get[Long]("hat") ~
       get[Long]("creator") map {
@@ -41,42 +49,50 @@ object Card {
    */
   def all(): List[Card] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from card").as(Card.simple *)
+      SQL("select * from card").as(Card.DBParser *)
     }
   }
 
   /**
    * Get all cards of a given ThinkingSession
    */
-  def getThinkingSessionCards(thinkingSessionId: Long): List[Card] = {
-    DB.withConnection { implicit connection =>
-      SQL("select * from card where thinking_session_id = {id}").on(
-        'id -> thinkingSessionId).as(Card.simple *)
-    }
-  }
-
   def getThinkingSessionCards(thinkingSession: ThinkingSession): List[Card] = {
     getThinkingSessionCards(thinkingSession.id)
+  }
+
+  def getThinkingSessionCards(thinkingSessionId: Long): List[Card] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from card where thinking_session={id}").on(
+        'id -> thinkingSessionId).as(Card.DBParser *)
+    }
   }
 
   /**
    * Get all cards created by a user
    */
   def getUserCards(user: User): List[Card] = {
+    getUserCards(user.id)
+  }
+
+  def getUserCards(userId: Long): List[Card] = {
     DB.withConnection { implicit connection =>
       SQL("select * from card where creator = {id}").on(
-        'id -> user.id).as(Card.simple *)
+        'id -> userId).as(Card.DBParser *)
     }
   }
 
   /**
    * Get all cards created by a user in a specific session
    */
-  def getUserCardsIndSession(user: User, session: ThinkingSession): List[Card] = {
+  def getUserCardsInSession(user: User, session: ThinkingSession): List[Card] = {
+    getUserCardsInSession(user.id, session.id)
+  }
+
+  def getUserCardsInSession(userId: Long, sessionId: Long): List[Card] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from card where creator = {userId} and thinking_session_id ={sessionId}").on(
-        'userId -> user.id,
-        'sessionId -> session.id).as(Card.simple *)
+      SQL("select * from card where creator = {userId} and thinking_session ={sessionId}").on(
+        'userId -> userId,
+        'sessionId -> sessionId).as(Card.DBParser *)
     }
   }
 
@@ -88,18 +104,22 @@ object Card {
    * - created by a User
    * This will NOT return the created Card!
    */
-  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User) = {
+  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User): Int = {
+    create(content, thinkingSession.id, hat.id, creator.id)
+  }
+
+  def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long): Int = {
     DB.withConnection { implicit connection =>
-      SQL("insert into card (content,thinking_session_id,hat,creator) values ({content},{thinkingSessionId},{hat},{creatorId})").on(
+      SQL("insert into card (content,thinking_session,hat,creator) values ({content},{thinkingSessionId},{hat},{creatorId})").on(
         'content -> content,
-        'thinkingSessionId -> thinkingSession.id,
-        'hat -> hat.id,
-        'creatorId -> creator.id).executeUpdate()
+        'thinkingSessionId -> thinkingSessionId,
+        'hat -> hatId,
+        'creatorId -> creatorId).executeUpdate()
     }
   }
 
   /**
-   * Convenience function creating a new Card from a foromCard with bound values from a HTML form and the
+   * Convenience function creating a new Card from a formCard with bound values from a HTML form and the
    * creating user.
    */
   def createFromFormCard(formCard: FormCard, thinkingSession: ThinkingSession, hat: Hat, user: User) = {
@@ -109,10 +129,14 @@ object Card {
   /**
    * Delete a card (if it was shit or something...)
    */
-  def delete(card: Card) = {
+  def delete(card: Card): Int = {
+    delete(card.id)
+  }
+
+  def delete(cardId: Long): Int = {
     DB.withConnection { implicit connection =>
       SQL("delete from card where id = {id}").on(
-        'id -> card.id).executeUpdate()
+        'id -> cardId).executeUpdate()
     }
   }
 

@@ -4,7 +4,6 @@
 # Home page
 GET    /                                controllers.Application.index
 
-GET    /test                            controllers.Application.test
 
 # Cards in a Sessions
 # should be HTTP PUT, but play fucks with REST here...
