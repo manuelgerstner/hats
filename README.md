@@ -51,5 +51,4 @@ Gives info about branching pattern, fork behaviour
 and git settings and commit messages
 ```
 
-Using this pattern will make the overall log is very readable and it is easy to automate the change log creation
-
+Using this pattern will make the overall log is very readable and it is easy to automate the change log creation.

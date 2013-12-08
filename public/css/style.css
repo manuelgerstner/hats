@@ -19,11 +19,37 @@ div.card {
 	border: 1px solid #000;
 	/*position: absolute;*/
 }
-div#cards-list {
+#cards-list {
 	position: relative;
 }
-div#cards-list ul li {
+#cards-list ul li {
 	list-style: none;
 	display: inline-block;
 	margin: 0;
+}
+
+#hat {
+	/* generally how the card list should look, try and remember the mockup I drew on Monday */
+}
+
+
+/* color specific styles below,
+	for example: blue hat would be nice with some clouds, green could be nature etc.
+*/
+#hat.blue {
+}
+#hat.white {
+}
+#hat.yellow {	
+}
+#hat.green {
+}
+#hat.black {
+}
+#hat.red {
+}
+
+#hat.red div.card:not(.hat-red) {
+	/* show only red cards in red hat */
+	display: none;
 }
