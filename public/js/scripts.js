@@ -1,4 +1,9 @@
+// change this variable depending on which hat is worn
+var HAT = 'white';
+
+
 $(function() {
+	
 	// initialize tooltips
 	$('.tooltipster').tooltipster();
 	
@@ -22,4 +27,12 @@ $(function() {
 			$('#cards-list').append(compiled);
 		}
 	})
+	
+	function moveTo(hat) {
+		// change hat class of div
+		$('#hat').removeClass(HAT).addClass(hat.toLowerCase());
+		// overwrite var
+		HAT = hat;
+	}
+	
 });

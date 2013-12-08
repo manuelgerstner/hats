@@ -25,9 +25,14 @@ div.card {
 }
 #hat.yellow {	
 }
-#hat .green {
+#hat.green {
 }
-#hat .black {
+#hat.black {
 }
-#hat .red {
+#hat.red {
+}
+
+#hat.red div.card:not(.hat-red) {
+	/* show only red cards in red hat */
+	display: none;
 }
