@@ -29,6 +29,7 @@
 			@*// TODO route to rest controller here*@
 			@helper.form(action = routes.Cards.addCard(sessionId), 'class -> "form-horizontal", 'id -> "card-add") {
 				<div class="form-group">
+					<input type="hidden" id="hat" name="hat" value="White"/>
 					<label for="content" class="control-label">Content:</label>
 					<textarea class="form-control" name="content" rows="3" required placeholder="Card content"></textarea>
 					<button type="submit" class="btn btn-success">Add Card &raquo;</button>
