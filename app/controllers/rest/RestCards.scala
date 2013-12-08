@@ -9,28 +9,28 @@ import models._
 object RestCards extends Controller {
 
   def createCard(sessionId: Long, hatId: Long) = Action(parse.json) {
+    Logger.debug("RestCards.addCard")
     request =>
       request.body \ "name" match {
         case _: JsUndefined => BadRequest(Json.obj("error" -> true,
           "message" -> "Could not match name =(")).as("application/json")
-        case name: JsValue =>
-          if (name == JsString("content")) {
+        case JsString(name) =>
+          if (name == "content") {
             request.body \ "value" match {
               case _: JsUndefined => BadRequest(Json.obj("error" -> true,
                 "message" -> "Could not match value =(")).as("application/json")
-              case value: JsValue =>
-                val user = User.getDummyUser1;
+              case JsString(content) =>
+                val user = User.dummyUser1;
                 val hat = Hat.getById(hatId)
-                val session = ThinkingSession.dummy
-                Card.create(value.toString, session, hat, user)
+                Card.create(content, sessionId, hatId, user.id)
 
                 val json = Json.obj(
                   "status" -> 200,
                   "fn" -> "createCard",
                   "args" -> Json.obj(
-                    "content" -> value,
+                    "content" -> content,
                     "user" -> user.name,
-                    "thinkingSession" -> session.id,
+                    "thinkingSession" -> sessionId,
                     "hat" -> hat.name
                   )
                 )

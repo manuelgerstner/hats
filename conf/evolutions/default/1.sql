@@ -28,7 +28,7 @@ CREATE TABLE thinking_session (
 CREATE SEQUENCE card_id_seq;
 CREATE TABLE card (
   id                    integer NOT NULL DEFAULT nextval('card_id_seq') PRIMARY KEY,
-  thinking_session_id   integer NOT NULL REFERENCES thinking_session(id),
+  thinking_session      integer NOT NULL REFERENCES thinking_session(id),
   content               text NOT NULL,
   hat						        integer REFERENCES hat(id),
   creator					      integer REFERENCES `user`(id)

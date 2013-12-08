@@ -11,6 +11,7 @@ object ThinkingSessions extends Controller {
    * TODO: Show the the dashboard for the current session
    */
   def index(id: Long) = Action {
+    Logger.debug("ThinkingSessions.index")
     Ok(views.html.cards(id, Card.getThinkingSessionCards(id)))
   }
 
