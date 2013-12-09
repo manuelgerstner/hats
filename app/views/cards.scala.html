@@ -16,7 +16,7 @@
 				<ul>
 					@cards.map { card =>
 						<li>
-							<div class="card hat-@Hat.getHatName(card.hat.id)">
+							<div class="card @Hat.getHatName(card.hat.id)">
 								@card.content
 							</div>
 						</li>

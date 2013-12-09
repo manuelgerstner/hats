@@ -52,20 +52,37 @@ div.card {
 /* color specific styles below,
 	for example: blue hat would be nice with some clouds, green could be nature etc.
 */
-#hat.blue {
-	background-color: #66A9BF;
-	
-	
+#cards-list ul li .blue {
+	background-color: #66A9BF;	
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;	
 }
-#hat.white {
+
+#cards-list ul li .white {
+	background-color: #F3F5F4;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.yellow {	
+
+#cards-list ul li .yellow {
+	background-color: #D9CD46;	
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.green {
+#cards-list ul li .green {
+	background-color: #1FA824;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.black {
+#cards-list ul li .black {
+	background-color: #1E212D;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.red {
+#cards-list ul li .red {
+	background-color: #F53A59;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
 
 #hat.red div.card:not(.hat-red) {
