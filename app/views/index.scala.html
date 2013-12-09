@@ -26,6 +26,7 @@
 				</select>
 			</div>
 		</div>
+		@helper.form(action = routes.ThinkingSessions.saveConfig) {
 		<div id="white-hat" class="row panel panel-default configbox">
 			<div class="col-lg-12">
 				<h3>White hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>
@@ -33,14 +34,14 @@
 		    <div class="col-lg-4">
 			    <div class="input-group">		      		
 			      <span class="input-group-addon">Hat time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="whHatt">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 			</div>
 		    <div class="col-lg-4">
 			    <div class="input-group">
 			      <span class="input-group-addon">Alone time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="whAlonet">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 		  	</div>
@@ -52,14 +53,14 @@
 		    <div class="col-lg-4">
 			    <div class="input-group">		      		
 			      <span class="input-group-addon">Hat time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="yeHatt">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 			</div>
 		    <div class="col-lg-4">
 			    <div class="input-group">
 			      <span class="input-group-addon">Alone time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="yeAlonet">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 		  	</div>
@@ -71,14 +72,14 @@
 		    <div class="col-lg-4">
 			    <div class="input-group" data-intro="You can adjust the maximum time spent in each room manually. If all participants agree, you can continue to the next room before the timeout." data-position="right">		      		
 			      <span class="input-group-addon">Hat time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="reHatt">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 			</div>
 		    <div class="col-lg-4">
 			    <div class="input-group">
 			      <span class="input-group-addon">Alone time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="reAlonet">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 		  	</div>
@@ -90,14 +91,14 @@
 		    <div class="col-lg-4">
 			    <div class="input-group">		      		
 			      <span class="input-group-addon">Hat time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="grHatt">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 			</div>
 		    <div class="col-lg-4">
 			    <div class="input-group">
 			      <span class="input-group-addon">Alone time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="grAlonet">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 		  	</div>
@@ -109,14 +110,14 @@
 		    <div class="col-lg-4">
 			    <div class="input-group">		      		
 			      <span class="input-group-addon">Hat time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="blHatt">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 			</div>
 		    <div class="col-lg-4">
 			    <div class="input-group" data-intro="The alone time defines the period during which all participants are not seeing anyone elses ideas." data-position="left">
 			      <span class="input-group-addon">Alone time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="blAlonet">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 		  	</div>
@@ -128,14 +129,14 @@
 		    <div class="col-lg-4">
 			    <div class="input-group">		      		
 			      <span class="input-group-addon">Hat time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="bluHatt">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 			</div>
 		    <div class="col-lg-4">
 			    <div class="input-group">
 			      <span class="input-group-addon">Alone time:</span>
-			      <input type="number" class="form-control">
+			      <input type="number" class="form-control" name="bluAlonet">
 			      <span class="input-group-addon">minutes</span>
 			    </div><!-- /input-group -->
 		  	</div>
@@ -153,7 +154,7 @@
 		</br></br>	
 		<p><a href="/1" id="start-button" data-intro="After choosing one of the predefined templates or setting up your own one, you can get started right away by clicking on this button!" data-position="left" class="btn btn-primary btn-lg" role="button">Initiate session!</a></p>
 	</div>
-
+	}
 	<script type="text/javascript">
 	$(function() {
 		$('.tooltipster').tooltipster();
