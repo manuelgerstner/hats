@@ -1,3 +1,20 @@
+body {
+	background: url('/assets/img/img_winter.jpg') no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    padding-top: 30px;
+}
+
+.configbox {
+	padding-bottom: 20px;
+}
+
+.deactivation {
+	cursor: pointer;
+}
+
 div.card {
 	border: 1px solid #000;
 	/*position: absolute;*/
@@ -13,23 +30,59 @@ div.card {
 
 #hat {
 	/* generally how the card list should look, try and remember the mockup I drew on Monday */
+	
+	height: 600px;
+	width:1000px;
+	background-color: white;
+	-moz-border-radius: 15px;
+	border-radius: 15px;
+	background-color: rgba(255, 255, 255, 0.7);
+	
+	
+}
+#cards-create {
+	height: 100px;
+	width:250px;	
+	padding-left: 10px;
 }
 
-
+#card-add {
+	padding-left: 10px;
+}
 /* color specific styles below,
 	for example: blue hat would be nice with some clouds, green could be nature etc.
 */
-#hat.blue {
+#cards-list ul li .blue {
+	background-color: #66A9BF;	
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;	
 }
-#hat.white {
+
+#cards-list ul li .white {
+	background-color: #F3F5F4;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.yellow {	
+
+#cards-list ul li .yellow {
+	background-color: #D9CD46;	
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.green {
+#cards-list ul li .green {
+	background-color: #1FA824;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.black {
+#cards-list ul li .black {
+	background-color: #1E212D;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
-#hat.red {
+#cards-list ul li .red {
+	background-color: #F53A59;
+	font-family: "Arial", MS Trebuchet, sans-serif;	
+	font-size: 16px;
 }
 
 #hat.red div.card:not(.hat-red) {

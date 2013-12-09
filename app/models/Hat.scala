@@ -18,7 +18,7 @@ object Hat {
   /**
    * ORM simple
    */
-  val simple = {
+  val DBParser = {
     get[Long]("id") ~
       get[String]("name") map {
         case id ~ name => Hat(id, name);
@@ -30,7 +30,7 @@ object Hat {
    */
   def all(): List[Hat] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from hat").as(Hat.simple *)
+      SQL("select * from hat").as(Hat.DBParser *)
     }
   }
 
@@ -58,7 +58,9 @@ object Hat {
   /**
    * for development purposes this will return the white hat by default
    */
-  def getDummyHat(): Hat = {
+  def dummyHat(): Hat = {
     all() head
   }
+
+  def dummyHatId: Long = 1
 }

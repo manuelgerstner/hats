@@ -5,22 +5,30 @@ import play.api.mvc._
 
 import models._
 
+/**
+ * Controls all changes in ThinkingSession state.
+ * @author Nemo
+ */
 object ThinkingSessions extends Controller {
 
   /**
-   * TODO: Show the the dashboard for the current session
+   * Show the index of the current session
    */
   def index(id: Long) = Action {
-    Ok(views.html.cards(id, Card.getThinkingSessionCards(id)))
+    Logger.debug("ThinkingSessions.index")
+    Ok(views.html.cards(id, Card.getThinkingSessionCards(id), ThinkingSession.getById(id).currentHat))
   }
 
   /**
-   * TODO: Update Session state to respective hat, show session index of new hat.
-   * Push info to all clients.
-   * Needed Form Params:
-   * HatID: Long
+   * Update Session state to respective hat, show session index of new hat.
    */
-  def changeHat(id: Long) = TODO
+  def changeHat(id: Long) = Action {
+    Logger.debug("ThinkingSessions.changeHat")
+    val session = ThinkingSession.getById(id)
+    val nextHatId = HatFlow.getNextDefaultHatId(ThinkingSession.getById(id))
+    ThinkingSession.changeHatTo(id, nextHatId)
+    Ok(views.html.cards(id, Card.getThinkingSessionCards(id), Hat.getById(nextHatId)))
+  }
 
   /**
    * TODO: Conclude session and redirect to review page
@@ -34,5 +42,11 @@ object ThinkingSessions extends Controller {
    *
    */
   def indicateReady(id: Long) = TODO
+  
+  /*
+   * Save the configuration for hats
+   * 
+   */
+  def saveConfig() = TODO
 
 }
