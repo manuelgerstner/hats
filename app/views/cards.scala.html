@@ -13,11 +13,13 @@
 				<h3>No cards yet</h3>
 			} else {
 				<h3>Existing Cards:</h3>
-				<ul>
+				<ul id="cards-list-ul">
 					@cards.map { card =>
 						<li>
 							<div class="card @Hat.getHatName(card.hat.id)">
 								@card.content
+								by
+								<i>{{user}}</i>
 							</div>
 						</li>
 					}
@@ -26,20 +28,15 @@
 		</div>
 		<div id="cards-create">
 			<h3>Create a new Card here:</h3>
-			@*// TODO route to rest controller here*@
-			@helper.form(action = routes.Cards.addCard(sessionId), 'class -> "form-horizontal", 'id -> "card-add") {
-				<div class="form-group">
-					<input type="hidden" id="hat" name="hat" value="White"/>
+
+			@helper.form(action =routes.Cards.restFormAddCard(sessionId,hat.id), 'class -> "form-horizontal", 'id -> "card-add") {
+    			<div class="form-group">
+                    <input type="hidden" id="hat" name="hat" value="@hat.name" />
 					<label for="content" class="control-label">Content:</label>
-					<textarea class="form-control" name="content" rows="3" required placeholder="Card content"></textarea>
-					<button type="submit" class="btn btn-success">Add Card &raquo;</button>
-				</div>
-			}
-			@helper.form(action = routes.ThinkingSessions.changeHat(sessionId), 'class -> "form-horizontal", 'id -> "card-add") {
-				<div class="form-group">
-					<button type="submit" class="btn btn-success">ChangeHat</button>
-				</div>
-			}
+                    <textarea class="form-control" name="content" rows="3" required placeholder="Card content"></textarea>
+                    <button type="submit" class="btn btn-success">Add Card &raquo;</button>
+                </div>
+            }
 		</div>
 	</div>
 	
@@ -55,3 +52,13 @@
 	</script>
 		
 }
+
+<script id="card-template" type="text/x-handlebars-template">
+	<li>
+		<div data-cardid="{{id}}" class="card {{hat}}">
+			{{content}}
+			by
+			<i>{{user}}</i>
+		</div>
+	</li>
+</script>
