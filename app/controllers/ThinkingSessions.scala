@@ -2,8 +2,11 @@ package controllers
 
 import play.api._
 import play.api.mvc._
+import play.api.libs.json._
 
 import models._
+//import models.forms._
+import controllers._
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -42,11 +45,33 @@ object ThinkingSessions extends Controller {
    *
    */
   def indicateReady(id: Long) = TODO
-  
+
   /*
    * Save the configuration for hats
    * 
    */
   def saveConfig() = TODO
+
+  /**
+   * Change the current Hat of a session. only owner (will be) allowed to do this
+   */
+  def restChangeHat(sessionId: Long) = Action {
+    Logger.debug("ThinkingSessions.restChangeHat(" + sessionId + ")")
+    val user = User.dummyUser1; // TODO get from session and compare to owner later on
+    val session = ThinkingSession.getById(sessionId)
+    val nextHatId = HatFlow.getNextDefaultHatId(session)
+    ThinkingSession.changeHatTo(sessionId, nextHatId)
+    val nextHat = Hat.getById(nextHatId)
+    val json = Json.obj(
+      "status" -> 200,
+      "fn" -> "changeHat",
+      "args" -> Json.obj(
+        "user" -> user.name,
+        "thinkingSession" -> sessionId,
+        "hat" -> nextHat.name
+      )
+    )
+    Ok(Json.obj("content" -> json)).as("application/json")
+  }
 
 }
