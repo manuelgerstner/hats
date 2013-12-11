@@ -76,7 +76,8 @@ object ThinkingSessions extends Controller {
   def saveConfig() = Action { implicit request =>
     val formConfig = configSaveForm.bindFromRequest.get
     
-    Redirect(routes.ThinkingSessions.index(thinkingSessionId))
+    //Redirect(routes.ThinkingSessions.index(thinkingSessionId))
+    Ok(views.html.index("Six Thinking Hats")) //have to delete and uncomment the previous line 
     
   }
 
