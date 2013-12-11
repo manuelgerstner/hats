@@ -2,13 +2,12 @@ package models
 
 import anorm._
 import anorm.SqlParser._
-
 import models._
-import forms._
-
 import play.api.db._
 import play.api.Play.current
 import play.api.libs.json._
+import akka.util.HashCode
+import forms.FormCard
 
 /**
  * Cards models an idea created by a ThinkingSession participant in the course of the 6 Hats process.
@@ -20,8 +19,8 @@ case class Card(id: Long, thinkingSession: ThinkingSession, content: String, hat
 
 object Card {
 
-  def getTest: Card = {
-    Card(1, null, "dfsfafsd", null, null);
+  def dummy: Card = {
+    Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummyHat, User.dummyUser1);
   }
 
   /**
@@ -97,24 +96,28 @@ object Card {
   }
 
   /**
-   * Create a new card. Every card needs:
-   * - Content (text for now)
-   * - belongs to a ThinkingSession
-   * - created in a Hat
-   * - created by a User
-   * This will NOT return the created Card!
+   * Create a new card.
+   * This will return the id of the created card
    */
   def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User): Int = {
     create(content, thinkingSession.id, hat.id, creator.id)
   }
 
+  /**
+   * Create a new card.
+   * This will return the id of the created card
+   */
   def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long): Int = {
     DB.withConnection { implicit connection =>
-      SQL("insert into card (content,thinking_session,hat,creator) values ({content},{thinkingSessionId},{hat},{creatorId})").on(
+      // create unique id by hashing contents + timestamp
+      val id: Int = (content + thinkingSessionId + hatId + creatorId + System.currentTimeMillis).hashCode
+      SQL("insert into card (id,content,thinking_session,hat,creator) values ({id},{content},{thinkingSessionId},{hat},{creatorId})").on(
+        'id -> id,
         'content -> content,
         'thinkingSessionId -> thinkingSessionId,
         'hat -> hatId,
         'creatorId -> creatorId).executeUpdate()
+      id
     }
   }
 
@@ -122,8 +125,12 @@ object Card {
    * Convenience function creating a new Card from a formCard with bound values from a HTML form and the
    * creating user.
    */
-  def createFromFormCard(formCard: FormCard, thinkingSession: ThinkingSession, hat: Hat, user: User) = {
-    create(formCard.content, thinkingSession, hat, user)
+  def create(formCard: FormCard, thinkingSessionId: Long, userId: Long): Int = {
+    create(formCard.content, thinkingSessionId, Hat.getByName(formCard.hat).id, userId)
+  }
+
+  def create(formCard: FormCard, thinkingSession: ThinkingSession, user: User): Int = {
+    create(formCard, thinkingSession.id, user.id)
   }
 
   /**

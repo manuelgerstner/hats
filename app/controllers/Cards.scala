@@ -5,9 +5,10 @@ import play.api.mvc.Controller
 import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
+import play.api.libs.json._
 import controllers._
 import models._
-import models.forms._
+import models.forms.FormCard
 
 /**
  * Card Controller responsible for handling CRUD operations on ideas/cards (will be treated as synonyms,
@@ -16,6 +17,14 @@ import models.forms._
  * @author: NemoOudeis
  */
 object Cards extends Controller {
+
+  /**
+   * Form to create a card
+   */
+  val cardForm = Form(
+    mapping(
+      "content" -> nonEmptyText,
+      "hat" -> nonEmptyText)(FormCard.apply)(FormCard.unapply))
 
   /**
    * Needed Info from HTML Params or (browser)session/user info:
@@ -28,7 +37,7 @@ object Cards extends Controller {
   def addCard(thinkingSessionId: Long) = Action { implicit request =>
     Logger.debug("Cards.addCard")
     val formCard = cardForm.bindFromRequest.get
-    Card.createFromFormCard(formCard, ThinkingSession.getById(thinkingSessionId), Hat.dummyHat, User.dummyUser1)
+    val cardId = Card.create(formCard, thinkingSessionId, User.dummyUser1Id)
     Redirect(routes.ThinkingSessions.index(thinkingSessionId))
   }
 
@@ -44,21 +53,59 @@ object Cards extends Controller {
    */
   def deleteCard(id: Long, cardId: Long) = TODO
 
-  /**
-   * Form to create a card. To use in HTML template do this you'll need to pass it as a render arg
-   * and put the form somewhere like this:
-   *
-   * @import help._
-   *
-   * ...
-   *
-   * @helper.form(action = routes.Cards.addCard(thinkingSession.id)) {
-   * @helper.inputText(cardForm("content"))
-   * }
-   *
-   */
-  val cardForm = Form(
-    mapping(
-      "content" -> nonEmptyText)(FormCard.apply)(FormCard.unapply))
+  def restFormAddCard(sessionId: Long, hatId: Long) = Action { implicit request =>
+    val formCard = cardForm.bindFromRequest.get
+    val user = User.dummyUser1;
+    val cardId = Card.create(formCard, sessionId, user.id)
+    Ok(Json.obj("id" -> cardId,
+      "hat" -> Hat.getById(hatId).name.toLowerCase,
+      "content" -> formCard.content,
+      "user" -> user.name)).as("application/json")
+  }
+
+  def restJsonAddCard(sessionId: Long, hatId: Long) = Action(parse.json) { implicit request =>
+    Logger.debug("Cards.restAddCard")
+    val formCard = cardForm.bindFromRequest.get
+    (request.body) match {
+      case body: JsObject =>
+        body \ "name" match {
+          case JsString(name) =>
+            if (name == "content") {
+              request.body \ "value" match {
+                case JsString(content) =>
+                  val user = User.dummyUser1;
+                  val hat = Hat.getById(hatId)
+                  val cardId = Card.create(content, sessionId, hatId, user.id)
+
+                  val json = Json.obj(
+                    "status" -> 200,
+                    "fn" -> "createCard",
+                    "args" -> Json.obj(
+                      "id" -> cardId,
+                      "hat" -> hat.name,
+                      "content" -> content,
+                      "user" -> user.name
+                    )
+                  )
+                  // Return reponse with 200 (OK) status and JSON body
+                  Ok(Json.obj("content" -> json)).as("application/json")
+
+                case _ => BadRequest(Json.obj("error" -> true,
+                  "message" -> "Could not match value =(")).as("application/json")
+              }
+            } else {
+              BadRequest(Json.obj("error" -> true,
+                "message" -> "Name was not content =(")).as("application/json")
+            }
+          case _ =>
+            BadRequest(Json.obj("error" -> true,
+              "message" -> "Could not find name =(")).as("application/json")
+        }
+      case _ =>
+        BadRequest(Json.obj("error" -> true,
+          "message" -> "Request body not a JSON object =p")).as("application/json")
+
+    }
+  }
 
 }
