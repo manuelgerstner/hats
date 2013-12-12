@@ -11,11 +11,38 @@
 		</div>
 		<p><a id="start-button" class="btn btn-primary btn-lg" role="button">Get started!</a></p>
 	</div>
+	
 	<div id="control-panel" class="well hidden">
-		<h2>Control options:</h2>
-		<div class="lead">As the creator of a Thinking Hats session you have control over the full process. Adjust the following parameters according to your needs.</div>
-		<p><a data-intro="This virtual implementation of the Six Thinking hats process consists of six seperate rooms that require each participant to take on different roles." data-position="left" id="help-button" class="btn btn-primary btn-lg" role="button">Help me with this!</a></p>
-		<div class="row panel panel-default configbox">
+		
+		<div class="panel-group" id="accordion">
+          <div class="panel panel-default">
+             <div class="panel-heading">
+               <h4 class="panel-title">
+               <p><a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" data-position="right" class="btn btn-info btn-sm" role="button">
+                 show
+               </a>
+               </p>
+               </h4>
+             </div>
+            <div id="collapseOne" class="panel-collapse collapse in">
+              <div class="panel-body">
+              	<h2>Control options:</h2>
+                <div class="lead">
+                	As the creator of a Thinking Hats session you have control over the full process. Adjust the following parameters according to your needs.
+                </div>
+		        <p><a data-intro="This virtual implementation of the Six Thinking hats process consists of six seperate rooms that require each participant to take on different roles." data-position="left" id="help-button" class="btn btn-primary btn-lg" role="button">Help me with this!</a></p>
+              </div>
+            </div>
+          </div>
+  		<div class="panel panel-default">
+           <div class="panel-heading">
+             <h4 class="panel-title">
+                <p><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"  data-position="right" class="btn btn-info btn-sm" role="button"> show</a></p> 
+             </h4>
+           </div>
+         <div id="collapseTwo" class="panel-collapse collapse">
+          <div class="panel-body">
+             <div class="row panel panel-default configbox">
 			<div class="col-lg-12">
 				<h3>Presets</h3>
 			</div>
@@ -140,18 +167,36 @@
 			    </div><!-- /input-group -->
 		  	</div>
 		</div>
-		<div class="row panel panel-default configbox">
+          </div>
+         </div>
+       </div>
+     
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h4 class="panel-title">
+        <p><a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" data-position="right" class="btn btn-info btn-sm" role="button">
+          show
+        </a></p>
+      </h4>
+    </div>
+    <div id="collapseThree" class="panel-collapse collapse">
+      <div class="panel-body">
+        <div class="row panel panel-default configbox">
 			<div class="col-lg-12">
 				<h3>Participants to invite by mail</h3>
 			Add people by adding their email address. Hit enter or use ',' to separate!
 			</div>		
-			
 			<div class="col-lg-8">
 				<input class="form-control" type="text" id="tokenfield">
 			</div>
 		</div>
 		</br></br>	
 		<p><a href="/1" id="start-button" data-intro="After choosing one of the predefined templates or setting up your own one, you can get started right away by clicking on this button!" data-position="left" class="btn btn-primary btn-lg" role="button">Initiate session!</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+ }
 	</div>
 	<script type="text/javascript">
 	$(function() {
