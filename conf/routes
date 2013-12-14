@@ -22,8 +22,8 @@ POST   /:id/closeSession                controllers.ThinkingSessions.closeSessio
 
 # rest
 POST   /rest/:id/hat/:hatId/addCard          controllers.Cards.restFormAddCard(id:Long,hatId: Long)
-#POST   /rest/:id/hat/:hatId/addCard          controllers.Cards.restAddCard(id:Long,hatId: Long)
-POST   /rest/:id/changeHat                           controllers.ThinkingSessions.restChangeHat(id:Long)
+#POST   /rest/:id/hat/:hatId/addCard         controllers.Cards.restAddCard(id:Long,hatId: Long)
+POST   /rest/:id/forceChangeHat              controllers.ThinkingSessions.restChangeHat(id:Long)
 
 
 

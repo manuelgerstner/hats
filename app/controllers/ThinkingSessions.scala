@@ -89,16 +89,16 @@ object ThinkingSessions extends Controller {
     val nextHatId = HatFlow.getNextDefaultHatId(session)
     ThinkingSession.changeHatTo(sessionId, nextHatId)
     val nextHat = Hat.getById(nextHatId)
-    val json = Json.obj(
-      "status" -> 200,
-      "fn" -> "changeHat",
-      "args" -> Json.obj(
-        "user" -> user.name,
-        "thinkingSession" -> sessionId,
-        "hat" -> nextHat.name
-      )
-    )
-    Ok(Json.obj("content" -> json)).as("application/json")
+    //    val json = Json.obj(
+    //      "status" -> 200,
+    //      "fn" -> "changeHat",
+    //      "args" -> Json.obj(
+    //        "user" -> user.name,
+    //        "thinkingSession" -> sessionId,
+    //        "hat" -> nextHat.name
+    //      )
+    //    )
+    Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
   }
 
 }
