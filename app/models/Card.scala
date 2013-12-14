@@ -149,13 +149,16 @@ object Card {
 
   def toJson(card: Card): JsObject = {
     //case class Card(id: Long, thinkingSessionId: Long, content: String, hat: Hat, creator: User)
+    //{"id":5, "hat": "Green", "content": "card content", "user":"username"}
     Json.obj(
       "id" -> card.id,
+      "hat" -> card.hat.name,
       "thinkingSessionId" -> card.thinkingSession.id,
       "content" -> card.content
-    //      card.hat
-
     )
   }
 
+  def listToJson(cards: List[Card]) = {
+    Json.toJson(cards.map(card => Card.toJson(card)))
+  }
 }
