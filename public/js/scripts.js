@@ -12,7 +12,6 @@ $.fn.scrollView = function() {
         }, 1000);
     });
 }
-
 // Adds a bubble to the global bubble string array
 var addBubbleToProgressBar = function(color, size, tooltip, timestamp) {
 	PROGRESS_DATA.push({ "color" : color, "size" : size });
