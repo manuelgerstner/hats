@@ -152,9 +152,10 @@ object Card {
     //{"id":5, "hat": "Green", "content": "card content", "user":"username"}
     Json.obj(
       "id" -> card.id,
-      "hat" -> card.hat.name,
+      "hat" -> card.hat.name.toLowerCase,
       "thinkingSessionId" -> card.thinkingSession.id,
-      "content" -> card.content
+      "content" -> card.content,
+      "username" -> card.creator.name
     )
   }
 
