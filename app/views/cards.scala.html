@@ -7,42 +7,52 @@
 
 @main("Cards") {
 	
-	<div id="hat">
-		<div id="cards-list" class="white">
-			@if(cards.isEmpty) {
-				<h3>No cards yet</h3>
-			} else {
-				<h3>Existing Cards:</h3>
-				<ul id="cards-list-ul">
-					@cards.map { card =>
-						<li>
-							<div class="card @Hat.getHatName(card.hat.id)">
-								@card.content
-								by
-								<i>{{user}}</i>
-							</div>
-						</li>
-					}
-				</ul>
-			}
+	<div id="hat" class="white">
+	
+		@hatfeed.render
+		
+		
+		<div id="hat-cards" class="col-md-9">
+		
+			<div id="card-create">
+				@helper.form(action = routes.Cards.restFormAddCard(sessionId,hat.id), 'class -> "form-horizontal", 'id -> "card-form") {
+					<div class="form-group">
+						<input type="hidden" name="hat" id="hat" value="@hat.name"/>
+					    <div class="col-md-4">
+					    	<input type="text" class="form-control" id="card-content" placeholder="Add new Card">
+					    </div>
+						<button type="submit" class="btn btn-success">Add Card &raquo;</button>
+					</div>
+	            }
+			</div>
+			
+			<div id="cards" class="well">
+				@if(cards.isEmpty) {
+					<h3>No cards yet</h3>
+				} else {
+					<ul id="cards-list">
+						@cards.map { card =>
+							@* todo generate this through client-side json using handlebars *@
+							<li>
+								<div class="btn-lg btn-default card @Hat.getHatName(card.hat.id)">
+									@card.content
+									by
+									<i>{{user}}</i>
+								</div>
+							</li>
+						}
+					</ul>
+				}
+			</div>
+			
+			
+			<div class="row" id="progressbar">
+				@*progressbar.render*@
+			</div>
 		</div>
-		<div id="cards-create">
-			<h3>Create a new Card here:</h3>
-
-			@helper.form(action =routes.Cards.restFormAddCard(sessionId,hat.id), 'class -> "form-horizontal", 'id -> "card-add") {
-    			<div class="form-group">
-                    <input type="hidden" id="hat" name="hat" value="@hat.name" />
-					<label for="content" class="control-label">Content:</label>
-                    <textarea class="form-control" name="content" rows="3" required placeholder="Card content"></textarea>
-                    <button type="submit" class="btn btn-success">Add Card &raquo;</button>
-                </div>
-            }
-		</div>
+		
 	</div>
 	
-	<div id="progressbar">
-		@progressbar.render
-	</div>
 		
 }
 
