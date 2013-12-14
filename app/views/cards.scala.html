@@ -52,6 +52,9 @@
 	</script>
 		
 }
+<script>
+	var Cards = @Html(Card.listToJson(cards).toString);
+</script>
 
 <script id="card-template" type="text/x-handlebars-template">
 	<li>

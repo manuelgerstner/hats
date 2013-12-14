@@ -1,7 +1,4 @@
 package models.forms
-import anorm._
-import anorm.SqlParser._
-import play.api.db._
 
 /**
  * Stripped down Form Model to protect the "secret" fields like db unique key etc.
