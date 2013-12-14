@@ -10,8 +10,6 @@ import models._
 import controllers._
 import models.forms.FormConfig
 
-
-
 /**
  * Controls all changes in ThinkingSession state.
  * @author Nemo
@@ -50,35 +48,35 @@ object ThinkingSessions extends Controller {
    */
   def indicateReady(id: Long) = TODO
 
-  
   /*
    * val to initiate session
    */
-  val configSaveForm  =  Form(
-      mapping(
-          "whHatt"-> nonEmptyText,
-          "whAlonet"-> nonEmptyText,
-          "yeHatt"-> nonEmptyText,
-          "yeAlonet"-> nonEmptyText,
-          "reHatt"-> nonEmptyText,
-          "reAlonet"-> nonEmptyText,
-          "grHatt"-> nonEmptyText,
-          "grAlonet"-> nonEmptyText,
-          "blHatt"-> nonEmptyText,
-          "blAlonet"-> nonEmptyText,
-          "bluHatt"-> nonEmptyText,
-          "bluAlonet"-> nonEmptyText        
-          )(FormConfig.apply)(FormConfig.unapply))
+  val configSaveForm = Form(
+    mapping(
+      "whHatt" -> nonEmptyText,
+      "whAlonet" -> nonEmptyText,
+      "yeHatt" -> nonEmptyText,
+      "yeAlonet" -> nonEmptyText,
+      "reHatt" -> nonEmptyText,
+      "reAlonet" -> nonEmptyText,
+      "grHatt" -> nonEmptyText,
+      "grAlonet" -> nonEmptyText,
+      "blHatt" -> nonEmptyText,
+      "blAlonet" -> nonEmptyText,
+      "bluHatt" -> nonEmptyText,
+      "bluAlonet" -> nonEmptyText
+    )(FormConfig.apply)(FormConfig.unapply))
   /*
    * Save the configuration for hats
    * 
    */
   def saveConfig() = Action { implicit request =>
     val formConfig = configSaveForm.bindFromRequest.get
-    
-    //Redirect(routes.ThinkingSessions.index(thinkingSessionId))
-    Ok(views.html.index("Six Thinking Hats")) //have to delete and uncomment the previous line 
-    
+
+    // crate new session
+    val sessionId = 1;
+    Redirect(routes.ThinkingSessions.index(sessionId))
+
   }
 
   /**
@@ -91,16 +89,16 @@ object ThinkingSessions extends Controller {
     val nextHatId = HatFlow.getNextDefaultHatId(session)
     ThinkingSession.changeHatTo(sessionId, nextHatId)
     val nextHat = Hat.getById(nextHatId)
-    val json = Json.obj(
-      "status" -> 200,
-      "fn" -> "changeHat",
-      "args" -> Json.obj(
-        "user" -> user.name,
-        "thinkingSession" -> sessionId,
-        "hat" -> nextHat.name
-      )
-    )
-    Ok(Json.obj("content" -> json)).as("application/json")
+    //    val json = Json.obj(
+    //      "status" -> 200,
+    //      "fn" -> "changeHat",
+    //      "args" -> Json.obj(
+    //        "user" -> user.name,
+    //        "thinkingSession" -> sessionId,
+    //        "hat" -> nextHat.name
+    //      )
+    //    )
+    Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
   }
 
 }

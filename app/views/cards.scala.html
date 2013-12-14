@@ -9,6 +9,11 @@
 	
 	<div id="hat" class="white">
 	
+		
+	<script>
+		var Cards = @Html(Card.listToJson(cards).toString);
+	</script>
+	
 		@hatfeed.render
 		
 		<div id="hat-cards" class="col-md-9">
@@ -49,17 +54,23 @@
 			<div class="row" id="progressbar">
 				@*progressbar.render*@
 			</div>
+			
 		</div>
 		
 	</div>
-	
-		
+
 }
 
+<script type="text/javascript">
+$(function() {
+	addBubbleToProgressBar("white", 16);
+	renderProgressOutline();
+});
+</script>
 <script id="card-template" type="text/x-handlebars-template">
-		<div data-cardid="{{id}}" class="card {{hat}}">
-			{{content}}
-			by
-			<i>{{user}}</i>
-		</div>
+	<div data-cardid="{{id}}" class="card {{hat}}">
+		{{content}}
+		by
+		<i>{{user}}</i>
+	</div>
 </script>
