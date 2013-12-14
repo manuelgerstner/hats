@@ -11,17 +11,20 @@
 	
 		@hatfeed.render
 		
-		
 		<div id="hat-cards" class="col-md-9">
 		
 			<div id="card-create">
 				@helper.form(action = routes.Cards.restFormAddCard(sessionId,hat.id), 'class -> "form-horizontal", 'id -> "card-form") {
 					<div class="form-group">
 						<input type="hidden" name="hat" id="hat" value="@hat.name"/>
-					    <div class="col-md-4">
-					    	<input type="text" class="form-control" id="card-content" placeholder="Add new Card">
+					    <div class="col-xs-4">
+					    	<input type="text" class="form-control" name="content" id="content" placeholder="Add new Card"/>
 					    </div>
 						<button type="submit" class="btn btn-success">Add Card &raquo;</button>
+						<!-- 
+							<button type="button" class="btn btn-info pull-right" id="indicate">Move to next Hat</button>
+							<button type="button" class="btn btn-warning pull-right" id="finish">Finish Session</button>
+						 -->
 					</div>
 	            }
 			</div>
@@ -29,20 +32,17 @@
 			<div id="cards" class="well">
 				@if(cards.isEmpty) {
 					<h3>No cards yet</h3>
-				} else {
-					<ul id="cards-list">
-						@cards.map { card =>
-							@* todo generate this through client-side json using handlebars *@
-							<li>
-								<div class="btn-lg btn-default card @Hat.getHatName(card.hat.id)">
-									@card.content
-									by
-									<i>{{user}}</i>
-								</div>
-							</li>
-						}
-					</ul>
 				}
+				<div id="cards-list">
+					@cards.map { card =>
+						@* todo generate this through client-side json using handlebars *@
+						<div class="card @Hat.getHatName(card.hat.id)">
+							@card.content
+							by
+							<i>{{user}}</i>
+						</div>
+					}
+				</div>
 			</div>
 			
 			
@@ -57,11 +57,9 @@
 }
 
 <script id="card-template" type="text/x-handlebars-template">
-	<li>
 		<div data-cardid="{{id}}" class="card {{hat}}">
 			{{content}}
 			by
 			<i>{{user}}</i>
 		</div>
-	</li>
 </script>

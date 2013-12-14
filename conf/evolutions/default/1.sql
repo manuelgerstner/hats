@@ -29,6 +29,7 @@ CREATE TABLE card (
   thinking_session      integer NOT NULL REFERENCES thinking_session(id),
   content               text NOT NULL,
   hat						        integer REFERENCES hat(id),
+  time                  datetime DEFAULT CURRENT_TIMESTAMP,
   creator					      integer REFERENCES `user`(id)
 );
 
@@ -49,7 +50,7 @@ INSERT INTO user VALUES (3,'Dom');
 INSERT INTO user VALUES (4,'David');
 
 
-INSERT INTO thinking_session VALUES (1,1,'Manus Birthday Present (Should be something awesome...)',1);
+INSERT INTO thinking_session VALUES (1, 1, 'Manus Birthday Present', 1);
 
 
 
