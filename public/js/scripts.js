@@ -85,16 +85,16 @@ $(function() {
 	$('.tooltipster').tooltipster();
 
 	// setup initial card setup
-	if (CARDS && CARDS.length > 0) {
-		$.each(CARDS, function(card) {
-			addCard(card); // no effect
+	if (typeof CARDS !== "undefined" && CARDS.length > 0) {
+		$(CARDS).each(function() {
+			addCard(this);
 		});
 	}
 
 	$('#card-form').ajaxForm({
 		dataType: "json",
 		type: "post",
-		beforeSubmit: showRequest,
+		//beforeSubmit: showRequest,
 		success: function(data) {
 			if (data.error === true) {
 				alert(data.message);
@@ -128,15 +128,16 @@ function addCard(card, effect) {
 	
 	/**
 	 * card json: {"id":5, "hat": "Green", "content": "card content",
-	 * "user":"username"}
+	 * "username":"username"}
 	 */
 
 	var template = Handlebars.compile($('#card-template').html());
 	var compiled = template(card);
 
-	var markup = $(compiled).appendTo('#cards-list');
-	if (effect) markup.effect('highlight', {}, 1000);
+	$('#cards-list').append(compiled);
+	//if (effect) markup.effect('highlight', {}, 1000);
 	
 	// reset card content field
 	$('#content').val('');
+	$('#nocardsyet').remove();
 }

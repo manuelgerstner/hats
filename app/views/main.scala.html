@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, hat: Hat)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -33,15 +33,15 @@
 
 </head>
 
-<body>
+<body class="@hat.name.toLowerCase">
 
 <div class="container">
- 	<div class="row clearfix">
- 		<section class="col-md-12" id="topnav">
+ 	<div class="row">
+ 		<section id="topnav">
 			@topnav.render
 		</section>
 		
-		<main class="col-md-12" id="content">
+		<main id="content">
 			@content
 		</main>
 	</div>
