@@ -5,7 +5,22 @@ body {
     background-size: cover;
 }
 body.blue {
-	background: url('/assets/img/img_winter.jpg') no-repeat center center fixed;
+	background: url('/assets/img/blue.jpg') no-repeat center center fixed;
+}
+body.red {
+	background: url('/assets/img/red.jpg') no-repeat center center fixed;
+}
+body.yellow {
+	background: url('/assets/img/yellow.jpg') no-repeat center center fixed;
+}
+body.black {
+	background: url('/assets/img/black.jpg') no-repeat center center fixed;
+}
+body.green {
+	background: url('/assets/img/green.jpg') no-repeat center center fixed;
+}
+body.white {
+	background: url('/assets/img/white.jpg') no-repeat center center fixed;
 }
 /* analog for all other colors */
 
