@@ -1,91 +1,115 @@
 body {
-	background: url('/assets/img/img_winter.jpg') no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-    padding-top: 30px;
 }
-
-.configbox {
-	padding-bottom: 20px;
+body.blue {
+	background: url('/assets/img/blue.jpg') no-repeat center center fixed;
 }
+body.red {
+	background: url('/assets/img/red.jpg') no-repeat center center fixed;
+}
+body.yellow {
+	background: url('/assets/img/yellow.jpg') no-repeat center center fixed;
+}
+body.black {
+	background: url('/assets/img/black.jpg') no-repeat center center fixed;
+}
+body.green {
+	background: url('/assets/img/green.jpg') no-repeat center center fixed;
+}
+body.white {
+	background: url('/assets/img/white.jpg') no-repeat center center fixed;
+}
+/* analog for all other colors */
 
 .deactivation {
 	cursor: pointer;
 }
 
-div.card {
-	border: 1px solid #000;
-	/*position: absolute;*/
+#hat-cards {
+	padding-right: 0;
 }
-#cards-list {
-	position: relative;
-}
-#cards-list ul li {
-	list-style: none;
-	display: inline-block;
+#hat-feed {
 	margin: 0;
 }
 
-#hat {
-	/* generally how the card list should look, try and remember the mockup I drew on Monday */
-	
-	height: 600px;
-	width:1000px;
-	background-color: white;
-	-moz-border-radius: 15px;
-	border-radius: 15px;
-	background-color: rgba(255, 255, 255, 0.7);
-	
-	
-}
-#cards-create {
-	height: 100px;
-	width:250px;	
-	padding-left: 10px;
+#cards-list {
+	margin: 0;
+	padding: 0;
+	-webkit-column-count: 3;
+	-webkit-column-gap: 10px;
+	-webkit-column-fill: auto;
+	-moz-column-count: 3;
+	-moz-column-gap: 10px;
+	-moz-column-fill: auto;
+	column-count: 3;
+	column-gap: 15px;
+	column-fill: auto;
+	/*position: relative;*/
 }
 
-#card-add {
-	padding-left: 10px;
-}
-/* color specific styles below,
-	for example: blue hat would be nice with some clouds, green could be nature etc.
-*/
-#cards-list ul li .blue {
-	background-color: #66A9BF;	
-	font-family: "Arial", MS Trebuchet, sans-serif;	
-	font-size: 16px;	
-}
+/**
+ * Card colors:
+ * Cards are only colored when they're shown in their corresponding hat or when they
+ * are shown in the Blue hat. By default, cards will be white.
+ */
 
-#cards-list ul li .white {
-	background-color: #F3F5F4;
-	font-family: "Arial", MS Trebuchet, sans-serif;	
-	font-size: 16px;
+div.card {
+	display: inline-block;
+	background: #FEFEFE;
+	border-color: #FAFAFA;
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 5px;
+	box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
+	margin: 0 2px 15px;
+	-webkit-column-break-inside: avoid;
+	-moz-column-break-inside: avoid;
+	column-break-inside: avoid;
+	padding: 10px;
+	opacity: 0.5;
+	-webkit-transition: all .2s ease;
+	-moz-transition: all .2s ease;
+	-o-transition: all .2s ease;
+	transition: all .2s ease;
+	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* css-3 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	word-break: break-all;
+	white-space: normal;
 }
-
-#cards-list ul li .yellow {
-	background-color: #D9CD46;	
-	font-family: "Arial", MS Trebuchet, sans-serif;	
-	font-size: 16px;
+div.card:hover {
+	opacity: 1;
 }
-#cards-list ul li .green {
-	background-color: #1FA824;
-	font-family: "Arial", MS Trebuchet, sans-serif;	
-	font-size: 16px;
+#hat.blue div.card.blue {
+	background-color: #36bcec;
+	opacity: 1;
 }
-#cards-list ul li .black {
-	background-color: #1E212D;
-	font-family: "Arial", MS Trebuchet, sans-serif;	
-	font-size: 16px;
+#hat.blue div.card.white, #hat.white div.card.white {
+	background-color: #fff;
+	opacity: 1;
 }
-#cards-list ul li .red {
-	background-color: #F53A59;
-	font-family: "Arial", MS Trebuchet, sans-serif;	
-	font-size: 16px;
+#hat.blue div.card.yellow, #hat.yellow div.card.yellow {
+	background-color: #F0D850;
+	border-color: #dabd16;
+	opacity: 1;
 }
-
-#hat.red div.card:not(.hat-red) {
-	/* show only red cards in red hat */
-	display: none;
+#hat.blue div.card.green, #hat.green div.card.green {
+	background-color: #5cb847;
+	opacity: 1;
+}
+#hat.blue div.card.black, #hat.black div.card.black {
+	background-color: #051a1a;
+	color: white;
+	opacity: 1;
+}
+#hat.blue div.card.red, #hat.red div.card.red {
+	background-color: #c25e3d;
+	border-color: #994225;
+	color: white;
+	opacity: 1;
 }

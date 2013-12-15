@@ -1,4 +1,4 @@
-@(title: String)(content: Html)
+@(title: String, hat: Hat)(content: Html)
 
 <!DOCTYPE html>
 <html lang="en">
@@ -15,8 +15,8 @@
 	<link href="@routes.Assets.at("css/progress.css")" rel="stylesheet">
 	
 	
-	<!-- all styles specific to our app -->
-	<link href="@routes.Assets.at("css/style.css")" rel="stylesheet">	
+	<!-- all styles specific to our app, with timestamp to force refresh -->
+	<link href="@routes.Assets.at("css/style.css")?@System.currentTimeMillis" rel="stylesheet">	
 
     <link rel="shortcut icon" href="@routes.Assets.at("img/favicon.png")">
   
@@ -28,23 +28,23 @@
 	<script type="text/javascript" src="@routes.Assets.at("js/jquery.tooltipster.min.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/chardinjs.min.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tokenfield.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/scripts.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/accordion.js")"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/scripts.js")?@System.currentTimeMillis"></script>
 	<script	type="text/javascript" src="@routes.Assets.at("js/handler.js")"></script>
 
 </head>
 
-<body>
+<body class="@(if (hat != null) (hat.name.toLowerCase) else "")">
+
 <div class="container">
-
-	
-	
-
-	<div class="row clearfix">
-		<div class="col-md-12 column">
-				@content
-		</div>
+ 	<div class="row">
+ 		<section id="topnav">
+			@topnav.render
+		</section>
+		
+		<main id="content">
+			@content
+		</main>
 	</div>
-</div>
+</div
 </body>
 </html>
