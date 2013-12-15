@@ -1,6 +1,3 @@
-// change this variable depending on which hat is worn
-var HAT = 'white';
-
 // Contains progress outline data
 var PROGRESS_DATA = [];
 
@@ -43,6 +40,7 @@ function renderProgressOutline() {
 	for (var i=0;i<PROGRESS_DATA.length;i++){
         var bubble = PROGRESS_DATA[i];
         // Get color code for color, default green is too dark
+        // @manu: why don'y you use a map here? wouldn't that be more concise? - david
         switch (bubble.color) {
 		  case "white":
 		    colorCode = "#ffffff";
@@ -104,6 +102,22 @@ $(function() {
 		}
 	});
 
+	$('#indicate-ready').click(
+		function(){
+			jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
+				dataType: "json",
+				type: "post",
+				success: function(data) {
+					if (data.error === true) {
+						alert(data.message);
+						return;
+					}
+					moveTo(data.hat); 
+				}
+			});
+		}
+	)
+
 
 	$('.tooltipster').tooltipster();
 	$('#tokenfield').tokenfield();
@@ -120,6 +134,8 @@ $(function() {
 function moveTo(hat) {
 	// change hat class of div
 	$('#hat').removeClass(HAT).addClass(hat.toLowerCase());
+	$('#body').removeClass(HAT).addClass(hat.toLowerCase());
+	$('#form-hat').val(hat.toLowerCase());
 	// overwrite var
 	HAT = hat;
 }

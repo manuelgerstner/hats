@@ -19,7 +19,12 @@
 	<link href="@routes.Assets.at("css/style.css")?@System.currentTimeMillis" rel="stylesheet">	
 
     <link rel="shortcut icon" href="@routes.Assets.at("img/favicon.png")">
-  
+
+    <!-- 
+    The jsRoutes action let's you use the routes in JavaScript, caution: not all routes are available.
+    You can extend the available routes in Application.scala
+    -->
+  	<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/jquery.min.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/handlebar.1.1.2.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/jquery.form.min.js")"></script>
@@ -33,7 +38,8 @@
 
 </head>
 
-<body class="@(if (hat != null) (hat.name.toLowerCase) else "")">
+
+<body id="body" class="@(if (hat != null) (hat.name.toLowerCase) else "")">
 
 <div class="container">
  	<div class="row">

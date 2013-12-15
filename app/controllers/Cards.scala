@@ -53,12 +53,13 @@ object Cards extends Controller {
    */
   def deleteCard(id: Long, cardId: Long) = TODO
 
-  def restFormAddCard(sessionId: Long, hatId: Long) = Action { implicit request =>
+  def restFormAddCard(sessionId: Long) = Action { implicit request =>
     val formCard = cardForm.bindFromRequest.get
     val user = User.dummyUser1;
-    val cardId = Card.create(formCard, sessionId, user.id)
+    val hat = Hat.getByName(formCard.hat);
+    val cardId = Card.create(formCard.content, sessionId, hat.id, user.id);
     Ok(Json.obj("id" -> cardId,
-      "hat" -> Hat.getById(hatId).name.toLowerCase,
+      "hat" -> hat.name.toLowerCase,
       "content" -> formCard.content,
       "user" -> user.name)).as("application/json")
   }
