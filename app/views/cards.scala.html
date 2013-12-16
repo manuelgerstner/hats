@@ -12,6 +12,8 @@
 		
 	<script type="text/javascript">
 		var CARDS = @Html(Card.listToJson(cards).toString);
+		var SESSION_ID=@sessionId;
+		var HAT="@hat.name.toLowerCase";
 	</script>
 		
 			
@@ -22,17 +24,19 @@
 			<div id="hat-cards" class="col-md-9">
 			
 				<div id="card-create">
-					@helper.form(action = routes.Cards.restFormAddCard(sessionId,hat.id), 'class -> "form-horizontal", 'id -> "card-form") {
+					@helper.form(action = routes.Cards.restFormAddCard(sessionId), 'class -> "form-horizontal", 'id -> "card-form") {
 						<div class="form-group">
-							<input type="hidden" name="hat" id="hat" value="@hat.name.toLowerCase"/>
+							<input type="hidden" name="hat" id="form-hat" value="@hat.name.toLowerCase"/>
 						    <div class="col-xs-4">
 						    	<input type="text" class="form-control" name="content" id="content" placeholder="Add new Card"/>
 						    </div>
 							<button type="submit" class="btn btn-success">Add Card &raquo;</button>
+							<button type="button" class="btn btn-info pull-right" id="indicate-ready">Move to next Hat</button>
 							<!-- 
-								<button type="button" class="btn btn-info pull-right" id="indicate">Move to next Hat</button>
+								
 								<button type="button" class="btn btn-warning pull-right" id="finish">Finish Session</button>
 							 -->
+
 						</div>
 		            }
 				</div>

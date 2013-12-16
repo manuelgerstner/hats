@@ -3,7 +3,10 @@
 
 # Home page
 GET    /                                controllers.Application.index
-POST   /                                                                controllers.ThinkingSessions.saveConfig()
+POST   /                                controllers.ThinkingSessions.saveConfig()
+
+# JS Routes
+GET    /javascriptRoutes                controllers.Application.javascriptRoutes
 
 
 # Cards in a Sessions
@@ -21,9 +24,8 @@ POST   /:id/indicateReady               controllers.ThinkingSessions.indicateRea
 POST   /:id/closeSession                controllers.ThinkingSessions.closeSession(id: Long)
 
 # rest
-POST   /rest/:id/hat/:hatId/addCard          controllers.Cards.restFormAddCard(id:Long,hatId: Long)
-#POST   /rest/:id/hat/:hatId/addCard         controllers.Cards.restAddCard(id:Long,hatId: Long)
-POST   /rest/:id/forceChangeHat              controllers.ThinkingSessions.restChangeHat(id:Long)
+POST   /rest/:id/addCard          		controllers.Cards.restFormAddCard(id:Long)
+POST   /rest/:id/forceChangeHat         controllers.ThinkingSessions.restChangeHat(id:Long)
 
 
 

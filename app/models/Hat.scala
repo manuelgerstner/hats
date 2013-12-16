@@ -38,7 +38,7 @@ object Hat {
    * Retrieves a hat by its name
    */
   def getByName(name: String): Hat = {
-    all() filter ((hat: Hat) => hat.name == name) head
+    all() filter ((hat: Hat) => hat.name.toLowerCase == name.toLowerCase) head
   }
 
   /**
