@@ -30,6 +30,9 @@ body.white {
 .deactivation {
 	cursor: pointer;
 }
+.configuration-panel {
+	padding: 15px 0;
+}
 
 #hat-cards {
 	padding-right: 0;

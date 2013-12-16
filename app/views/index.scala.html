@@ -1,196 +1,198 @@
 @(message: String)
 
 @main("Six Thinking Hats", null) {
-	
-	<div class="jumbotron">
-		<div class="text-center">
-			<img src="assets/img/hats.png"/>
-		</div>
-		<p><button type="button" id="start-button" class="btn btn-primary btn-lg">Get started!</a></p>
+        
+        
+<div class="jumbotron" id="content">
+	<h1>@message</h1>
+	<p class="lead">Six Thinking Hats and the associated idea <em>parallel thinking</em> provide a means for groups to plan thinking processes in a detailed and cohesive way, and in doing so to think together more effectively.</p>
+	<div align="center">
+		<img src="assets/img/hats.png"/>
 	</div>
-	
-	<div id="control-panel" class="well hidden">
-	
-		<div class="panel-group" id="accordion">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<p><a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" data-position="right" class="btn btn-info btn-sm" role="button">
-							show
-						</a>
+	<p><a id="start-button" class="btn btn-primary btn-lg" role="button">Get started!</a></p>
+</div>
+
+<div id="control-panel" class="well hidden">
+	<h2>Control options:</h2>
+	<div class="lead">As the creator of a Thinking Hats session you have control over the full process. Adjust the following parameters according to your needs.</div>
+	<p><a data-intro="This virtual implementation of the Six Thinking hats process consists of six seperate rooms that require each participant to take on different roles." data-position="left" id="help-button" class="btn btn-primary" role="button">Help me with this!</a></p>
+	<div class="panel-group accordion">
+		<!-- First topic box -->
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#topicBox">
+						Topic
+					</a>
+				</h3>
+			</div>
+			<div id="topicBox" class="panel-collapse collapse in configuration-panel">
+				<div class="col-lg-12">
+					<input type="text" class="form-control"></input></br>
+					<p>
+						<a data-toggle="collapse" href="#configBox" id="moveToConfig-button" class="btn btn-primary" role="button">Move on!</a>
 					</p>
-				</h4>
-			</div>
-			<div id="collapseOne" class="panel-collapse collapse in">
-				<div class="panel-body">
-					<h2>Control options:</h2>
-					<div class="lead">
-						As the creator of a Thinking Hats session you have control over the full process. Adjust the following parameters according to your needs.
-					</div>
-					<p><a data-intro="This virtual implementation of the Six Thinking hats process consists of six seperate rooms that require each participant to take on different roles." data-position="left" id="help-button" class="btn btn-primary btn-lg" role="button">Help me with this!</a></p>
 				</div>
 			</div>
 		</div>
-		<div class="panel panel-default">
+		<!-- Second config box -->
+		<div id="config-panel" class="panel panel-default">
 			<div class="panel-heading">
-				<h4 class="panel-title">
-					<p><a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"  data-position="right" class="btn btn-info btn-sm" role="button"> show</a></p> 
-				</h4>
+				<h3 class="panel-title">
+					<a data-toggle="collapse" data-parent="#accordion" href="#configBox">
+						Configuration
+					</a>
+				</h3>
 			</div>
-			<div id="collapseTwo" class="panel-collapse collapse">
-				<div class="panel-body">
-					<div class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>Presets</h3>
-						</div>
-						<div class="col-lg-4">
-							<select class="form-control" data-intro="We have created some tried and true presets for you to use, to get you started right away." data-position="right">
-								<option value="bono">Total De Bono</option>
-								<option value="disney">Walt Disney Allstars</option>
-							</select>
-						</div>
+			<div id="configBox" class="panel-collapse collapse configuration-panel">
+				<div class="col-lg-12">
+					<h3>Presets</h3>
+				</div>
+				<div class="col-lg-8">
+					<select class="form-control" data-intro="We have created some tried and true presets for you to use, to get you started right away." data-position="right">
+						<option value="bono">Total De Bono</option>
+						<option value="disney">Walt Disney Allstars</option>
+					</select>
+				</div>
+				<!-- White hat -->
+				<div id="white-hat" class="col-lg-8">
+					<h3>White hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>                       
+					<div class="col-lg-6">
+						<div class="input-group">                                      
+							<span class="input-group-addon">Hat time:</span>
+							<input type="number" class="form-control" name="whHatt">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
 					</div>
-					<div id="white-hat" class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>White hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>
-						</div>			
-						<div class="col-lg-4">
-							<div class="input-group">		      		
-								<span class="input-group-addon">Hat time:</span>
-								<input type="number" class="form-control" name="whHatt">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-						<div class="col-lg-4">
-							<div class="input-group">
-								<span class="input-group-addon">Alone time:</span>
-								<input type="number" class="form-control" name="whAlonet">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-					</div>
-					<div id="yellow-hat" class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>Yellow hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>
-						</div>			
-						<div class="col-lg-4">
-							<div class="input-group">		      		
-								<span class="input-group-addon">Hat time:</span>
-								<input type="number" class="form-control" name="yeHatt">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-						<div class="col-lg-4">
-							<div class="input-group">
-								<span class="input-group-addon">Alone time:</span>
-								<input type="number" class="form-control" name="yeAlonet">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-					</div>
-					<div id="red-hat" class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>Red hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>
-						</div>			
-						<div class="col-lg-4">
-							<div class="input-group" data-intro="You can adjust the maximum time spent in each room manually. If all participants agree, you can continue to the next room before the timeout." data-position="right">		      		
-								<span class="input-group-addon">Hat time:</span>
-								<input type="number" class="form-control" name="reHatt">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-						<div class="col-lg-4">
-							<div class="input-group">
-								<span class="input-group-addon">Alone time:</span>
-								<input type="number" class="form-control" name="reAlonet">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-					</div>
-					<div id="green-hat" class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>Green hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>
-						</div>
-						<div class="col-lg-4">
-							<div class="input-group">		      		
-								<span class="input-group-addon">Hat time:</span>
-								<input type="number" class="form-control" name="grHatt">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-						<div class="col-lg-4">
-							<div class="input-group">
-								<span class="input-group-addon">Alone time:</span>
-								<input type="number" class="form-control" name="grAlonet">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-					</div>
-					<div id="black-hat" class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>Black hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>
-						</div>			
-						<div class="col-lg-4">
-							<div class="input-group">		      		
-								<span class="input-group-addon">Hat time:</span>
-								<input type="number" class="form-control" name="blHatt">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-						<div class="col-lg-4">
-							<div class="input-group" data-intro="The alone time defines the period during which all participants are not seeing anyone elses ideas." data-position="left">
-								<span class="input-group-addon">Alone time:</span>
-								<input type="number" class="form-control" name="blAlonet">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-					</div>
-					<div id="blue-hat" class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>Blue hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>
-						</div>			
-						<div class="col-lg-4">
-							<div class="input-group">		      		
-								<span class="input-group-addon">Hat time:</span>
-								<input type="number" class="form-control" name="bluHatt">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
-						<div class="col-lg-4">
-							<div class="input-group">
-								<span class="input-group-addon">Alone time:</span>
-								<input type="number" class="form-control" name="bluAlonet">
-								<span class="input-group-addon">minutes</span>
-							</div><!-- /input-group -->
-						</div>
+					<div class="col-lg-6">
+						<div class="input-group">
+							<span class="input-group-addon">Alone time:</span>
+							<input type="number" class="form-control" name="whAlonet">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
 					</div>
 				</div>
+				<!-- Red hat -->
+				<div id="red-hat" class="col-lg-8">
+					<h3>Red hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>                       
+					<div class="col-lg-6">
+						<div class="input-group">                                      
+							<span class="input-group-addon">Hat time:</span>
+							<input type="number" class="form-control" name="whHatt">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="col-lg-6">
+						<div class="input-group">
+							<span class="input-group-addon">Alone time:</span>
+							<input type="number" class="form-control" name="whAlonet">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+				</div>
+				<!-- Yellow hat -->
+				<div id="yellow-hat" class="col-lg-8">
+					<h3>Yellow hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>                       
+					<div class="col-lg-6">
+						<div class="input-group">                                      
+							<span class="input-group-addon">Hat time:</span>
+							<input type="number" class="form-control" name="whHatt">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="col-lg-6">
+						<div class="input-group">
+							<span class="input-group-addon">Alone time:</span>
+							<input type="number" class="form-control" name="whAlonet">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+				</div>
+				<!-- Black hat -->
+				<div id="black-hat" class="col-lg-8">
+					<h3>Black hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>                       
+					<div class="col-lg-6">
+						<div class="input-group">                                      
+							<span class="input-group-addon">Hat time:</span>
+							<input type="number" class="form-control" name="whHatt">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="col-lg-6">
+						<div class="input-group">
+							<span class="input-group-addon">Alone time:</span>
+							<input type="number" class="form-control" name="whAlonet">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+				</div>
+				<!-- Green hat -->
+				<div id="greeen-hat" class="col-lg-8">
+					<h3>Green hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>                       
+					<div class="col-lg-6">
+						<div class="input-group">                                      
+							<span class="input-group-addon">Hat time:</span>
+							<input type="number" class="form-control" name="whHatt">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="col-lg-6">
+						<div class="input-group">
+							<span class="input-group-addon">Alone time:</span>
+							<input type="number" class="form-control" name="whAlonet">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+				</div>
+				<!-- Blue hat -->
+				<div id="blue-hat" class="col-lg-8">
+					<h3>Blue hat <span class="glyphicon glyphicon-remove deactivation"></span></h3>                       
+					<div class="col-lg-6">
+						<div class="input-group">                                      
+							<span class="input-group-addon">Hat time:</span>
+							<input type="number" class="form-control" name="whHatt">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+					<div class="col-lg-6">
+						<div class="input-group">
+							<span class="input-group-addon">Alone time:</span>
+							<input type="number" class="form-control" name="whAlonet">
+							<span class="input-group-addon">minutes</span>
+						</div><!-- /input-group -->
+					</div>
+				</div>
+				<div class="col-lg-8">
+				</br>
+				<a data-toggle="collapse" href="#inviteBox" id="moveToInvite-button" class="btn btn-primary" role="button">Move on!</a>
 			</div>
 		</div>
-	
-		<div class="panel panel-default">
-			<div class="panel-heading">
-				<h4 class="panel-title">
-					<p><a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" data-position="right" class="btn btn-info btn-sm" role="button">
-						show
-					</a></p>
-				</h4>
+	</div>                        
+	<!-- Fourth invite box -->
+	<div id="invite-panel" class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">
+				<a data-toggle="collapse" data-parent="#accordion" href="#inviteBox">
+					Invite Others
+				</a>
+			</h3>
+		</div>
+		<div id="inviteBox" class="panel-collapse collapse configuration-panel">
+			<div class="col-lg-12">
+				<h3>Participants to invite by mail</h3>
+				Add people by adding their email address. Hit enter or use ',' to separate!
+			</div>                
+
+			<div class="col-lg-8">
+				<input class="form-control" type="text" id="tokenfield"></br>
 			</div>
-			<div id="collapseThree" class="panel-collapse collapse">
-				<div class="panel-body">
-					<div class="row panel panel-default configbox">
-						<div class="col-lg-12">
-							<h3>Participants to invite by mail</h3>
-							Add people by adding their email address. Hit enter or use ',' to separate!
-						</div>		
-						<div class="col-lg-8">
-							<input class="form-control" type="text" id="tokenfield">
-						</div>
-					</div>
-				</br></br>	
-				<p><a href="/1" id="start-button" data-intro="After choosing one of the predefined templates or setting up your own one, you can get started right away by clicking on this button!" data-position="left" class="btn btn-primary btn-lg" role="button">Initiate session!</a></p>
+			<div class="col-lg-8">
+				<a href="/1" id="start-button" data-intro="After choosing one of the predefined templates or setting up your own one, you can get started right away by clicking on this button!" data-position="left" class="btn btn-primary" role="button">Initiate session!</a>
 			</div>
 		</div>
 	</div>
+</div>
+
+</div>
 
 }

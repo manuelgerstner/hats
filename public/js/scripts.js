@@ -65,6 +65,14 @@ $(function() {
 
 	$('.tooltipster').tooltipster();
 	$('#tokenfield').tokenfield();
+	
+	$('#moveToConfig-button').click(function() {
+        $("#config-panel").scrollView();
+	});
+	$('#moveToInvite-button').click(function() {
+	        $("#invite-panel").scrollView();
+	});
+	
 	$('#start-button').click(function() {
 		$('#control-panel').removeClass('hidden');
 		$("#control-panel").scrollView();
