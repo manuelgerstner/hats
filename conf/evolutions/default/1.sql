@@ -35,11 +35,14 @@ CREATE TABLE card (
   
 -- preload hat table with the 6 hats
 INSERT INTO hat VALUES (1,'White');
-INSERT INTO hat VALUES (2,'Green');
+INSERT INTO hat VALUES (2,'Red');
 INSERT INTO hat VALUES (3,'Yellow');
-INSERT INTO hat VALUES (4,'Red');
-INSERT INTO hat VALUES (5,'Black');
+INSERT INTO hat VALUES (4,'Black');
+INSERT INTO hat VALUES (5,'Green');
 INSERT INTO hat VALUES (6,'Blue');
+
+
+
 
 
 -- preload user table with the developer dummies
