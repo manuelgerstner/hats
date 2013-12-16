@@ -53,6 +53,16 @@ $(function() {
 		}
 	)
 
+	$('#cards-list div.card').draggable({
+		containment: "#cards-list",
+		cursor: "move",
+		stack: '.draggable',
+		start: function() {
+			$(this).siblings().css("z-index", 50);
+			$(this).css("z-index", 100);
+		}
+	});
+
 
 	$('.tooltipster').tooltipster();
 	$('#tokenfield').tokenfield();
@@ -71,6 +81,16 @@ function moveTo(hat) {
 	$('#hat').removeClass(HAT).addClass(hat.toLowerCase());
 	$('body').removeClass(HAT).addClass(hat.toLowerCase());
 	$('#form-hat').val(hat.toLowerCase());
+	
+	// TODO: introduce constants
+	if (hat === "blue") {
+		//console.log("enabling drag");
+		$('#cards-list div.card').addClass('draggable').draggable('enable');
+	} else {
+		console.log("disabling drag");
+		$('#cards-list div.card').removeClass('draggable').draggable('disable');
+	}
+	
 	// overwrite var
 	HAT = hat;
 }
