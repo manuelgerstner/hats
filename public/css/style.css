@@ -3,24 +3,27 @@ body {
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
 }
 body.blue {
-	background: url('/assets/img/blue.jpg') no-repeat center center fixed;
+	background-image: url('/assets/img/blue.jpg');
 }
 body.red {
-	background: url('/assets/img/red.jpg') no-repeat center center fixed;
+	background-image: url('/assets/img/red.jpg');
 }
 body.yellow {
-	background: url('/assets/img/yellow.jpg') no-repeat center center fixed;
+	background-image: url('/assets/img/yellow.jpg');
 }
 body.black {
-	background: url('/assets/img/black.jpg') no-repeat center center fixed;
+	background-image: url('/assets/img/black.jpg');
 }
 body.green {
-	background: url('/assets/img/green.jpg') no-repeat center center fixed;
+	background-image: url('/assets/img/green.jpg');
 }
 body.white {
-	background: url('/assets/img/white.jpg') no-repeat center center fixed;
+	background-image: url('/assets/img/white.jpg');
 }
 /* analog for all other colors */
 
@@ -35,6 +38,9 @@ body.white {
 	margin: 0;
 }
 
+#card-create {
+	padding-right: 15px;
+}
 #cards-list {
 	margin: 0;
 	padding: 0;

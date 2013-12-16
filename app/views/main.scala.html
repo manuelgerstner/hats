@@ -34,12 +34,12 @@
 	<script type="text/javascript" src="@routes.Assets.at("js/chardinjs.min.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tokenfield.min.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/scripts.js")?@System.currentTimeMillis"></script>
-	<script	type="text/javascript" src="@routes.Assets.at("js/handler.js")"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")?@System.currentTimeMillis"></script>
 
 </head>
 
 
-<body id="body" class="@(if (hat != null) (hat.name.toLowerCase) else "")">
+<body class="@(if (hat != null) (hat.name.toLowerCase) else "")">
 
 <div class="container">
  	<div class="row">
@@ -47,7 +47,7 @@
 			@topnav.render
 		</section>
 		
-		<main id="content">
+		<main>
 			@content
 		</main>
 	</div>
