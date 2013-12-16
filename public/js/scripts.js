@@ -10,6 +10,9 @@ $.fn.scrollView = function() {
 
 $(function() {
 
+	// only show first hat
+	$('circle:not(.' + HAT + ')').hide();
+	
 	var progressBar = new ProgressBar('#progressBar');
 	
 	// initialize tooltips
@@ -47,7 +50,8 @@ $(function() {
 						alert(data.message);
 						return;
 					}
-					moveTo(data.hat); 
+					moveTo(data.hat);
+					$('circle.' + data.hat).show();
 				}
 			});
 		}

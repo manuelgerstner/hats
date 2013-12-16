@@ -10,6 +10,7 @@
  * @bubbles (optional) - initial bubbles to be set up with custom counts
  */
 function ProgressBar(container, bubbles) {
+	this.iterations = {};
 	this.factor = 5;
 	this.container = container;
 	this.bubbles = bubbles || {
