@@ -46,10 +46,10 @@ INSERT INTO hat VALUES (6,'Blue');
 
 
 -- preload user table with the developer dummies
-INSERT INTO user VALUES (1,'Anamika');
+INSERT INTO user VALUES (1,'David');
 INSERT INTO user VALUES (2,'Manu');
 INSERT INTO user VALUES (3,'Dom');
-INSERT INTO user VALUES (4,'David');
+INSERT INTO user VALUES (4,'Anamika');
 
 
 INSERT INTO thinking_session VALUES (1, 1, 'Birthday Present for Manu', 1);

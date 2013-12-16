@@ -11,7 +11,7 @@
  */
 function ProgressBar(container, bubbles) {
 	this.iterations = {};
-	this.factor = 5;
+	this.factor = 3;
 	this.container = container;
 	this.bubbles = bubbles || {
 		// todo: use maps in the future to hold actual bubbles
@@ -47,7 +47,7 @@ ProgressBar.prototype.render = function() {
 		if (count > 0) {
 			var circle = $(self.container).find('circle.' + hat);
 			//console.log("current size %d", circle.attr("r"));
-			circle.attr('r', count * self.factor);
+			circle.attr('r', (5 + count * self.factor));
 		}
 	}
 };

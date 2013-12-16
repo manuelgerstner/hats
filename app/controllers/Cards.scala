@@ -1,14 +1,19 @@
 package controllers
 
-import play.api._
-import play.api.mvc.Controller
-import play.api.mvc._
-import play.api.data.Form
-import play.api.data.Forms._
-import play.api.libs.json._
-import controllers._
-import models._
+import models.Card
+import models.Hat
+import models.User
 import models.forms.FormCard
+import play.api.Logger
+import play.api.data.Form
+import play.api.data.Forms.mapping
+import play.api.data.Forms.nonEmptyText
+import play.api.libs.json.JsObject
+import play.api.libs.json.JsString
+import play.api.libs.json.Json
+import play.api.libs.json.Json.toJsFieldJsValueWrapper
+import play.api.mvc.Action
+import play.api.mvc.Controller
 
 /**
  * Card Controller responsible for handling CRUD operations on ideas/cards (will be treated as synonyms,
@@ -61,7 +66,7 @@ object Cards extends Controller {
     Ok(Json.obj("id" -> cardId,
       "hat" -> hat.name.toLowerCase,
       "content" -> formCard.content,
-      "user" -> user.name)).as("application/json")
+      "username" -> user.name)).as("application/json")
   }
 
   def restJsonAddCard(sessionId: Long, hatId: Long) = Action(parse.json) { implicit request =>
@@ -85,9 +90,7 @@ object Cards extends Controller {
                       "id" -> cardId,
                       "hat" -> hat.name,
                       "content" -> content,
-                      "user" -> user.name
-                    )
-                  )
+                      "user" -> user.name))
                   // Return reponse with 200 (OK) status and JSON body
                   Ok(Json.obj("content" -> json)).as("application/json")
 
