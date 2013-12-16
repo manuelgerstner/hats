@@ -11,11 +11,12 @@ $.fn.scrollView = function() {
 $(function() {
 
 	// only show first hat
-	$('circle:not(.' + HAT + ')').hide();
+	if (typeof HAT !== "undefined") {
+		$('circle:not(.' + HAT + ')').hide();
+	}
 	
 	var progressBar = new ProgressBar('#progressBar');
 	
-	makeDraggable();
 	
 	// initialize tooltips
 	$('.tooltipster').tooltipster();
@@ -26,8 +27,12 @@ $(function() {
 			addCard(this);
 			progressBar.add(this);
 		});
+		
+		// initial drag
+		makeDraggable();
 	}
 
+	
 	$('#card-form').ajaxForm({
 		dataType: "json",
 		type: "post",
@@ -42,22 +47,20 @@ $(function() {
 		}
 	});
 
-	$('#indicate-ready').click(
-		function(){
-			jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
-				dataType: "json",
-				type: "post",
-				success: function(data) {
-					if (data.error === true) {
-						alert(data.message);
-						return;
-					}
-					$('circle.' + data.hat).show();
-					moveTo(data.hat);
+	$('#indicate-ready').click(function(){
+		jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
+			dataType: "json",
+			type: "post",
+			success: function(data) {
+				if (data.error === true) {
+					alert(data.message);
+					return;
 				}
-			});
-		}
-	)
+				$('circle.' + data.hat).show();
+				moveTo(data.hat);
+			}
+		});
+	});
 
 
 	$('.tooltipster').tooltipster();
@@ -82,6 +85,12 @@ function makeDraggable() {
 			$(this).css("z-index", 100);
 		}
 	});
+	
+	if (HAT !== "blue") {
+		$('#cards-list div.card').draggable('disable');
+	} else {
+		$('#cards-list div.card').draggable('enable');
+	}
 }
 
 function moveTo(hat) {
@@ -90,17 +99,9 @@ function moveTo(hat) {
 	$('body').removeClass().addClass(hat.toLowerCase());
 	$('#form-hat').val(hat.toLowerCase());
 	
-	// TODO: introduce constants
-	if (hat === "blue") {
-		//console.log("enabling drag");
-		$('#cards-list div.card').draggable('enable');
-	} else {
-		console.log("disabling drag");
-		$('#cards-list div.card').draggable('disable');
-	}
-	
-	// overwrite var
 	HAT = hat.toLowerCase();
+
+	makeDraggable();
 }
 
 function addCard(card, effect) {
@@ -114,8 +115,7 @@ function addCard(card, effect) {
 	var compiled = template(card);
 
 	$('#cards-list').append(compiled);
-	
-	makeDraggable();
+
 	//if (effect) markup.effect('highlight', {}, 1000);
 	
 	// reset card content field

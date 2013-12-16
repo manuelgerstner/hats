@@ -90,6 +90,13 @@ div.card {
 div.card:hover {
 	opacity: 1;
 }
+div.card.draggable {
+	cursor: move;
+}
+div.card span.name {
+	font-weight: bold;
+	font-style: italic;
+}
 #hat.blue div.card.blue {
 	background-color: #36bcec;
 	border-color: blue;
