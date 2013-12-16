@@ -15,6 +15,8 @@ $(function() {
 	
 	var progressBar = new ProgressBar('#progressBar');
 	
+	makeDraggable();
+	
 	// initialize tooltips
 	$('.tooltipster').tooltipster();
 
@@ -50,22 +52,12 @@ $(function() {
 						alert(data.message);
 						return;
 					}
-					moveTo(data.hat);
 					$('circle.' + data.hat).show();
+					moveTo(data.hat);
 				}
 			});
 		}
 	)
-
-	$('#cards-list div.card').draggable({
-		containment: "#cards-list",
-		cursor: "move",
-		stack: '.draggable',
-		start: function() {
-			$(this).siblings().css("z-index", 50);
-			$(this).css("z-index", 100);
-		}
-	});
 
 
 	$('.tooltipster').tooltipster();
@@ -80,23 +72,35 @@ $(function() {
 	
 });
 
+function makeDraggable() {
+	$('#cards-list div.card').draggable({
+		containment: "#cards-list",
+		cursor: "move",
+		stack: '.draggable',
+		start: function() {
+			$(this).siblings().css("z-index", 50);
+			$(this).css("z-index", 100);
+		}
+	});
+}
+
 function moveTo(hat) {
 	// change hat class of div
-	$('#hat').removeClass(HAT).addClass(hat.toLowerCase());
-	$('body').removeClass(HAT).addClass(hat.toLowerCase());
+	$('#hat').removeClass().addClass(hat.toLowerCase());
+	$('body').removeClass().addClass(hat.toLowerCase());
 	$('#form-hat').val(hat.toLowerCase());
 	
 	// TODO: introduce constants
 	if (hat === "blue") {
 		//console.log("enabling drag");
-		$('#cards-list div.card').addClass('draggable').draggable('enable');
+		$('#cards-list div.card').draggable('enable');
 	} else {
 		console.log("disabling drag");
-		$('#cards-list div.card').removeClass('draggable').draggable('disable');
+		$('#cards-list div.card').draggable('disable');
 	}
 	
 	// overwrite var
-	HAT = hat;
+	HAT = hat.toLowerCase();
 }
 
 function addCard(card, effect) {
@@ -110,6 +114,8 @@ function addCard(card, effect) {
 	var compiled = template(card);
 
 	$('#cards-list').append(compiled);
+	
+	makeDraggable();
 	//if (effect) markup.effect('highlight', {}, 1000);
 	
 	// reset card content field

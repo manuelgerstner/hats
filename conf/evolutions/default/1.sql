@@ -52,7 +52,7 @@ INSERT INTO user VALUES (3,'Dom');
 INSERT INTO user VALUES (4,'David');
 
 
-INSERT INTO thinking_session VALUES (1, 1, 'Manus Birthday Present', 6);
+INSERT INTO thinking_session VALUES (1, 1, 'Birthday Present for Manu', 1);
 
 
 

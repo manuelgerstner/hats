@@ -92,6 +92,7 @@ div.card:hover {
 }
 #hat.blue div.card.blue {
 	background-color: #36bcec;
+	border-color: blue;
 	opacity: 1;
 }
 #hat.blue div.card.white, #hat.white div.card.white {
