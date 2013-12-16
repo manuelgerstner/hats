@@ -33,7 +33,9 @@ For a clean and proper collaboration the following workflow is used:
 * For every feature (or feature group) you create a branch based on the current `develop` (i.e. your `develop` branch based on the most recent `upstream/development` branch). If necessary `pull`, `fetch` & `merge` or `rebase` your `develop` on `upstream/develop` before you create the new feature branch
 * When a branch is ready to be merged you `fetch upstream/develop` and `rebase` your branch on it and then create a pull request. If there are conflicts **you** have to solve them before creating the pull request to `upstream/develop`
 
-If you care why we decided to do it like this refer to [here for branching patterns](https://blogs.atlassian.com/2013/05/git-branching-and-forking-in-the-enterprise-why-fork/) and [here for no-ff](http://www.relativesanity.com/articles/ffwd)
+If you care why we decided to do it like this refer to [here for branching patterns](https://blogs.atlassian.com/2013/05/git-branching-and-forking-in-the-enterprise-why-fork/) and [here for no-ff](http://www.relativesanity.com/articles/ffwd).
+
+For more detailed instructions see GitTutorial.md
 
 ###Commits
 
@@ -51,5 +53,4 @@ Gives info about branching pattern, fork behaviour
 and git settings and commit messages
 ```
 
-Using this pattern will make the overall log is very readable and it is easy to automate the change log creation
-
+Using this pattern will make the overall log is very readable and it is easy to automate the change log creation.

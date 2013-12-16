@@ -1,1 +1,131 @@
-/* custom styles */
+body {
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-attachment: fixed;
+}
+body.blue {
+	background-image: url('/assets/img/blue.jpg');
+}
+body.red {
+	background-image: url('/assets/img/red.jpg');
+}
+body.yellow {
+	background-image: url('/assets/img/yellow.jpg');
+}
+body.black {
+	background-image: url('/assets/img/black.jpg');
+}
+body.green {
+	background-image: url('/assets/img/green.jpg');
+}
+body.white {
+	background-image: url('/assets/img/white.jpg');
+}
+/* analog for all other colors */
+
+.deactivation {
+	cursor: pointer;
+}
+.configuration-panel {
+	padding: 15px 0;
+}
+
+#hat-cards {
+	padding-right: 0;
+}
+#hat-feed {
+	margin: 0;
+}
+
+#card-create {
+	padding-right: 15px;
+}
+#cards-list {
+	margin: 0;
+	padding: 0;
+	-webkit-column-count: 1;
+	-webkit-column-gap: 10px;
+	-webkit-column-fill: auto;
+	-moz-column-count: 3;
+	-moz-column-gap: 10px;
+	-moz-column-fill: auto;
+	column-count: 3;
+	column-gap: 15px;
+	column-fill: auto;
+	/*position: relative;*/
+}
+/**
+ * Card colors:
+ * Cards are only colored when they're shown in their corresponding hat or when they
+ * are shown in the Blue hat. By default, cards will be white.
+ */
+
+div.card {
+	display: inline-block;
+	background: #FEFEFE;
+	border-color: #FAFAFA;
+	border-width: 2px;
+	border-style: solid;
+	border-radius: 5px;
+	box-shadow: 0 1px 2px rgba(34, 25, 25, 0.4);
+	margin: 0 2px 15px;
+	-webkit-column-break-inside: avoid;
+	-moz-column-break-inside: avoid;
+	column-break-inside: avoid;
+	padding: 10px;
+	opacity: 0.3;
+	-webkit-transition: all .2s ease;
+	-moz-transition: all .2s ease;
+	-o-transition: all .2s ease;
+	transition: all .2s ease;
+	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+	white-space: -pre-wrap;      /* Opera 4-6 */
+	white-space: -o-pre-wrap;    /* Opera 7 */
+	white-space: pre-wrap;       /* css-3 */
+	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	word-break: break-all;
+	white-space: normal;
+}
+div.card:hover {
+	opacity: 1;
+}
+div.card.draggable {
+	cursor: move;
+}
+div.card span.name {
+	font-weight: bold;
+	font-style: italic;
+}
+#hat.blue div.card.blue {
+	background-color: #36bcec;
+	border-color: blue;
+	opacity: 1;
+}
+#hat.blue div.card.white, #hat.white div.card.white {
+	background-color: #fff;
+	opacity: 1;
+}
+#hat.blue div.card.yellow, #hat.yellow div.card.yellow {
+	background-color: #F0D850;
+	border-color: #dabd16;
+	opacity: 1;
+}
+#hat.blue div.card.green, #hat.green div.card.green {
+	background-color: #5cb847;
+	opacity: 1;
+}
+#hat.blue div.card.black, #hat.black div.card.black {
+	background-color: #051a1a;
+	color: white;
+	opacity: 1;
+}
+#hat.blue div.card.red, #hat.red div.card.red {
+	background-color: #c25e3d;
+	border-color: #994225;
+	color: white;
+	opacity: 1;
+}
