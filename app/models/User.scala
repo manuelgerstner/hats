@@ -78,25 +78,25 @@ object User {
    * some dummy users for dev purposes
    */
   def dummyUser1(): User = {
-    all() head
+    all().head
   }
 
   def dummyUser1Id: Long = 1
 
   def dummyUser2(): User = {
-    (all() tail) head
+    all().tail.head
   }
 
   def dummyUser2Id: Long = 2
 
   def dummyUser3(): User = {
-    ((all() tail) tail) head
+    all().tail.tail.head
   }
 
   def dummyUser3Id: Long = 3
 
   def dummyUser4(): User = {
-    (((all() tail) tail) tail) head
+    all().tail.tail.tail.head
   }
 
   def dummyUser4Id: Long = 4

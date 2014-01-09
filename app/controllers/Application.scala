@@ -1,5 +1,6 @@
 package controllers
 
+import controllers.ThinkingSessions.sessionConfigForm
 import play.api._
 import play.api.mvc._
 
@@ -16,7 +17,7 @@ object Application extends Controller {
    */
   def index = Action {
     Logger.debug("Application.index")
-    Ok(views.html.index("Six Thinking Hats"))
+    Ok(views.html.index("Six Thinking Hats", sessionConfigForm))
   }
 
   def javascriptRoutes = Action { implicit request =>

@@ -41,8 +41,8 @@ object Cards extends Controller {
    */
   def addCard(thinkingSessionId: Long) = Action { implicit request =>
     Logger.debug("Cards.addCard")
-    val formCard = cardForm.bindFromRequest.get
-    val cardId = Card.create(formCard, thinkingSessionId, User.dummyUser1Id)
+    val form = cardForm.bindFromRequest.get
+    val cardId = Card.create(form, thinkingSessionId, User.dummyUser1Id)
     Redirect(routes.ThinkingSessions.index(thinkingSessionId))
   }
 

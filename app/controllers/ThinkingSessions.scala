@@ -6,9 +6,9 @@ import play.api.mvc._
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json._
+
 import models._
 import controllers._
-import models.forms.FormConfig
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -51,32 +51,37 @@ object ThinkingSessions extends Controller {
   /*
    * val to initiate session
    */
-  val configSaveForm = Form(
+  val sessionConfigForm: Form[SessionConfig] = Form(
     mapping(
-      "whHatt" -> nonEmptyText,
-      "whAlonet" -> nonEmptyText,
-      "yeHatt" -> nonEmptyText,
-      "yeAlonet" -> nonEmptyText,
-      "reHatt" -> nonEmptyText,
-      "reAlonet" -> nonEmptyText,
-      "grHatt" -> nonEmptyText,
-      "grAlonet" -> nonEmptyText,
-      "blHatt" -> nonEmptyText,
-      "blAlonet" -> nonEmptyText,
-      "bluHatt" -> nonEmptyText,
-      "bluAlonet" -> nonEmptyText
-    )(FormConfig.apply)(FormConfig.unapply))
+      "topic" -> nonEmptyText,
+      "whiteTimeLimit" -> optional(number),
+      "whiteAloneTime" -> optional(number),
+      "yellowTimeLimit" -> optional(number),
+      "yeellowAloneTime" -> optional(number),
+      "redTimeLimit" -> optional(number),
+      "redAloneTime" -> optional(number),
+      "greenTimeLimit" -> optional(number),
+      "greenAloneTime" -> optional(number),
+      "blueTimeLimit" -> optional(number),
+      "blueAloneTime" -> optional(number),
+      "blackTimeLimit" -> optional(number),
+      "blackAloneTime" -> optional(number),
+      "mailAddresses" -> text
+    )(SessionConfig.apply)(SessionConfig.unapply))
+
   /*
    * Save the configuration for hats
    * 
    */
-  def saveConfig() = Action { implicit request =>
-    val formConfig = configSaveForm.bindFromRequest.get
+  def createSession() = Action { implicit request =>
 
-    // crate new session
-    val sessionId = 1;
-    Redirect(routes.ThinkingSessions.index(sessionId))
+    val form = sessionConfigForm.bindFromRequest.get;
 
+    // TODO
+    // - identify user
+    // - create session
+    // - persist hatFlow
+    Redirect(routes.ThinkingSessions.index(1))
   }
 
   /**
@@ -89,15 +94,6 @@ object ThinkingSessions extends Controller {
     val nextHatId = HatFlow.getNextDefaultHatId(session)
     ThinkingSession.changeHatTo(sessionId, nextHatId)
     val nextHat = Hat.getById(nextHatId)
-    //    val json = Json.obj(
-    //      "status" -> 200,
-    //      "fn" -> "changeHat",
-    //      "args" -> Json.obj(
-    //        "user" -> user.name,
-    //        "thinkingSession" -> sessionId,
-    //        "hat" -> nextHat.name
-    //      )
-    //    )
     Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
   }
 
