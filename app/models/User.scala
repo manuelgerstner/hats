@@ -3,6 +3,7 @@ package models
 import play.api.db.DB
 import play.api.db._
 import play.api.Logger
+import play.api.mvc.Cookie
 
 import play.api.Play.current
 import anorm._
@@ -20,6 +21,8 @@ import anorm.SqlParser._
 case class User(id: Long, name: String)
 
 object User {
+
+  val idCookie = "hatUser";
 
   /**
    * ORM simple
@@ -43,11 +46,14 @@ object User {
   /**
    * Find a user by id
    */
-  def getById(id: Long): User = {
+  def byId(id: Long): Option[User] = {
     DB.withConnection { implicit connection =>
       SQL("select * from user where id = {id}").on(
         'id -> id
-      ).as(User.simple *) head
+      ).as(User.simple *) match {
+          case x :: _ => Some(x)
+          case Nil    => None
+        }
     }
   }
 
@@ -55,12 +61,15 @@ object User {
    * Create a new user by a name.
    * This will NOT return the created User!
    */
-  def create(name: String) = {
+  def create(name: String): Long = {
+    val id: Int = (name + System.currentTimeMillis).hashCode
     DB.withConnection { implicit connection =>
-      SQL("insert into user (name) values ({name})").on(
+      SQL("insert into user (id,name) values ({id},{name})").on(
+        'id -> id,
         'name -> name
       ).executeUpdate()
     }
+    id
   }
 
   /**
@@ -74,30 +83,19 @@ object User {
     }
   }
 
+  def byCookie(cookie: Cookie): Option[User] = {
+    byId(java.lang.Long.parseLong(cookie.value))
+  }
+
   /**
    * some dummy users for dev purposes
    */
-  def dummyUser1(): User = {
-    all() head
-  }
-
-  def dummyUser1Id: Long = 1
-
-  def dummyUser2(): User = {
-    (all() tail) head
-  }
-
-  def dummyUser2Id: Long = 2
-
-  def dummyUser3(): User = {
-    ((all() tail) tail) head
-  }
-
-  def dummyUser3Id: Long = 3
-
-  def dummyUser4(): User = {
-    (((all() tail) tail) tail) head
-  }
-
-  def dummyUser4Id: Long = 4
+  val dummyId = 1
+  val dummyId2 = 2
+  val dummyId3 = 3
+  val dummyId4 = 4
+  val dummy: User = all.head
+  val dummy2: User = all.tail.head
+  val dummy3: User = all.tail.tail.head
+  val dummy4: User = all.tail.tail.tail.head
 }
