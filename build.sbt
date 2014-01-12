@@ -10,4 +10,6 @@ libraryDependencies ++= Seq(
 
 scalacOptions += "-feature"
 
+scalacOptions += "-language:postfixOps"
+
 play.Project.playScalaSettings

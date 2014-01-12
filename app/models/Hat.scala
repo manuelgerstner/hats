@@ -37,30 +37,27 @@ object Hat {
   /**
    * Retrieves a hat by its name
    */
-  def getByName(name: String): Hat = {
+  def byName(name: String): Hat = {
     all() filter ((hat: Hat) => hat.name.toLowerCase == name.toLowerCase) head
   }
 
   /**
    * Retrieves a hat by its id
    */
-  def getById(id: Long): Hat = {
+  def byId(id: Long): Hat = {
     all() filter ((hat: Hat) => hat.id == id) head
   }
 
   /**
    * Retrieves the human-readable name for a hat
    */
-  def getHatName(id: Long): String = {
-    (getById(id).name) toLowerCase
+  def nameById(id: Long): String = {
+    (byId(id).name) toLowerCase
   }
 
   /**
    * for development purposes this will return the white hat by default
    */
-  def dummyHat(): Hat = {
-    all() head
-  }
-
-  def dummyHatId: Long = 1
+  val dummy: Hat = all.head
+  def dummyId: Long = 1
 }

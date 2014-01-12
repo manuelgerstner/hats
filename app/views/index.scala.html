@@ -1,4 +1,4 @@
-@(message: String, sessionConfig: Form[SessionConfig]) 
+@(message: String, user: User, sessionConfig: Form[SessionConfig]) 
 @import controllers.ThinkingSessions
 @import models._
 @import models.forms._
@@ -74,7 +74,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Time Limit:</span>
-                            <input type="number" class="form-control" name="whiteTimeLimit">
+                            <input type="number" class="form-control" name="whiteTimeLimit" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -82,7 +82,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Alone time:</span>
-                            <input type="number" class="form-control" name="whiteAloneTime">
+                            <input type="number" class="form-control" name="whiteAloneTime" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -96,7 +96,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Time Limit:</span>
-                            <input type="number" class="form-control" name="redTimeLimit">
+                            <input type="number" class="form-control" name="redTimeLimit" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -104,7 +104,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Alone time:</span>
-                            <input type="number" class="form-control" name="redAloneTime">
+                            <input type="number" class="form-control" name="redAloneTime" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -118,7 +118,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Time Limit:</span>
-                            <input type="number" class="form-control" name="yellowTimeLimit">
+                            <input type="number" class="form-control" name="yellowTimeLimit" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -126,7 +126,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Alone time:</span>
-                            <input type="number" class="form-control" name="yellowAloneTime">
+                            <input type="number" class="form-control" name="yellowAloneTime" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -140,7 +140,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Time Limit:</span>
-                            <input type="number" class="form-control" name="blackTimeLimit">
+                            <input type="number" class="form-control" name="blackTimeLimit" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -148,7 +148,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Alone time:</span>
-                            <input type="number" class="form-control" name="blackAloneTime">
+                            <input type="number" class="form-control" name="blackAloneTime" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -162,7 +162,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Time Limit:</span>
-                            <input type="number" class="form-control" name="greenTimeLimit">
+                            <input type="number" class="form-control" name="greenTimeLimit" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -170,7 +170,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Alone time:</span>
-                            <input type="number" class="form-control" name="greenAloneTime">
+                            <input type="number" class="form-control" name="greenAloneTime" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -184,7 +184,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Time Limit:</span>
-                            <input type="number" class="form-control" name="blueTimeLimit">
+                            <input type="number" class="form-control" name="blueTimeLimit" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -192,7 +192,7 @@
                     <div class="col-lg-6">
                         <div class="input-group">
                             <span class="input-group-addon">Alone time:</span>
-                            <input type="number" class="form-control" name="blueAloneTime">
+                            <input type="number" class="form-control" name="blueAloneTime" min="0">
                             <span class="input-group-addon">minutes</span>
                         </div>
                         <!-- /input-group -->
@@ -223,10 +223,10 @@
                 <div class="col-lg-8">
                 	@helper.inputText(sessionConfig("mailAddresses"), 'class -> "form-control", 'id -> "tokenfield", '_showErrors -> false, '_showConstraints -> false,  '_label -> null)
                 </div>
-                <div class="col-lg-8">
-                    <input type="submit" data-intro="After choosing one of the predefined templates or setting up your own one, you can get started right away by clicking on this button!" data-position="right" class="btn btn-primary" role="button" value="Initiate session!" />
-                </div>
             </div>
+        </div>
+        <div class="col-lg-8">
+            <input type="submit" data-intro="After choosing one of the predefined templates or setting up your own one, you can get started right away by clicking on this button!" data-position="right" class="btn btn-primary" role="button" value="Initiate session!" />
         </div>
     </div>
 	}

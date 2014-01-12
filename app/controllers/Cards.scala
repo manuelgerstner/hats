@@ -14,6 +14,7 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
+import play.api.mvc.Results
 
 /**
  * Card Controller responsible for handling CRUD operations on ideas/cards (will be treated as synonyms,
@@ -41,9 +42,19 @@ object Cards extends Controller {
    */
   def addCard(thinkingSessionId: Long) = Action { implicit request =>
     Logger.debug("Cards.addCard")
-    val form = cardForm.bindFromRequest.get
-    val cardId = Card.create(form, thinkingSessionId, User.dummyUser1Id)
-    Redirect(routes.ThinkingSessions.index(thinkingSessionId))
+    request.cookies.get(User.idCookie) match {
+      case Some(cookie) => {
+        val form = cardForm.bindFromRequest.get
+        val user = User.byCookie(cookie).get;
+        val cardId = Card.create(form, thinkingSessionId, User.dummyId)
+        Logger.debug("Found user cookie, creating card " + cardId)
+        Redirect(routes.ThinkingSessions.index(thinkingSessionId))
+      }
+      case None => {
+        Logger.debug("No user cookie, bad request")
+        BadRequest
+      }
+    }
   }
 
   /**
@@ -56,19 +67,27 @@ object Cards extends Controller {
   /**
    * TODO: delete Card specified by the ids, redirect to session index
    */
-  def deleteCard(id: Long, cardId: Long) = TODO
+  def deleteCard(sessionId: Long, cardId: Long) = TODO
 
   def restFormAddCard(sessionId: Long) = Action { implicit request =>
+    Logger.debug("Cards.restFormAddCards(" + sessionId + ")")
     val formCard = cardForm.bindFromRequest.get
-    val user = User.dummyUser1;
-    val hat = Hat.getByName(formCard.hat);
-    val cardId = Card.create(formCard.content, sessionId, hat.id, user.id);
-    Ok(Json.obj("id" -> cardId,
-      "hat" -> hat.name.toLowerCase,
-      "content" -> formCard.content,
-      "username" -> user.name)).as("application/json")
+    request.cookies.get(User.idCookie) match {
+      case Some(cookie) => {
+        val user = User.byCookie(cookie).get;
+        val hat = Hat.byName(formCard.hat);
+        val cardId = Card.create(formCard.content, sessionId, hat.id, user.id);
+        Ok(Json.obj("id" -> cardId,
+          "hat" -> hat.name.toLowerCase,
+          "content" -> formCard.content,
+          "username" -> user.name)).as("application/json")
+      }
+      case None => {
+        Logger.debug("No user cookie, bad request")
+        BadRequest(Json.obj("error" -> "no user")).as("application/json")
+      }
+    }
   }
-
   def restJsonAddCard(sessionId: Long, hatId: Long) = Action(parse.json) { implicit request =>
     Logger.debug("Cards.restAddCard")
     val formCard = cardForm.bindFromRequest.get
@@ -79,31 +98,41 @@ object Cards extends Controller {
             if (name == "content") {
               request.body \ "value" match {
                 case JsString(content) =>
-                  val user = User.dummyUser1;
-                  val hat = Hat.getById(hatId)
-                  val cardId = Card.create(content, sessionId, hatId, user.id)
+                  request.cookies.get(User.idCookie) match {
+                    case Some(cookie) => {
+                      val user = User.byCookie(cookie).get;
+                      val hat = Hat.byId(hatId)
+                      val cardId = Card.create(content, sessionId, hatId, user.id)
 
-                  val json = Json.obj(
-                    "status" -> 200,
-                    "fn" -> "createCard",
-                    "args" -> Json.obj(
-                      "id" -> cardId,
-                      "hat" -> hat.name,
-                      "content" -> content,
-                      "user" -> user.name))
-                  // Return reponse with 200 (OK) status and JSON body
-                  Ok(Json.obj("content" -> json)).as("application/json")
+                      val json = Json.obj(
+                        "status" -> 200,
+                        "fn" -> "createCard",
+                        "args" -> Json.obj(
+                          "id" -> cardId,
+                          "hat" -> hat.name,
+                          "content" -> content,
+                          "user" -> user.name))
+                      // Return reponse with 200 (OK) status and JSON body
+                      Ok(Json.obj("content" -> json)).as("application/json")
+
+                    }
+                    case None => {
+                      Logger.debug("No user cookie, bad request")
+                      BadRequest(Json.obj("error" -> true,
+                        "message" -> "Could not find user cookie")).as("application/json")
+                    }
+                  }
 
                 case _ => BadRequest(Json.obj("error" -> true,
-                  "message" -> "Could not match value =(")).as("application/json")
+                  "message" -> "Could not find JSOn elem \"value\" =(")).as("application/json")
               }
             } else {
               BadRequest(Json.obj("error" -> true,
-                "message" -> "Name was not content =(")).as("application/json")
+                "message" -> "\"name\" was not content =(")).as("application/json")
             }
           case _ =>
             BadRequest(Json.obj("error" -> true,
-              "message" -> "Could not find name =(")).as("application/json")
+              "message" -> "Could not find JSON elem \"name\" =(")).as("application/json")
         }
       case _ =>
         BadRequest(Json.obj("error" -> true,
