@@ -64,7 +64,8 @@ object ThinkingSessions extends Controller {
       "blHatt" -> nonEmptyText,
       "blAlonet" -> nonEmptyText,
       "bluHatt" -> nonEmptyText,
-      "bluAlonet" -> nonEmptyText
+      "bluAlonet" -> nonEmptyText,
+      "invEmail" -> nonEmptyText
     )(FormConfig.apply)(FormConfig.unapply))
   /*
    * Save the configuration for hats
