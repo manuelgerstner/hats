@@ -1,18 +1,18 @@
-@(sessionId: Long, cards: List[Card], hat: Hat)
+@(session: ThinkingSession, cards: List[Card], hat: Hat)
 
 @import helper._
 @import models._
 @import views._
 
 
-@main("Birthday Present for Manu", hat) {
+@main(session.title, hat) {
 	
 	<div id="hat" class="@hat.name.toLowerCase">
 	
 		
 	<script type="text/javascript">
 		var CARDS = @Html(Card.listToJson(cards).toString);
-		var SESSION_ID=@sessionId;
+		var SESSION_ID=@session.id;
 		var HAT="@hat.name.toLowerCase";
 	</script>
 		
@@ -24,7 +24,7 @@
 			<div id="hat-cards" class="col-md-9">
 			
 				<div id="card-create">
-					@helper.form(action = routes.Cards.restFormAddCard(sessionId), 'class -> "form-horizontal", 'id -> "card-form") {
+					@helper.form(action = routes.Cards.restFormAddCard(session.id), 'class -> "form-horizontal", 'id -> "card-form") {
 						<div class="form-group">
 							<input type="hidden" name="hat" id="form-hat" value="@hat.name.toLowerCase"/>
 						    <div class="col-xs-4">

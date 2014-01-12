@@ -130,3 +130,25 @@ function addCard(card, effect) {
 	$('#content').val("");
 	$('#nocardsyet').remove();
 }
+
+function validateForm() {
+    var isValidMail = function(mail) {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return true;
+        }
+        return false;
+    }
+    var field = $("#tokenfield");
+    var mails = field.tokenfield('getTokens');
+    var mailString = '';
+    for (var i = mails.length-1; i >= 0; i--) {
+    	var mail = mails[i].value.trim()
+    	if(!isValidMail(mail)) {
+    		alert(mails[i].value.trim() + ' seems to be invalid mail address... =(');
+    		return false;
+    	}
+    	mailString += mail+',';
+    };
+    field.val(mailString); // mails for form form binding on server side
+    return true;
+}

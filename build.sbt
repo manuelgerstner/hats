@@ -8,6 +8,8 @@ libraryDependencies ++= Seq(
   cache
 )
 
-scalacOptions += " -feature"
+scalacOptions += "-feature"
+
+scalacOptions += "-language:postfixOps"
 
 play.Project.playScalaSettings
