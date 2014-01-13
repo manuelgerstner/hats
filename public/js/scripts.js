@@ -99,8 +99,7 @@ function showToolTip(hat1){
 		  $('#help-button-green').hide();
 		  $('#help-button-yellow').hide();
 		  $('#help-button-white').show();
-		  $('#help-button-white').popover();
-		  
+		  $('#help-button-white').popover();		  
 	    break;
 	  case "red":
 		  $('#help-button-black').hide();
@@ -109,8 +108,7 @@ function showToolTip(hat1){
 		  $('#help-button-green').hide();
 		  $('#help-button-yellow').hide();
 		  $('#help-button-white').hide();
-		  $('#help-button-red').popover();
-		  
+		  $('#help-button-red').popover();		  
 	    break;
 	  case "blue":
 		  $('#help-button-black').hide();
@@ -119,8 +117,7 @@ function showToolTip(hat1){
 		  $('#help-button-green').hide();
 		  $('#help-button-yellow').hide();
 		  $('#help-button-white').hide();
-		  $('#help-button-blue').popover();
-		  
+		  $('#help-button-blue').popover();	  
 	    break;
 	  case "green":
 		  $('#help-button-black').hide();
@@ -129,8 +126,7 @@ function showToolTip(hat1){
 		  $('#help-button-green').show();
 		  $('#help-button-yellow').hide();
 		  $('#help-button-white').hide();
-		  $('#help-button-green').popover();
-		  
+		  $('#help-button-green').popover();	  
 	    break;
 	  case "black":
 		  $('#help-button-black').show();
@@ -140,7 +136,6 @@ function showToolTip(hat1){
 		  $('#help-button-yellow').hide();
 		  $('#help-button-white').hide();
 		  $('#help-button-black').popover();
-		  
 	    break;
 	  case "yellow":
 		  $('#help-button-black').hide();
@@ -149,8 +144,7 @@ function showToolTip(hat1){
 		  $('#help-button-green').hide();
 		  $('#help-button-yellow').show();
 		  $('#help-button-white').hide();
-		  $('#help-button-yellow').popover();
-		  
+		  $('#help-button-yellow').popover();		  
 	    break;
 	  }
 	
