@@ -19,15 +19,17 @@ object Application extends Controller {
     Ok(views.html.index("Six Thinking Hats"))
   }
 
+  def socket = Action {
+    Ok(views.html.socket())
+  }
+
   def javascriptRoutes = Action { implicit request =>
     Logger.debug("Application.jsRoutes")
     import play.api.Routes
 
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        routes.javascript.ThinkingSessions.restChangeHat
-      )
-    ).as("text/javascript")
+        routes.javascript.ThinkingSessions.restChangeHat)).as("text/javascript")
   }
 
 }
