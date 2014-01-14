@@ -3,7 +3,8 @@
 
 # Home page
 GET    /                                controllers.Application.index
-POST   /                                controllers.ThinkingSessions.saveConfig()
+POST   /createSession                   controllers.ThinkingSessions.createSession
+GET	   /wstest							controllers.Application.wstest
 
 # JS Routes
 GET    /javascriptRoutes                controllers.Application.javascriptRoutes

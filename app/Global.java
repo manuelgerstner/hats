@@ -1,12 +1,13 @@
 import play.Application;
 import play.GlobalSettings;
-import ws.wamplay.controllers.WAMPlayServer;
-import controllers.SampleController;
+import wamplay.controllers.WAMPlayServer;
+import controllers.WebSocket;
 
 public class Global extends GlobalSettings {
-
+	@Override
 	public void onStart(Application app) {
-		WAMPlayServer.addController(new SampleController());
+		WAMPlayServer.addTopic("thinkingSession/cards");
+		WAMPlayServer.addTopic("hatsSession_1");
+		WAMPlayServer.addController(new WebSocket());
 	}
-
 }

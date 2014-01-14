@@ -7,7 +7,6 @@ $.fn.scrollView = function() {
 	});
 };
 
-
 $(function() {
 
 	// only show first hat
@@ -83,6 +82,44 @@ $(function() {
 	
 });
 
+//get websocket up and running
+function instantiateSocket() {
+	
+	// connect to WAMPlay server
+    console.log("Connecting to WAMPlay server...");
+    ab.connect(WSURI,
+
+      // WAMP session was established
+      function (session) {
+        setUpControls(session);
+        console.log("Connected to " + WSURI);
+
+        // subscribe to session to check for changes
+        session.subscribe(SESSION_TOPIC, onEvent);
+        console.log("Subscribed to " + SESSION_TOPIC);
+      },
+
+      // WAMP session is gone
+      function (code, reason) {
+    	  console.log("Connection lost (" + reason + ")", true);
+      },
+      {skipSubprotocolCheck:true, skipSubprotocolAnnounce:true} // Important! Play rejects all subprotocols for some reason...
+    );
+}
+
+//handler for websocket events coming in
+function onEvent(topic, event) {
+    console.log("Message from topic: " + topic + ":");
+    console.log(event);
+}
+
+function setUpControls (session) {
+    $("#btnAddCard").click(function() {
+      var message = $("#content").val();
+      session.publish(SESSION_TOPIC, message);
+    });
+}
+
 function makeDraggable() {
 	$('#cards-list div.card').draggable({
 		containment: "#cards-list",
@@ -129,4 +166,26 @@ function addCard(card, effect) {
 	// reset card content field
 	$('#content').val("");
 	$('#nocardsyet').remove();
+}
+
+function validateForm() {
+    var isValidMail = function(mail) {
+        if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
+            return true;
+        }
+        return false;
+    }
+    var field = $("#tokenfield");
+    var mails = field.tokenfield('getTokens');
+    var mailString = '';
+    for (var i = mails.length-1; i >= 0; i--) {
+    	var mail = mails[i].value.trim()
+    	if(!isValidMail(mail)) {
+    		alert(mails[i].value.trim() + ' seems to be invalid mail address... =(');
+    		return false;
+    	}
+    	mailString += mail+',';
+    };
+    field.val(mailString); // mails for form form binding on server side
+    return true;
 }
