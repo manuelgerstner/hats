@@ -36,6 +36,7 @@ public class WebSocket extends WAMPlayContoller {
 
 	@onPublish
 	public static JsonNode onPublish(String sessionID, JsonNode event) {
+
 		return Json.toJson(event);
 	}
 

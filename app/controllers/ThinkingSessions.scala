@@ -11,6 +11,7 @@ import models._
 import controllers._
 import views.html.defaultpages.badRequest
 import wamplay.controllers.WAMPlayServer;
+import views.html.defaultpages.notFound
 
 /**
  * Controls all changes in ThinkingSession state.

@@ -88,8 +88,11 @@ function instantiateSocket() {
 
 		// click handler for add card
 		$("#btnAddCard").click(function() {
-			var message = $("#content").val();
-			
+			var newCard = {
+				"hat": $("#form-hat").val(),
+				"content": $("#content").val()
+			};
+			var message = JSON.stringify(newCard);
 			// here the topic should be addCard
 			session.publish(SESSION_TOPIC, message);
 		});
@@ -114,9 +117,16 @@ function instantiateSocket() {
 
 // debugging handler for websocket events coming in
 function onEvent(topic, event) {
+	
+	// add switch case for topic here:
+	
 	console.log("Message from topic: " + topic + ":");
 	// event holds the actual message that is being sent
 	console.log(event);
+	event.username = "FooUser";
+	event.id = 1e4;
+	//if (userid != incoming user)
+	addCard(JSON.parse(event), true);
 }
 
 function makeDraggable() {
