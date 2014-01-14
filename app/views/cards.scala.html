@@ -6,67 +6,86 @@
 
 
 @main(session.title, hat) {
-	
-	<div id="hat" class="@hat.name.toLowerCase">
-		
-	<script type="text/javascript">
-		var CARDS = @Html(Card.listToJson(cards).toString);
-		var SESSION_ID=@session.id;
-		var HAT="@hat.name.toLowerCase";
-		var WSURI ="ws://localhost:9000/wamp";
-		var SESSION_TOPIC = "thinkingSession_" + SESSION_ID;
-		// set up socket on load event
-		window.onload = function() {
-			instantiateSocket();
-		};
-	</script>
-		
-			
-			<div id="hat-feed" class="well col-md-3">
-				@hatfeed.render
-			</div>
-		
-			<div id="hat-cards" class="col-md-9">
-			
-				<div id="card-create">
-					@helper.form(action = routes.Cards.restFormAddCard(session.id), 'class -> "form-horizontal", 'id -> "card-form") {
-						<div class="form-group">
-							<input type="hidden" name="hat" id="form-hat" value="@hat.name.toLowerCase"/>
-						    <div class="col-xs-4">
-						    	<input type="text" class="form-control" name="content" id="content" placeholder="Add new Card"/>
-						    </div>
-							<button type="submit" class="btn btn-success" id="btnAddCard">Add Card &raquo;</button>
-							<button type="button" class="btn btn-info pull-right" id="indicate-ready">Move to next Hat</button>
-							<!-- 
-								
-								<button type="button" class="btn btn-warning pull-right" id="finish">Finish Session</button>
-							 -->
+        
+        <div id="hat" class="@hat.name.toLowerCase">
+                
+        <script type="text/javascript">
+                var CARDS = @Html(Card.listToJson(cards).toString);
+                var SESSION_ID=@session.id;
+                var HAT="@hat.name.toLowerCase";
+                var WSURI ="ws://localhost:9000/wamp";
+                var SESSION_TOPIC = "thinkingSession_" + SESSION_ID;
+                // set up socket on load event
+                window.onload = function() {
+                        instantiateSocket();
+                };
+        </script>
+                
+                        
+                        <div id="hat-feed" class="well col-md-3">
+                                @hatfeed.render
+                        </div>
+                		 <p>
+					        <a  data-trigger="hover" rel="popover" data-content="The White Hat calls for information known or needed.The facts, just the facts. ." data-position="right" id="help-button-white" class="btn btn-info" >
+								Hat Theme!
+							</a>
+							<a  data-trigger="hover" rel="popover" data-content="The Yellow Hat symbolizes brightness and optimism. Under this hat you explore the positives and probe for value and benefit." data-position="left" id="help-button-yellow" class="btn btn-info" >
+								Hat Theme!
+							</a>
+							<a data-trigger="hover" rel="popover" data-content="The Red Hat signifies feelings, hunches and intuition. When using this hat you can express emotions and feelings and share fears, likes, dislikes, loves, and hates." data-position="bottom" id="help-button-red" class="btn btn-info" >
+								Hat Theme!
+							</a>
+							<a data-trigger="hover" rel="popover" data-content="The Blue Hat is used to manage the thinking process.It's the control mechanism that ensures the Six Thinking Hats guidelines are observed" data-position="bottom" id="help-button-blue" class="btn btn-info" >
+								Hat Theme!
+							</a>
+							<a data-trigger="hover" rel="popover" data-content="The Black Hat is judgment - the devil's advocate or why something may not work. Spot the difficulties and dangers; where things might go wrong." data-position="right" id="help-button-black" class="btn btn-info">
+								Hat Theme!
+							</a>
+							<a data-trigger="hover" rel="popover" data-content="The Green Hat focuses on creativity; the possibilities, alternatives, and new ideas. It's an opportunity to express new concepts and new perceptions." data-position="left" id="help-button-green" class="btn btn-info">
+								Hat Theme!
+							</a>
+    					</p>
+                        <div id="hat-cards" class="col-md-9">
+                        
+                                <div id="card-create">
+                                        @helper.form(action = routes.Cards.restFormAddCard(session.id), 'class -> "form-horizontal", 'id -> "card-form") {
+                                                <div class="form-group">
+                                                        <input type="hidden" name="hat" id="form-hat" value="@hat.name.toLowerCase"/>
+                                                    <div class="col-xs-4">
+                                                            <input type="text" class="form-control" name="content" id="content" placeholder="Add new Card"/>
+                                                    </div>
+                                                        <button type="submit" class="btn btn-success" id="btnAddCard">Add Card &raquo;</button>
+                                                        <button type="button" class="btn btn-info pull-right" id="indicate-ready">Move to next Hat</button>
+                                                        <!-- 
+                                                                
+                                                                <button type="button" class="btn btn-warning pull-right" id="finish">Finish Session</button>
+                                                         -->
 
-						</div>
-		            }
-				</div>
-				
-				<div id="cards" class="well">
-					@if(cards.isEmpty) {
-						<h3>No cards yet</h3>
-					}
-					<div id="cards-list">
-						<!-- generated by handlebars -->
-					</div>
-				</div>
-				
-				
-				<div class="well" id="progressbar">
-					@progressbar.render
-				</div>
-		</div>
-		
-	</div>
+                                                </div>
+                            }
+                                </div>
+                                
+                                <div id="cards" class="well">
+                                        @if(cards.isEmpty) {
+                                                <h3>No cards yet</h3>
+                                        }
+                                        <div id="cards-list">
+                                                <!-- generated by handlebars -->
+                                        </div>
+                                </div>
+                                
+                                
+                                <div class="well" id="progressbar">
+                                        @progressbar.render
+                                </div>
+                </div>
+                
+        </div>
 
 }
 <script id="card-template" type="text/x-handlebars-template">
-	<div data-cardid="{{id}}" class="card {{hat}}">
-		<span class="name">@@{{username}}:</span>
-		<div class="content">{{content}}</div>
-	</div>
+        <div data-cardid="{{id}}" class="card {{hat}}">
+                <span class="name">@@{{username}}:</span>
+                <div class="content">{{content}}</div>
+        </div>
 </script>
