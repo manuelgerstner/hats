@@ -4,10 +4,13 @@
 # Home page
 GET    /                                controllers.Application.index
 POST   /createSession                   controllers.ThinkingSessions.createSession
+GET	   /wstest							controllers.Application.wstest
 
 # JS Routes
 GET    /javascriptRoutes                controllers.Application.javascriptRoutes
 
+# Send websocket connections to the WAMPlay server
+GET     /wamp                     		controllers.wamplay.controllers.WAMPlayServer.connect()
 
 # Cards in a Sessions
 # should be HTTP PUT, but play fucks with REST here...

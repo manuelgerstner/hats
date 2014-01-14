@@ -30,15 +30,18 @@ object Application extends Controller {
     Ok(views.html.index("Six Thinking Hats", user, sessionConfigForm)).withCookies(Cookie(User.idCookie, user.id.toString))
   }
 
+  def wstest = Action {
+    Logger.debug("Application.wstest")
+    Ok(views.html.websockettest("Six Thinking Hats"))
+  }
+
   def javascriptRoutes = Action { implicit request =>
     Logger.debug("Application.jsRoutes")
     import play.api.Routes
 
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        routes.javascript.ThinkingSessions.restChangeHat
-      )
-    ).as("text/javascript")
+        routes.javascript.ThinkingSessions.restChangeHat)).as("text/javascript")
   }
 
 }
