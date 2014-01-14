@@ -1,4 +1,4 @@
-package controllers.wamplay.callbacks;
+package wamplay.callbacks;
 
 
 import com.fasterxml.jackson.databind.JsonNode;

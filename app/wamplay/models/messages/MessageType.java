@@ -1,6 +1,6 @@
-package controllers.wamplay.models.messages;
+package wamplay.models.messages;
 
-import controllers.wamplay.controllers.messageHandlers.*;
+import wamplay.controllers.messageHandlers.*;
 
 public enum MessageType {
 	CONNECT(-1, new ConnectHandler()),

@@ -1,15 +1,15 @@
-package controllers.wamplay.controllers.messageHandlers;
+package wamplay.controllers.messageHandlers;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
+import wamplay.callbacks.RPCCallback;
+import wamplay.models.RPC;
+import wamplay.models.WAMPlayClient;
+import wamplay.models.messages.CallError;
+import wamplay.models.messages.CallResult;
 
-import controllers.wamplay.callbacks.RPCCallback;
-import controllers.wamplay.models.RPC;
-import controllers.wamplay.models.WAMPlayClient;
-import controllers.wamplay.models.messages.CallError;
-import controllers.wamplay.models.messages.CallResult;
+import com.fasterxml.jackson.databind.JsonNode;
 
 
 public class RPCHandler implements MessageHandler{

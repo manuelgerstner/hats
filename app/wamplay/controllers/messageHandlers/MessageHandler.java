@@ -1,9 +1,9 @@
-package controllers.wamplay.controllers.messageHandlers;
+package wamplay.controllers.messageHandlers;
 
+
+import wamplay.models.WAMPlayClient;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import controllers.wamplay.models.WAMPlayClient;
 
 
 public interface MessageHandler {

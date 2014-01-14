@@ -1,4 +1,4 @@
-package controllers.wamplay.models;
+package wamplay.models;
 
 import java.util.HashMap;
 import java.util.HashSet;

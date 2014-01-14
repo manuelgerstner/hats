@@ -1,9 +1,9 @@
-package controllers.wamplay.controllers;
+package wamplay.controllers;
+
+import wamplay.annotations.URIPrefix;
+import wamplay.callbacks.PubSubCallback;
 
 import com.fasterxml.jackson.databind.JsonNode;
-
-import controllers.wamplay.annotations.URIPrefix;
-import controllers.wamplay.callbacks.PubSubCallback;
 
 public class WAMPlayContoller {
 

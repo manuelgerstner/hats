@@ -1,10 +1,10 @@
-package controllers.wamplay.controllers.messageHandlers;
+package wamplay.controllers.messageHandlers;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.Logger;
 import play.Logger.ALogger;
-import controllers.wamplay.models.messages.MessageType;
+import wamplay.models.messages.MessageType;
 
 
 public class HandlerFactory {

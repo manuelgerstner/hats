@@ -21,22 +21,13 @@ object Application extends Controller {
     val cook = request.cookies.get(User.idCookie)
     val user: User = (request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie);
-      case None         => User.byId(User.create("New User"));
+      case None => User.byId(User.create("New User"));
     }) match {
       case Some(u) => u
-      case None    => User.dummy
+      case None => User.dummy
     }
 
     Ok(views.html.index("Six Thinking Hats", user, sessionConfigForm)).withCookies(Cookie(User.idCookie, user.id.toString))
-  }
-
-  def wstest = Action {
-    Logger.debug("Application.wstest")
-    Ok(views.html.websockettest("Six Thinking Hats"))
-  }
-
-  def socket = Action {
-    Ok(views.html.socket())
   }
 
   def javascriptRoutes = Action { implicit request =>

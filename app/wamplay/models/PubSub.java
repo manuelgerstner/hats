@@ -1,4 +1,4 @@
-package controllers.wamplay.models;
+package wamplay.models;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -9,12 +9,12 @@ import com.fasterxml.jackson.databind.JsonNode;
 
 import play.Logger;
 import play.Logger.ALogger;
-import controllers.wamplay.annotations.onPublish;
-import controllers.wamplay.annotations.onSubscribe;
-import controllers.wamplay.callbacks.PubCallback;
-import controllers.wamplay.callbacks.PubSubCallback;
-import controllers.wamplay.callbacks.SubCallback;
-import controllers.wamplay.controllers.WAMPlayContoller;
+import wamplay.annotations.onPublish;
+import wamplay.annotations.onSubscribe;
+import wamplay.callbacks.PubCallback;
+import wamplay.callbacks.PubSubCallback;
+import wamplay.callbacks.SubCallback;
+import wamplay.controllers.WAMPlayContoller;
 
 
 public class PubSub {

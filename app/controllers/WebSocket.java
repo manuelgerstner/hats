@@ -1,11 +1,13 @@
 package controllers;
 
+import play.Logger;
 import play.libs.Json;
 import wamplay.annotations.URIPrefix;
 import wamplay.annotations.onPublish;
 import wamplay.annotations.onRPC;
 import wamplay.annotations.onSubscribe;
 import wamplay.controllers.WAMPlayContoller;
+import wamplay.controllers.WAMPlayServer;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
@@ -23,13 +25,17 @@ public class WebSocket extends WAMPlayContoller {
 		return ans;
 	}
 
-	@onSubscribe("chat")
-	public static boolean capitalSubscribe(String sessionID) {
+	@onSubscribe
+	public static boolean onSubscribe(String sessionID) {
+		Logger.debug("subscribing session id" + sessionID);
+		if (!WAMPlayServer.isTopic("thinkingSession_" + sessionID)) {
+			WAMPlayServer.addTopic("thinkingSession_" + sessionID);
+		}
 		return true;
 	}
 
-	@onPublish("chat")
-	public static JsonNode truncatePublish(String sessionID, JsonNode event) {
+	@onPublish
+	public static JsonNode onPublish(String sessionID, JsonNode event) {
 		return Json.toJson(event);
 	}
 

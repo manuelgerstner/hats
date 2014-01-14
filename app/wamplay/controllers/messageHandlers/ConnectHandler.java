@@ -1,12 +1,12 @@
-package controllers.wamplay.controllers.messageHandlers;
+package wamplay.controllers.messageHandlers;
 
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.libs.Json;
-import controllers.wamplay.models.WAMPlayClient;
-import controllers.wamplay.models.messages.Welcome;
+import wamplay.models.WAMPlayClient;
+import wamplay.models.messages.Welcome;
 
 
 public class ConnectHandler implements MessageHandler {

@@ -1,4 +1,4 @@
-package controllers.wamplay.controllers;
+package wamplay.controllers;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -13,14 +13,14 @@ import play.libs.F.Callback;
 import play.libs.F.Callback0;
 import play.mvc.Controller;
 import play.mvc.WebSocket;
-import controllers.wamplay.annotations.URIPrefix;
-import controllers.wamplay.callbacks.PubSubCallback;
-import controllers.wamplay.controllers.messageHandlers.HandlerFactory;
-import controllers.wamplay.controllers.messageHandlers.MessageHandler;
-import controllers.wamplay.controllers.messageHandlers.PublishHandler;
-import controllers.wamplay.models.PubSub;
-import controllers.wamplay.models.RPC;
-import controllers.wamplay.models.WAMPlayClient;
+import wamplay.annotations.URIPrefix;
+import wamplay.callbacks.PubSubCallback;
+import wamplay.controllers.messageHandlers.HandlerFactory;
+import wamplay.controllers.messageHandlers.MessageHandler;
+import wamplay.controllers.messageHandlers.PublishHandler;
+import wamplay.models.PubSub;
+import wamplay.models.RPC;
+import wamplay.models.WAMPlayClient;
 
 public class WAMPlayServer extends Controller {
 	public static String VERSION = "WAMPlay/0.1.6";

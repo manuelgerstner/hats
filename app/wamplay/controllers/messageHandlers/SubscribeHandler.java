@@ -1,15 +1,14 @@
-package controllers.wamplay.controllers.messageHandlers;
+package wamplay.controllers.messageHandlers;
 
 
 import com.fasterxml.jackson.databind.JsonNode;
 
 import play.Logger;
 import play.Logger.ALogger;
-
-import controllers.wamplay.callbacks.PubSubCallback;
-import controllers.wamplay.controllers.WAMPlayServer;
-import controllers.wamplay.models.PubSub;
-import controllers.wamplay.models.WAMPlayClient;
+import wamplay.callbacks.PubSubCallback;
+import wamplay.controllers.WAMPlayServer;
+import wamplay.models.PubSub;
+import wamplay.models.WAMPlayClient;
 
 
 public class SubscribeHandler implements MessageHandler {

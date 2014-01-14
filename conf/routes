@@ -4,15 +4,12 @@
 # Home page
 GET    /                                controllers.Application.index
 POST   /createSession                   controllers.ThinkingSessions.createSession
-GET	   /wstest							controllers.Application.wstest
 
 # JS Routes
 GET    /javascriptRoutes                controllers.Application.javascriptRoutes
 
 # WebSocket implementation
-GET    /socket						    controllers.Application.socket()
-GET    /wamp                     		ws.wamplay.controllers.WAMPlayServer.connect()
-
+GET    /wamp                     		wamplay.controllers.WAMPlayServer.connect()
 
 # Cards in a Sessions
 # should be HTTP PUT, but play fucks with REST here...

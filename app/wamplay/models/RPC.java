@@ -1,4 +1,4 @@
-package controllers.wamplay.models;
+package wamplay.models;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,9 +10,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import play.Logger;
 import play.Logger.ALogger;
 import play.libs.Json;
-import controllers.wamplay.annotations.onRPC;
-import controllers.wamplay.callbacks.RPCCallback;
-import controllers.wamplay.controllers.WAMPlayContoller;
+import wamplay.annotations.onRPC;
+import wamplay.callbacks.RPCCallback;
+import wamplay.controllers.WAMPlayContoller;
 
 
 public class RPC {

@@ -1,4 +1,4 @@
-package controllers.wamplay.models.messages;
+package wamplay.models.messages;
 
 import java.util.ArrayList;
 import java.util.List;

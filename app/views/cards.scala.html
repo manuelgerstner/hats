@@ -14,8 +14,11 @@
 		var SESSION_ID=@session.id;
 		var HAT="@hat.name.toLowerCase";
 		var WSURI ="ws://localhost:9000/wamp";
-		var SESSION_TOPIC = "hatsSession_" + SESSION_ID;
-		instantiateSocket();
+		var SESSION_TOPIC = "thinkingSession_" + SESSION_ID;
+		// set up socket on load event
+		window.onload = function() {
+			instantiateSocket();
+		};
 	</script>
 		
 			

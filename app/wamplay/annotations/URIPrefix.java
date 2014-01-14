@@ -1,4 +1,4 @@
-package controllers.wamplay.annotations;
+package wamplay.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
