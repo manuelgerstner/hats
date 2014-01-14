@@ -76,9 +76,74 @@ $(function() {
         $('#help-button').click(function() {
                 $('body').chardinJs('start');
         });
+        
+        $( document ).ready(function() {
+    		showToolTip(HAT);
+    	});
 
 });
 
+function showToolTip(hat1){
+	switch (hat1)
+	  {
+	  case "white":
+		  $('#help-button-black').hide();
+		  $('#help-button-blue').hide();
+		  $('#help-button-red').hide();
+		  $('#help-button-green').hide();
+		  $('#help-button-yellow').hide();
+		  $('#help-button-white').show();
+		  $('#help-button-white').popover();		  
+	    break;
+	  case "red":
+		  $('#help-button-black').hide();
+		  $('#help-button-blue').hide();
+		  $('#help-button-red').show();
+		  $('#help-button-green').hide();
+		  $('#help-button-yellow').hide();
+		  $('#help-button-white').hide();
+		  $('#help-button-red').popover();		  
+	    break;
+	  case "blue":
+		  $('#help-button-black').hide();
+		  $('#help-button-blue').show();
+		  $('#help-button-red').hide();
+		  $('#help-button-green').hide();
+		  $('#help-button-yellow').hide();
+		  $('#help-button-white').hide();
+		  $('#help-button-blue').popover();	  
+	    break;
+	  case "green":
+		  $('#help-button-black').hide();
+		  $('#help-button-blue').hide();
+		  $('#help-button-red').hide();
+		  $('#help-button-green').show();
+		  $('#help-button-yellow').hide();
+		  $('#help-button-white').hide();
+		  $('#help-button-green').popover();	  
+	    break;
+	  case "black":
+		  $('#help-button-black').show();
+		  $('#help-button-blue').hide();
+		  $('#help-button-red').hide();
+		  $('#help-button-green').hide();
+		  $('#help-button-yellow').hide();
+		  $('#help-button-white').hide();
+		  $('#help-button-black').popover();
+	    break;
+	  case "yellow":
+		  $('#help-button-black').hide();
+		  $('#help-button-blue').hide();
+		  $('#help-button-red').hide();
+		  $('#help-button-green').hide();
+		  $('#help-button-yellow').show();
+		  $('#help-button-white').hide();
+		  $('#help-button-yellow').popover();		  
+	    break;
+	  }
+
+
+}
 // get websocket up and running
 function instantiateSocket() {
         // connect to WAMPlay server
@@ -156,6 +221,7 @@ function moveTo(hat) {
         HAT = hat.toLowerCase();
 
         makeDraggable();
+        showToolTip(HAT);
 }
 
 function addCard(card, effect) {
