@@ -10,6 +10,8 @@ import play.api.libs.json._
 import models._
 import controllers._
 import views.html.defaultpages.badRequest
+import wamplay.controllers.WAMPlayServer;
+import views.html.defaultpages.notFound
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -69,8 +71,7 @@ object ThinkingSessions extends Controller {
       "blueAloneTime" -> optional(number),
       "blackTimeLimit" -> optional(number),
       "blackAloneTime" -> optional(number),
-      "mailAddresses" -> text
-    )(SessionConfig.apply)(SessionConfig.unapply))
+      "mailAddresses" -> text)(SessionConfig.apply)(SessionConfig.unapply))
 
   /*
    * Create new Session
@@ -83,6 +84,7 @@ object ThinkingSessions extends Controller {
         // TODO persist hatFlow
         val user = User.byCookie(cookie).get;
         val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
+        WAMPlayServer.addTopic("thinkingSession_" + newSessionId)
         Logger.debug("Found user cookie, creating session " + newSessionId)
         Redirect(routes.ThinkingSessions.index(newSessionId))
       }
