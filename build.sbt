@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
   cache
 )
 
+sources in doc in Compile := List()
 
 scalacOptions += " -feature"
 
