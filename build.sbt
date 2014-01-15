@@ -9,6 +9,7 @@ libraryDependencies ++= Seq(
   cache
 )
 
+publishArtifact in (Compile, packageDoc) := false
 
 scalacOptions += " -feature"
 
