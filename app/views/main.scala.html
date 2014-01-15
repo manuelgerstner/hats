@@ -6,18 +6,18 @@
   <meta charset="utf-8">
   <title>@title</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
-	<!-- less is compiled client-side -->
-	<link href="@routes.Assets.at("css/bootstrap.css")" rel="stylesheet">
-	<link href="@routes.Assets.at("css/tooltipster.css")" rel="stylesheet">
-	<link href="@routes.Assets.at("css/chardinjs.css")" rel="stylesheet">
-	<link href="@routes.Assets.at("css/bootstrap-tokenfield.css")" rel="stylesheet">
-	<link href="@routes.Assets.at("css/progress.css")" rel="stylesheet">
-	<link href="@routes.Assets.at("css/jquery-ui-1.10.3.custom.css")" rel="stylesheet">
-	
-	
-	<!-- all styles specific to our app, with timestamp to force refresh -->
-	<link href="@routes.Assets.at("css/style.css")?@System.currentTimeMillis" rel="stylesheet">	
+        
+        <!-- less is compiled client-side -->
+        <link href="@routes.Assets.at("css/bootstrap.css")" rel="stylesheet">
+        <link href="@routes.Assets.at("css/tooltipster.css")" rel="stylesheet">
+        <link href="@routes.Assets.at("css/chardinjs.css")" rel="stylesheet">
+        <link href="@routes.Assets.at("css/bootstrap-tokenfield.css")" rel="stylesheet">
+        <link href="@routes.Assets.at("css/progress.css")" rel="stylesheet">
+        <link href="@routes.Assets.at("css/jquery-ui-1.10.3.custom.css")" rel="stylesheet">
+        
+        
+        <!-- all styles specific to our app, with timestamp to force refresh -->
+        <link href="@routes.Assets.at("css/style.css")?@System.currentTimeMillis" rel="stylesheet">        
 
     <link rel="shortcut icon" href="@routes.Assets.at("img/favicon.png")">
 
@@ -25,19 +25,19 @@
     The jsRoutes action let's you use the routes in JavaScript, caution: not all routes are available.
     You can extend the available routes in Application.scala
     -->
-  	<script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/jquery.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/handlebar.1.1.2.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/jquery-ui-1.10.3.custom.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/jquery.form.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/less-1.3.3.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/bootstrap.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/jquery.tooltipster.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/chardinjs.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tokenfield.min.js")"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/scripts.js")?@System.currentTimeMillis"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")?@System.currentTimeMillis"></script>
-	<script type="text/javascript" src="//autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
+          <script type="text/javascript" src="@routes.Application.javascriptRoutes"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/handlebar.1.1.2.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery-ui-1.10.3.custom.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery.form.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/less-1.3.3.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/bootstrap.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/jquery.tooltipster.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/chardinjs.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/bootstrap-tokenfield.min.js")"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/scripts.js")?@System.currentTimeMillis"></script>
+        <script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")?@System.currentTimeMillis"></script>
+        <script type="text/javascript" src="//autobahn.s3.amazonaws.com/js/autobahn.min.js"></script>
 
 </head>
 
@@ -45,15 +45,15 @@
 <body class="@(if (hat != null) (hat.name.toLowerCase) else "")">
 
 <div class="container">
- 	<div class="row">
- 		<section id="topnav">
-			@topnav.render(title)
-		</section>
-		
-		<main>
-			@content
-		</main>
-	</div>
+         <div class="row">
+                 <section id="topnav">
+                        @topnav.render(title)
+                </section>
+                
+                <main>
+                        @content
+                </main>
+        </div>
 </div
 </body>
 </html>

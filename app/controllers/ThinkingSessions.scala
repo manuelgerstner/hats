@@ -57,6 +57,7 @@ object ThinkingSessions extends Controller {
    */
   val sessionConfigForm: Form[SessionConfig] = Form(
     mapping(
+
       "topic" -> nonEmptyText,
       "whiteTimeLimit" -> optional(number),
       "whiteAloneTime" -> optional(number),
