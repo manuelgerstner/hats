@@ -6,7 +6,8 @@ libraryDependencies ++= Seq(
   javaCore,
   jdbc,
   anorm,
-  cache
+  cache,
+  "com.typesafe" %% "play-plugins-mailer" % "2.2.0"
 )
 
 

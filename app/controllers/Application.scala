@@ -4,8 +4,10 @@ import models._
 import controllers.ThinkingSessions.sessionConfigForm
 import play.api._
 import play.api.mvc._
-
 import play.core.Router.JavascriptReverseRoute
+import play.api.Play.current
+import com.typesafe.plugin._
+import play.api.Play.current
 
 /**
  * Reponsible for all ThinkingSession setup and creation.
@@ -17,6 +19,17 @@ object Application extends Controller {
    * Landing Page
    */
   def index = Action { implicit request =>
+   
+    //TO DO :only for test purpose 
+    val mail = use[MailerPlugin].email
+    mail.setSubject("Thinking Hat Session Creation")
+    mail.setRecipient("anamika.buet@gmail.com")
+    mail.setFrom("sthinkinghats@gmail.com")
+    //sends html
+    mail.sendHtml("<html>html</html>" )
+    //sends text/text
+    mail.send( "text" )
+    
     Logger.debug("Application.index")
     val cook = request.cookies.get(User.idCookie)
     val user: User = (request.cookies.get(User.idCookie) match {
