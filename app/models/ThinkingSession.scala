@@ -7,6 +7,7 @@ import anorm.SqlParser._
 import play.api.Play.current
 import play.api.db._
 import play.api.mvc.AsyncResult
+import scala.language.postfixOps
 
 /**
  * The ThinkingSession models a whole session of the process. Don't read the code, read the comments ;-D
@@ -30,7 +31,8 @@ object ThinkingSession {
       get[Long]("owner") ~
       get[String]("title") ~
       get[Long]("current_hat") map {
-        case id ~ ownerId ~ title ~ hatId => ThinkingSession(id, User.getById(ownerId), title, Hat.getById(hatId));
+        case id ~ ownerId ~ title ~ hatId =>
+          ThinkingSession(id, User.byId(ownerId) match { case Some(user) => user case None => null }, title, Hat.byId(hatId));
       }
   }
 
@@ -47,7 +49,7 @@ object ThinkingSession {
   /**
    * Load a specific Thinking Session from DB specified by given ID
    */
-  def getById(id: Long): ThinkingSession = {
+  def byId(id: Long): ThinkingSession = {
     DB.withConnection { implicit connection =>
       SQL("select * from thinking_session where id = {id}").on(
         'id -> id).as(ThinkingSession.DBParser *) head
@@ -57,11 +59,11 @@ object ThinkingSession {
   /**
    * Retrieve all sessions a specified user is owner of
    */
-  def getSessionsByOwner(owner: User): List[ThinkingSession] = {
-    getSessionsByOwner(owner.id)
+  def byOwner(owner: User): List[ThinkingSession] = {
+    byOwner(owner.id)
   }
 
-  def getSessionsByOwner(ownerId: Long): List[ThinkingSession] = {
+  def byOwner(ownerId: Long): List[ThinkingSession] = {
     DB.withConnection { implicit connection =>
       SQL("select * from thinking_session where owner = {ownerId}").on(
         'ownerId -> ownerId).as(ThinkingSession.DBParser *)
@@ -74,17 +76,28 @@ object ThinkingSession {
    * parent sessions and there is no nicer way to model the 1:n relations ship with anorm (afaik)
    * This will NOT return the created Thinking Session!
    */
-  def create(owner: User, title: String, hat: Hat): Int = {
+  def create(owner: User, title: String, hat: Hat): Long = {
     create(owner.id, title, hat.id)
   }
 
-  def create(ownerId: Long, title: String, hatId: Long): Int = {
+  def nextId(): Long = {
     DB.withConnection { implicit connection =>
-      SQL("insert into thinking_session (owner,title,current_hat) values ({ownerId},{title},{hatId})").on(
+      SQL("SELECT CARD_ID_SEQ.nextval;").apply().map {
+        case Row(nextId: Long) => nextId
+      } head
+    }
+  }
+
+  def create(ownerId: Long, title: String, hatId: Long): Long = {
+    val id = nextId()
+    DB.withConnection { implicit connection =>
+      SQL("insert into thinking_session (id,owner,title,current_hat) values ({id},{ownerId},{title},{hatId})").on(
+        'id -> id,
         'ownerId -> ownerId,
         'title -> title,
         'hatId -> hatId).executeUpdate()
     }
+    id
   }
 
   /**
@@ -125,9 +138,7 @@ object ThinkingSession {
   /**
    * Dummy Session for dev purposes
    */
-  def dummy: ThinkingSession = {
-    (all() head)
-  }
+  val dummyId: Long = 0
+  val dummy: ThinkingSession = byId(dummyId)
 
-  def dummyId: Long = 1
 }

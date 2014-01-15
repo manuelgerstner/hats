@@ -3,12 +3,15 @@ package controllers
 import play.api._
 import play.api.mvc.Controller
 import play.api.mvc._
+import play.api.mvc.Results
 import play.api.data.Form
 import play.api.data.Forms._
 import play.api.libs.json._
 import models._
 import controllers._
-import models.forms.FormConfig
+import views.html.defaultpages.badRequest
+import wamplay.controllers.WAMPlayServer;
+import views.html.defaultpages.notFound
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -21,7 +24,8 @@ object ThinkingSessions extends Controller {
    */
   def index(id: Long) = Action {
     Logger.debug("ThinkingSessions.index")
-    Ok(views.html.cards(id, Card.getThinkingSessionCards(id), ThinkingSession.getById(id).currentHat))
+    val thinkingSession = ThinkingSession.byId(id);
+    Ok(views.html.cards(thinkingSession, Card.byThinkingSession(id), thinkingSession.currentHat))
   }
 
   /**
@@ -29,10 +33,10 @@ object ThinkingSessions extends Controller {
    */
   def changeHat(id: Long) = Action {
     Logger.debug("ThinkingSessions.changeHat")
-    val session = ThinkingSession.getById(id)
-    val nextHatId = HatFlow.getNextDefaultHatId(ThinkingSession.getById(id))
+    val session = ThinkingSession.byId(id)
+    val nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(id))
     ThinkingSession.changeHatTo(id, nextHatId)
-    Ok(views.html.cards(id, Card.getThinkingSessionCards(id), Hat.getById(nextHatId)))
+    Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId)))
   }
 
   /**
@@ -51,54 +55,66 @@ object ThinkingSessions extends Controller {
   /*
    * val to initiate session
    */
-  val configSaveForm = Form(
+  val sessionConfigForm: Form[SessionConfig] = Form(
     mapping(
-      "whHatt" -> nonEmptyText,
-      "whAlonet" -> nonEmptyText,
-      "yeHatt" -> nonEmptyText,
-      "yeAlonet" -> nonEmptyText,
-      "reHatt" -> nonEmptyText,
-      "reAlonet" -> nonEmptyText,
-      "grHatt" -> nonEmptyText,
-      "grAlonet" -> nonEmptyText,
-      "blHatt" -> nonEmptyText,
-      "blAlonet" -> nonEmptyText,
-      "bluHatt" -> nonEmptyText,
-      "bluAlonet" -> nonEmptyText
-    )(FormConfig.apply)(FormConfig.unapply))
-  /*
-   * Save the configuration for hats
-   * 
-   */
-  def saveConfig() = Action { implicit request =>
-    val formConfig = configSaveForm.bindFromRequest.get
 
-    // crate new session
-    val sessionId = 1;
-    Redirect(routes.ThinkingSessions.index(sessionId))
+      "topic" -> nonEmptyText,
+      "whiteTimeLimit" -> optional(number),
+      "whiteAloneTime" -> optional(number),
+      "yellowTimeLimit" -> optional(number),
+      "yeellowAloneTime" -> optional(number),
+      "redTimeLimit" -> optional(number),
+      "redAloneTime" -> optional(number),
+      "greenTimeLimit" -> optional(number),
+      "greenAloneTime" -> optional(number),
+      "blueTimeLimit" -> optional(number),
+      "blueAloneTime" -> optional(number),
+      "blackTimeLimit" -> optional(number),
+      "blackAloneTime" -> optional(number),
+      "mailAddresses" -> text)(SessionConfig.apply)(SessionConfig.unapply))
+
+  /*
+   * Create new Session
+   */
+  def createSession() = Action { implicit request =>
+    Logger.debug("ThinkingSessions.createSession")
+    val form = sessionConfigForm.bindFromRequest.get;
+    request.cookies.get(User.idCookie) match {
+      case Some(cookie) => {
+        // TODO persist hatFlow
+        val user = User.byCookie(cookie).get;
+        val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
+        WAMPlayServer.addTopic("thinkingSession_" + newSessionId)
+        Logger.debug("Found user cookie, creating session " + newSessionId)
+        Redirect(routes.ThinkingSessions.index(newSessionId))
+      }
+      case None => {
+        Logger.debug("No user cookie, bad request")
+        BadRequest
+      }
+    }
 
   }
 
   /**
    * Change the current Hat of a session. only owner (will be) allowed to do this
    */
-  def restChangeHat(sessionId: Long) = Action {
+  def restChangeHat(sessionId: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.restChangeHat(" + sessionId + ")")
-    val user = User.dummyUser1; // TODO get from session and compare to owner later on
-    val session = ThinkingSession.getById(sessionId)
-    val nextHatId = HatFlow.getNextDefaultHatId(session)
-    ThinkingSession.changeHatTo(sessionId, nextHatId)
-    val nextHat = Hat.getById(nextHatId)
-    //    val json = Json.obj(
-    //      "status" -> 200,
-    //      "fn" -> "changeHat",
-    //      "args" -> Json.obj(
-    //        "user" -> user.name,
-    //        "thinkingSession" -> sessionId,
-    //        "hat" -> nextHat.name
-    //      )
-    //    )
-    Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
+    request.cookies.get(User.idCookie) match {
+      case Some(cookie) => {
+        val user = User.byCookie(cookie).get;
+        /// TODO Add check is user is owner later on
+        val session = ThinkingSession.byId(sessionId)
+        val nextHatId = HatFlow.nextDefaultHatId(session)
+        ThinkingSession.changeHatTo(sessionId, nextHatId)
+        val nextHat = Hat.byId(nextHatId)
+        Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
+      }
+      case None => {
+        BadRequest(Json.obj("error" -> "no user")).as("application/json")
+      }
+    }
   }
 
 }
