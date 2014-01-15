@@ -9,7 +9,7 @@ libraryDependencies ++= Seq(
   cache
 )
 
-publishArtifact in (Compile, packageDoc) := false
+sources in doc in Compile := List()
 
 scalacOptions += " -feature"
 
