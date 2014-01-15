@@ -20,6 +20,7 @@ Built with Play 2.2.1
 	* Connection Type: Standard (Socket Attach)
 	* Host: `localhost`
 	* Port: `9999`
+	* Run `Debug as` -> select your configuration
 
 ##Git & Collab
 
