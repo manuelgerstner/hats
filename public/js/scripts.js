@@ -126,7 +126,7 @@ function onEvent(topic, event) {
 	console.log(event);
 	event.username = "FooUser";
 	event.id = 1e4;
-	//if (userid != incoming user)
+	//if (userid != incoming user) OR use skip paramters in session.send
 	addCard(JSON.parse(event), true);
 }
 
