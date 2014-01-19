@@ -11,6 +11,8 @@ libraryDependencies ++= Seq(
 
 sources in doc in Compile := List()
 
-scalacOptions += " -feature"
+scalacOptions += "-feature"
+
+scalacOptions += "-language:postfixOps"
 
 play.Project.playScalaSettings

@@ -16,33 +16,49 @@ import scala.language.postfixOps
  * it belongs to and of course the content (for now only text)
  * @author Nemo
  */
-case class Card(id: Long, thinkingSession: ThinkingSession, content: String, hat: Hat, creator: User)
+case class Card(
+  id: Long,
+  thinkingSession: ThinkingSession,
+  content: String,
+  hat: Hat,
+  creator: User,
+  imgUrl: Option[String],
+  imgMime: Option[String]) {
+
+  def toJson(): JsObject = {
+    Json.obj(
+      "id" -> this.id,
+      "hat" -> this.hat.name.toLowerCase,
+      "thinkingSessionId" -> this.thinkingSession.id,
+      "content" -> this.content,
+      "username" -> this.creator.name,
+      "imgUrl" -> this.imgUrl,
+      "imgMime" -> this.imgMime)
+  }
+}
 
 object Card {
 
   def dummy: Card = {
-    Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummy, User.dummy);
+    Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummy, User.dummy, None, None);
   }
 
   /**
-   * id                    	integer NOT NULL DEFAULT nextval('card_id_seq') PRIMARY KEY,
-   * thinking_session       integer NOT NULL REFERENCES thinking_session(id),
-   * content               	text NOT NULL,
-   * hat					integer REFERENCES hat(id),
-   * creator		      	integer REFERENCES `user`(id)
-   */
-  /**
    * ORM simple
    */
+  //as(get[Option[String]]("something") ?).getOrElse(None)
   val DBParser = {
     get[Long]("id") ~
       get[Long]("thinking_session") ~
       get[String]("content") ~
       get[Long]("hat") ~
-      get[Long]("creator") map {
-        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId =>
-          Card(id, ThinkingSession.byId(thinkingSessionId), content, Hat.byId(hatId),
-            User.byId(creatorId) match { case Some(user) => user case None => null });
+      get[Long]("creator") ~
+      (get[String]("img_url") ?) ~
+      (get[String]("img_mime") ?) map {
+        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId ~ imgUrl ~ imgMime =>
+          Card(id,
+            ThinkingSession.byId(thinkingSessionId).get, content, Hat.byId(hatId),
+            User.byId(creatorId).get, imgUrl, imgMime);
       }
   }
 
@@ -98,12 +114,11 @@ object Card {
     }
   }
 
-  /**
-   * Create a new card.
-   * This will return the id of the created card
-   */
-  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User): Int = {
-    create(content, thinkingSession.id, hat.id, creator.id)
+  def byId(id: Long): Option[Card] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from card where id = {id}").on(
+        'id -> id).as(Card.DBParser *).headOption
+    }
   }
 
   def nextId(): Long = {
@@ -118,16 +133,22 @@ object Card {
    * Create a new card.
    * This will return the id of the created card
    */
-  def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long): Int = {
+  def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long, imgUrl: Option[String], imgMime: Option[String]): Int = {
     DB.withConnection { implicit connection =>
       // create unique id by hashing contents + timestamp
       val id: Int = (content + thinkingSessionId + hatId + creatorId + System.currentTimeMillis).hashCode
-      SQL("insert into card (id,content,thinking_session,hat,creator) values ({id},{content},{thinkingSessionId},{hat},{creatorId})").on(
+      SQL("""
+          insert into card (id,content,thinking_session,hat,creator,img_url,img_mime) 
+          values ({id},{content},{thinkingSessionId},{hat},{creatorId},{imgUrl},{imgMime})
+          """).on(
         'id -> id,
         'content -> content,
         'thinkingSessionId -> thinkingSessionId,
         'hat -> hatId,
-        'creatorId -> creatorId).executeUpdate()
+        'creatorId -> creatorId,
+        'imgUrl -> imgUrl,
+        'imgMime -> imgMime
+      ).executeUpdate()
       id
     }
   }
@@ -136,12 +157,20 @@ object Card {
    * Convenience function creating a new Card from a formCard with bound values from a HTML form and the
    * creating user.
    */
-  def create(formCard: FormCard, thinkingSessionId: Long, userId: Long): Int = {
-    create(formCard.content, thinkingSessionId, Hat.byName(formCard.hat).id, userId)
+  def create(formCard: FormCard, thinkingSessionId: Long, userId: Long, imgUrl: Option[String], imgMime: Option[String]): Int = {
+    create(formCard.content, thinkingSessionId, Hat.byName(formCard.hat).id, userId, imgUrl, imgMime)
   }
 
-  def create(formCard: FormCard, thinkingSession: ThinkingSession, user: User): Int = {
-    create(formCard, thinkingSession.id, user.id)
+  def create(formCard: FormCard, thinkingSession: ThinkingSession, user: User, imgUrl: Option[String], imgMime: Option[String]): Int = {
+    create(formCard, thinkingSession.id, user.id, imgUrl, imgMime)
+  }
+
+  /**
+   * Create a new card.
+   * This will return the id of the created card
+   */
+  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User, imgUrl: Option[String], imgMime: Option[String]): Int = {
+    create(content, thinkingSession.id, hat.id, creator.id, imgUrl, imgMime)
   }
 
   /**
@@ -158,18 +187,7 @@ object Card {
     }
   }
 
-  def toJson(card: Card): JsObject = {
-    //case class Card(id: Long, thinkingSessionId: Long, content: String, hat: Hat, creator: User)
-    //{"id":5, "hat": "Green", "content": "card content", "user":"username"}
-    Json.obj(
-      "id" -> card.id,
-      "hat" -> card.hat.name.toLowerCase,
-      "thinkingSessionId" -> card.thinkingSession.id,
-      "content" -> card.content,
-      "username" -> card.creator.name)
-  }
-
   def listToJson(cards: List[Card]) = {
-    Json.toJson(cards.map(card => Card.toJson(card)))
+    Json.toJson(cards.map(card => card.toJson()))
   }
 }
