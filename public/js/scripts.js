@@ -35,12 +35,13 @@ $(function() {
 		type : "post",
 		//beforeSubmit: showRequest,
 		success : function(card) {
-			if (card.error === true) {
-				alert(card.message);
-				return;
-			}
-			addCard(card); // post-submit callback
-			progressBar.add(card);
+			return;
+			// if (card.error === true) {
+			// 	alert(card.message);
+			// 	return;
+			// }
+			// addCard(card); // post-submit callback
+			
 		}
 	});
 
@@ -91,7 +92,8 @@ function instantiateSocket() {
 		$("#btnAddCard").click(function() {
 			var newCard = {
 				"hat" : $("#form-hat").val(),
-				"content" : $("#content").val()
+				"content" : $("#content").val(),
+				"username" : $('#form-user').val()
 			};
 			var message = JSON.stringify(newCard);
 			// here the topic should be addCard
@@ -124,10 +126,12 @@ function onEvent(topic, event) {
 	console.log("Message from topic: " + topic + ":");
 	// event holds the actual message that is being sent
 	console.log(event);
-	event.username = "FooUser";
-	event.id = 1e4;
+	// event.username = "FooUser";
+	// event.id = 1e4;
 	//if (userid != incoming user) OR use skip paramters in session.send
-	addCard(JSON.parse(event), true);
+	var card = JSON.parse(event);
+	addCard(card, true);
+	progressBar.add(card);
 }
 
 function makeDraggable() {

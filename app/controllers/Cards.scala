@@ -14,7 +14,6 @@ import play.api.libs.json.Json
 import play.api.libs.json.Json.toJsFieldJsValueWrapper
 import play.api.mvc.Action
 import play.api.mvc.Controller
-import play.api.mvc.Results
 
 /**
  * Card Controller responsible for handling CRUD operations on ideas/cards (will be treated as synonyms,
@@ -46,7 +45,7 @@ object Cards extends Controller {
       case Some(cookie) => {
         val form = cardForm.bindFromRequest.get
         val user = User.byCookie(cookie).get;
-        val cardId = Card.create(form, thinkingSessionId, User.dummyId)
+        val cardId = Card.create(form, thinkingSessionId, User.dummyId, None, None)
         Logger.debug("Found user cookie, creating card " + cardId)
         Redirect(routes.ThinkingSessions.index(thinkingSessionId))
       }
@@ -76,7 +75,7 @@ object Cards extends Controller {
       case Some(cookie) => {
         val user = User.byCookie(cookie).get;
         val hat = Hat.byName(formCard.hat);
-        val cardId = Card.create(formCard.content, sessionId, hat.id, user.id);
+        val cardId = Card.create(formCard.content, sessionId, hat.id, user.id, None, None);
         Ok(Json.obj("id" -> cardId,
           "hat" -> hat.name.toLowerCase,
           "content" -> formCard.content,
@@ -102,7 +101,7 @@ object Cards extends Controller {
                     case Some(cookie) => {
                       val user = User.byCookie(cookie).get;
                       val hat = Hat.byId(hatId)
-                      val cardId = Card.create(content, sessionId, hatId, user.id)
+                      val cardId = Card.create(content, sessionId, hatId, user.id, None, None)
 
                       val json = Json.obj(
                         "status" -> 200,

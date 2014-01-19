@@ -29,7 +29,9 @@ CREATE TABLE card (
   thinking_session      integer NOT NULL REFERENCES thinking_session(id),
   content               text NOT NULL,
   hat						        integer REFERENCES hat(id),
-  creator					      integer REFERENCES `user`(id)
+  creator					      integer REFERENCES `user`(id),
+  img_url               text DEFAULT NULL,
+  img_mime              varchar(255) DEFAULT NULL
 );
 
   

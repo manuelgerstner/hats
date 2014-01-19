@@ -49,10 +49,10 @@ object ThinkingSession {
   /**
    * Load a specific Thinking Session from DB specified by given ID
    */
-  def byId(id: Long): ThinkingSession = {
+  def byId(id: Long): Option[ThinkingSession] = {
     DB.withConnection { implicit connection =>
       SQL("select * from thinking_session where id = {id}").on(
-        'id -> id).as(ThinkingSession.DBParser *) head
+        'id -> id).as(ThinkingSession.DBParser *) headOption
     }
   }
 
@@ -139,6 +139,6 @@ object ThinkingSession {
    * Dummy Session for dev purposes
    */
   val dummyId: Long = 0
-  val dummy: ThinkingSession = byId(dummyId)
+  val dummy: ThinkingSession = byId(dummyId).get
 
 }
