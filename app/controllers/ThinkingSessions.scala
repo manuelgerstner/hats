@@ -10,8 +10,10 @@ import play.api.libs.json._
 import models._
 import controllers._
 import views.html.defaultpages.badRequest
-import wamplay.controllers.WAMPlayServer;
+import wamplay.controllers.WAMPlayServer
 import views.html.defaultpages.notFound
+import play.api.Play.current
+import com.typesafe.plugin._
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -86,6 +88,16 @@ object ThinkingSessions extends Controller {
         val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
         WAMPlayServer.addTopic("thinkingSession_" + newSessionId)
         Logger.debug("Found user cookie, creating session " + newSessionId)
+
+        val mail = use[MailerPlugin].email
+        mail.setSubject("Thinking Hat Session Created")
+        mail.addFrom(current.configuration.getString("smtp.user").get)
+        mail.addRecipient("Thinking Hats<sthinkinghats@gmail.com>")
+        mail.addBcc(List("Dominique Busser <dombusser@gmail.com>", "Manuel Gerstner <manuelgerstner@gmail.com>"): _*)
+        //sends both text and html
+        mail.send("text", "<html>Hello User!!! You have created a session for Hats</html>")
+        Logger.debug("mail sent");
+
         Redirect(routes.ThinkingSessions.index(newSessionId))
       }
       case None => {
