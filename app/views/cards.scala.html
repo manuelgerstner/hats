@@ -14,7 +14,10 @@
 			var SESSION_ID = @session.id;
 			var HAT = "@hat.name.toLowerCase";
 			var WSURI = "ws://localhost:9000/wamp";
+			var CALL_URI = "http://sixhats.com/cards";
 			var SESSION_TOPIC = "thinkingSession_" + SESSION_ID;
+			console.log(CARDS);
+
 			// set up socket on load event
 			window.onload = function() {
 				instantiateSocket();
@@ -46,7 +49,6 @@
 		<div id="hat-cards" class="col-md-9">
 						
 			<div id="card-create">
-				@helper.form(action = routes.Cards.restFormAddCard(session.id), 'class -> "form-horizontal", 'id -> "card-form") {
 					<div class="form-group">
 						<input type="hidden" name="hat" id="form-hat" value="@hat.name.toLowerCase"/>
 						<input type="hidden" name="form-user" id="form-user" value="@user.name"/>
@@ -68,7 +70,6 @@
 								<button type="button" class="btn btn-warning pull-right" id="finish">Finish Session</button>
 						 -->
 					</div>
-				}
 			</div>
 								
 			<div id="cards" class="well">

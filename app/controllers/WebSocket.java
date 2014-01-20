@@ -1,5 +1,10 @@
 package controllers;
 
+import java.io.IOException;
+
+import models.Hat;
+import models.ThinkingSession;
+import models.User;
 import play.Logger;
 import play.libs.Json;
 import wamplay.annotations.URIPrefix;
@@ -9,20 +14,36 @@ import wamplay.annotations.onSubscribe;
 import wamplay.controllers.WAMPlayContoller;
 import wamplay.controllers.WAMPlayServer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
-@URIPrefix("http://example.com/")
+@URIPrefix("http://sixhats.com/cards")
 public class WebSocket extends WAMPlayContoller {
 
-	@onRPC("#meaningOfLife")
-	public static String getMeaningOfLife(String sessionID) {
-		return "Meaning of life is: 42";
-	}
+	// call addCard server-side
+	@onRPC("#addCard")
+	public static void add(String sessionId, JsonNode[] args)
+			throws JsonProcessingException, IOException {
+		JsonNode jsonCard = new ObjectMapper().readTree(args[0].asText());
 
-	@onRPC("#capital")
-	public static String add(String sessionID, JsonNode[] args) {
-		String ans = args[0].asText().toUpperCase();
-		return ans;
+		// message to be added as a Card
+		String content = jsonCard.get("content").asText();
+
+		// hat color
+		String hatAsString = jsonCard.get("hat").asText();
+		Hat hat = Hat.byName(hatAsString);
+
+		// user name DUMMY TODO
+		String userAsString = jsonCard.get("user").asText();
+		User user = User.dummy();
+
+		ThinkingSession tSession = ThinkingSession.dummy();
+
+		controllers.Cards.addCardRPC(content, tSession, hat, user);
+
+		WAMPlayServer.publish(jsonCard.get("thinkingSession").asText(),
+				jsonCard);
 	}
 
 	@onSubscribe
