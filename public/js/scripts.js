@@ -9,12 +9,28 @@ $.fn.scrollView = function() {
 
 $(function() {
 
+	
+	filepicker.setKey("ALJ5oSFlR428EQekrItRgz");
+
+	$('#addFile').click(function() {
+		filepicker.pick({
+			mimetypes: ['image/*', 'text/plain'],
+		    services:['COMPUTER', 'FACEBOOK', 'GMAIL'],
+		}, function (inkBlob) {
+			var imgUrl = inkBlob.url, imgMine = inkBlob.mime;
+			// inject into hidden fields
+			$('#imgUrl').val(imgUrl);
+			$('#imgMime').val(imgMime);
+		});
+	})
+	
+	
 	// only show first hat
 	if (typeof HAT !== "undefined") {
 		$('circle:not(.' + HAT + ')').hide();
 	}
 
-	var progressBar = new ProgressBar('#progressBar');
+	window.progressBar = new ProgressBar('#progressBar');
 
 	// initialize tooltips
 	$('.tooltipster').tooltipster();
@@ -23,7 +39,7 @@ $(function() {
 	if (typeof CARDS !== "undefined" && CARDS.length > 0) {
 		$(CARDS).each(function() {
 			addCard(this);
-			progressBar.add(this);
+			window.progressBar.add(this);
 		});
 
 		// initial drag
@@ -131,7 +147,7 @@ function onEvent(topic, event) {
 	//if (userid != incoming user) OR use skip paramters in session.send
 	var card = JSON.parse(event);
 	addCard(card, true);
-	progressBar.add(card);
+	window.progressBar.add(card);
 }
 
 function makeDraggable() {
@@ -187,7 +203,7 @@ function addCard(card, effect) {
 	//if (effect) markup.effect('highlight', {}, 1000);
 
 	// reset card content field
-	$('#content').val("");
+	$('#content, imgUrl, imgMime').val("");
 	$('#nocardsyet').remove();
 }
 
