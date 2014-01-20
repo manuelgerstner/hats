@@ -1,4 +1,4 @@
-@(session: ThinkingSession, cards: List[Card], hat: Hat)
+@(session: ThinkingSession, cards: List[Card], hat: Hat, user: User)
 
 @import helper._
 @import models._
@@ -49,6 +49,7 @@
 				@helper.form(action = routes.Cards.restFormAddCard(session.id), 'class -> "form-horizontal", 'id -> "card-form") {
 					<div class="form-group">
 						<input type="hidden" name="hat" id="form-hat" value="@hat.name.toLowerCase"/>
+						<input type="hidden" id="form-user" value="@user.name"/>
 						<div class="col-xs-4">
 							<input data-toggle="popover" data-placement="bottom" data-trigger="manual" 	type="text"
 								class="form-control" name="content" id="content" placeholder="Add new Card"/>
