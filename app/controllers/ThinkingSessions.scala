@@ -9,7 +9,8 @@ import play.api.data.Forms._
 import play.api.libs.json._
 import models._
 import controllers._
-import views.html.defaultpages.badRequest
+import com.feth.play.module.mail.Mailer;
+import com.feth.play.module.mail.Mailer.Mail.Body;
 import wamplay.controllers.WAMPlayServer;
 import views.html.defaultpages.notFound
 
@@ -22,21 +23,39 @@ object ThinkingSessions extends Controller {
   /**
    * Show the index of the current session
    */
-  def index(id: Long) = Action {
+  def index(id: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.index")
-    val thinkingSession = ThinkingSession.byId(id);
-    Ok(views.html.cards(thinkingSession, Card.byThinkingSession(id), thinkingSession.currentHat))
+
+    val user: User = request.cookies.get(User.idCookie) match {
+      case Some(cookie) => User.byCookie(cookie).get;
+      case None         => User.byId(User.create("New User")).get;
+    }
+
+    ThinkingSession.byId(id) match {
+      case Some(session) =>
+        Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user))
+      case None =>
+        NotFound
+    }
   }
 
   /**
    * Update Session state to respective hat, show session index of new hat.
    */
-  def changeHat(id: Long) = Action {
+  def changeHat(id: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.changeHat")
-    val session = ThinkingSession.byId(id)
-    val nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(id))
-    ThinkingSession.changeHatTo(id, nextHatId)
-    Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId)))
+    val user = request.cookies.get(User.idCookie) match {
+      case Some(cookie) => User.byCookie(cookie).get;
+      case None         => User.byId(User.create("New User")).get;
+    }
+    ThinkingSession.byId(id) match {
+      case Some(session) =>
+        val nextHatId = HatFlow.nextDefaultHatId(session)
+        ThinkingSession.changeHatTo(id, nextHatId)
+        Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId), user))
+      case None =>
+        NotFound
+    }
   }
 
   /**
@@ -57,7 +76,6 @@ object ThinkingSessions extends Controller {
    */
   val sessionConfigForm: Form[SessionConfig] = Form(
     mapping(
-
       "topic" -> nonEmptyText,
       "whiteTimeLimit" -> optional(number),
       "whiteAloneTime" -> optional(number),
@@ -80,20 +98,33 @@ object ThinkingSessions extends Controller {
     Logger.debug("ThinkingSessions.createSession")
     val form = sessionConfigForm.bindFromRequest.get;
     request.cookies.get(User.idCookie) match {
-      case Some(cookie) => {
+      case Some(cookie) =>
+
+        def sendMails(mails: List[String], title: String, url: String) {
+          mails match {
+            case m :: ms =>
+              val body = new Body(views.txt.email.invite.render(title, url).toString(),
+                views.html.email.invite.render(title, url).toString());
+              Mailer.getDefaultMailer().sendMail("Invite to Thinking Session", body, m);
+              Logger.debug("Invited User " + m + " to thinking session " + title)
+              sendMails(ms, title, url)
+            case Nil =>
+              Logger.info("All Users invited to session " + title)
+          }
+        }
+
         // TODO persist hatFlow
         val user = User.byCookie(cookie).get;
         val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
+        sendMails(form.mailAddressList, form.topic, routes.ThinkingSessions.index(newSessionId).absoluteURL(false))
+
         WAMPlayServer.addTopic("thinkingSession_" + newSessionId)
         Logger.debug("Found user cookie, creating session " + newSessionId)
         Redirect(routes.ThinkingSessions.index(newSessionId))
-      }
-      case None => {
+      case None =>
         Logger.debug("No user cookie, bad request")
         BadRequest
-      }
     }
-
   }
 
   /**
@@ -102,18 +133,18 @@ object ThinkingSessions extends Controller {
   def restChangeHat(sessionId: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.restChangeHat(" + sessionId + ")")
     request.cookies.get(User.idCookie) match {
-      case Some(cookie) => {
+      case Some(cookie) =>
         val user = User.byCookie(cookie).get;
         /// TODO Add check is user is owner later on
-        val session = ThinkingSession.byId(sessionId)
-        val nextHatId = HatFlow.nextDefaultHatId(session)
-        ThinkingSession.changeHatTo(sessionId, nextHatId)
-        val nextHat = Hat.byId(nextHatId)
-        Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
-      }
-      case None => {
-        BadRequest(Json.obj("error" -> "no user")).as("application/json")
-      }
+        ThinkingSession.byId(sessionId) match {
+          case Some(session) =>
+            val nextHatId = HatFlow.nextDefaultHatId(session)
+            ThinkingSession.changeHatTo(sessionId, nextHatId)
+            val nextHat = Hat.byId(nextHatId)
+            Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
+          case None => NotFound(Json.obj("error" -> "no session")).as("application/json")
+        }
+      case None => BadRequest(Json.obj("error" -> "no user")).as("application/json")
     }
   }
 

@@ -1,6 +1,4 @@
-name := "SixThinkingHats"
-
-version := "0.1-SNAPSHOT"
+import play.Project._
 
 libraryDependencies ++= Seq(
   javaCore,
@@ -11,6 +9,8 @@ libraryDependencies ++= Seq(
 
 sources in doc in Compile := List()
 
-scalacOptions += " -feature"
+scalacOptions += "-feature"
+
+scalacOptions += "-language:postfixOps"
 
 play.Project.playScalaSettings
