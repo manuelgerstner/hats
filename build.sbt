@@ -1,6 +1,4 @@
-name := "SixThinkingHats"
-
-version := "0.1-SNAPSHOT"
+import play.Project._
 
 libraryDependencies ++= Seq(
   javaCore,
