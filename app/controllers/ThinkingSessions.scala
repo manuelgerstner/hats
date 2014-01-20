@@ -9,7 +9,8 @@ import play.api.data.Forms._
 import play.api.libs.json._
 import models._
 import controllers._
-//import views.html.defaultpages.badRequest
+import com.feth.play.module.mail.Mailer;
+import com.feth.play.module.mail.Mailer.Mail.Body;
 import wamplay.controllers.WAMPlayServer;
 import views.html.defaultpages.notFound
 
@@ -98,9 +99,26 @@ object ThinkingSessions extends Controller {
     val form = sessionConfigForm.bindFromRequest.get;
     request.cookies.get(User.idCookie) match {
       case Some(cookie) =>
+
+        def sendMails(mails: List[String], title: String) {
+          mails match {
+            case m :: ms =>
+              val body = new Body(views.txt.email.invite.render().toString(),
+                views.html.email.invite.render().toString());
+              val test = m
+              Mailer.getDefaultMailer().sendMail("Invite to Thinking Session", body, m);
+              Logger.debug("Invited User " + m + "to thinking session " + title)
+              sendMails(ms, title)
+            case Nil =>
+              Logger.debug("All Users invited to session " + title)
+          }
+        }
+
         // TODO persist hatFlow
         val user = User.byCookie(cookie).get;
         val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
+        sendMails(form.mailAddressList, form.topic)
+
         WAMPlayServer.addTopic("thinkingSession_" + newSessionId)
         Logger.debug("Found user cookie, creating session " + newSessionId)
         Redirect(routes.ThinkingSessions.index(newSessionId))
