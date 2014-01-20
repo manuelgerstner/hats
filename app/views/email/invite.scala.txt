@@ -1,0 +1,11 @@
+@(title: String, url:String)
+
+Invite Thinking Session about "@title"
+
+Hi,
+
+you are invited to participate in a Thinking session. Join the session at
+ 
+@url
+
+Have fun thinking ;-D
