@@ -3,6 +3,7 @@ package controllers
 import models.Card
 import models.Hat
 import models.User
+import models.ThinkingSession
 import models.forms.FormCard
 import play.api.Logger
 import play.api.data.Form
@@ -54,6 +55,16 @@ object Cards extends Controller {
         BadRequest
       }
     }
+  }
+
+  /**
+   * Handles adding cards for a remote procedure call
+   */
+  def addCardRPC(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User) = {
+    Logger.debug("Cards.addCard")
+    val cardId = Card.create(content, thinkingSession, hat, creator, None, None)
+    Logger.debug("Creating card thru RPC with id: " + cardId)
+    Redirect(routes.ThinkingSessions.index(thinkingSession.id))
   }
 
   /**

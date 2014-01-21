@@ -45,7 +45,7 @@ $(function() {
 		makeDraggable();
 	}
 
-	$('#card-form').ajaxForm({
+	/*$('#card-form').ajaxForm({
 		dataType : "json",
 		type : "post",
 		//beforeSubmit: showRequest,
@@ -58,7 +58,7 @@ $(function() {
 			// addCard(card); // post-submit callback
 			
 		}
-	});
+	});*/
 
 	$('#indicate-ready').click(function() {
 		jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
@@ -106,13 +106,16 @@ function instantiateSocket() {
 		// click handler for add card
 		$("#btnAddCard").click(function() {
 			var newCard = {
+				"callType" : "addCard",	
+				"thinkingSession" : "thinkingSession_" + SESSION_ID,	
 				"hat" : $("#form-hat").val(),
 				"content" : $("#content").val(),
-				"username" : $('#form-user').val()
+				"user" : "Dummy"
 			};
 			var message = JSON.stringify(newCard);
-			// here the topic should be addCard
-			session.publish(SESSION_TOPIC, message);
+			// here the topic should be addCard - no it shouldn't :)
+			//session.publish(SESSION_TOPIC, message);
+			session.call(CALL_URI + "#addCard", message)
 		});
 
 		console.log("Connected to " + WSURI);
@@ -144,9 +147,9 @@ function onEvent(topic, event) {
 	// event.username = "FooUser";
 	// event.id = 1e4;
 	//if (userid != incoming user) OR use skip paramters in session.send
-	var card = JSON.parse(event);
-	addCard(card, true);
+	addCard(event, true);
 	window.progressBar.add(card);
+	
 }
 
 function makeDraggable() {
