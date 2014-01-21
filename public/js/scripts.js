@@ -9,7 +9,6 @@ $.fn.scrollView = function() {
 
 $(function() {
 
-	
 	filepicker.setKey("ALJ5oSFlR428EQekrItRgz");
 
 	$('#addFile').click(function() {
@@ -178,6 +177,7 @@ function moveTo(hat) {
 	var popover = $('#content'), content = TOOLTIPS[hat.toLowerCase()];
 	popover.attr('data-content', content);
 	// for some reason, data-title does not work, so we use this workaround
+	// TODO use a mustache template
 	popover.attr('data-original-title', "<strong>The " + hat.substr(0,1).toUpperCase() + hat.substr(1) + " Hat:</strong>");
 	
 	// now let's show the popover.
@@ -214,6 +214,8 @@ function validateForm() {
 		}
 		return false;
 	}
+	
+	
 	var field = $("#tokenfield");
 	var mails = field.tokenfield('getTokens');
 	var mailString = '';
@@ -226,7 +228,6 @@ function validateForm() {
 		}
 		mailString += mail + ',';
 	}
-	;
 	field.val(mailString); // mails for form form binding on server side
 	return true;
 }
