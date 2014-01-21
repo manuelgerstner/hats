@@ -62,7 +62,7 @@ object Cards extends Controller {
    */
   def addCardRPC(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User) = {
     Logger.debug("Cards.addCard")
-    val cardId = Card.create(content, thinkingSession, hat, creator)
+    val cardId = Card.create(content, thinkingSession, hat, creator, None, None)
     Logger.debug("Creating card thru RPC with id: " + cardId)
     Redirect(routes.ThinkingSessions.index(thinkingSession.id))
   }
