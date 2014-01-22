@@ -17,7 +17,7 @@
 			var CARDS = @Html(Card.listToJson(cards).toString);
 			var SESSION_ID = @session.id;
 			var HAT = "@hat.name.toLowerCase";
-			var WSURI = "ws://" + window.location.hostname + ":9000/wamp";
+			var WSURI = "ws://" + window.location.host + "/wamp";
 			var CALL_URI = "http://sixhats.com/cards";
 			var SESSION_TOPIC = "thinkingSession_" + SESSION_ID;
 			//console.log(CARDS);
