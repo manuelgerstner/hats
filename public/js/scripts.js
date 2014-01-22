@@ -24,9 +24,30 @@ $(function() {
 	})
 	
 	
-	// only show first hat
+	$('#modal-button').click(function() {
+		/* new user? */
+		var isNewUser = ($('#form-user').val() === "New User");
+		
+		/* force new user to enter name */
+		if (isNewUser) {
+			var name = $('#modal-username');
+			if (name.val() === "") {
+				name.parent().addClass('has-error');
+			} else {
+				name.parent().removeClass('has-error');
+				$('#form-user').val(name.val());
+				$('#first-time').remove();
+				$('#hatchange-modal').modal('hide');
+			}
+		} else {
+			$('#hatchange-modal').modal('hide');	
+		}
+		
+	});
+	
+	// only show first hat in progress bar
 	if (typeof HAT !== "undefined") {
-		$('circle:not(.' + HAT + ')').hide();
+		//$('circle:not(.' + HAT + ')').hide();
 	}
 
 	window.progressBar = new ProgressBar('#progressBar');

@@ -20,7 +20,7 @@
 			var WSURI = "ws://" + window.location.hostname + ":9000/wamp";
 			var CALL_URI = "http://sixhats.com/cards";
 			var SESSION_TOPIC = "thinkingSession_" + SESSION_ID;
-			console.log(CARDS);
+			//console.log(CARDS);
 
 			// set up socket on load event
 			window.onload = function() {
@@ -86,18 +86,29 @@
 }
 
 
-<div id="hatchange-modal" class="modal fade">
+<div id="hatchange-modal" class="modal fade" data-backdrop="static">
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
 				<h4 class="modal-title">You're now wearing a <span class="hat"></span> hat!</h4>
 			</div>
 			<div class="modal-body">
-				<p class="message"></p>
+				<p>
+					<strong class="message"></strong>
+				</p>
+				<div id="first-time">
+					<hr/>
+					<p>It seems like this is the first time you're visiting!</p>
+					<form role="form">
+						<div class="form-group">
+					    	<label class="control-label" for="modal-username">Please enter your name:</label>
+					    	<input type="text" class="form-control" id="modal-username"/>
+					  	</div>
+					</form>
+				</div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary" id="modal-button" >Close</button>
 			</div>
 		</div>
 	</div>
