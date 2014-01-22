@@ -1,3 +1,5 @@
+// test
+
 // Scrolls the view down to the config pane on the frontpage
 $.fn.scrollView = function() {
 	return this.each(function() {
