@@ -148,7 +148,7 @@ function onEvent(topic, event) {
 	// event.id = 1e4;
 	//if (userid != incoming user) OR use skip paramters in session.send
 	addCard(event, true);
-	window.progressBar.add(card);
+	window.progressBar.add(event);
 	
 }
 
@@ -177,14 +177,11 @@ function moveTo(hat) {
 	$('#form-hat').val(hat.toLowerCase());
 	
 	// change tooltip text for input
-	var popover = $('#content'), content = TOOLTIPS[hat.toLowerCase()];
-	popover.attr('data-content', content);
-	// for some reason, data-title does not work, so we use this workaround
-	// TODO use a mustache template
-	popover.attr('data-original-title', "<strong>The " + hat.substr(0,1).toUpperCase() + hat.substr(1) + " Hat:</strong>");
+	var modal = $('#hatchange-modal');
+	$('.hat', modal).html(hat.toLowerCase());
+	$('.message', modal).html(TOOLTIPS[hat.toLowerCase()]);
 	
-	// now let's show the popover.
-	$('#content').popover('show');
+	modal.modal();
 	
 	// overwrite global HAT var
 	HAT = hat.toLowerCase();
