@@ -36,6 +36,9 @@
 			};
 			// set up initial tooltip
 			$(function() {
+				if ($('#form-user').val() !== "") {
+					$('#first-time').remove();
+				}
 				moveTo(HAT);
 			});
 		</script>
