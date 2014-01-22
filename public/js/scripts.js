@@ -9,7 +9,6 @@ $.fn.scrollView = function() {
 
 $(function() {
 
-	
 	filepicker.setKey("ALJ5oSFlR428EQekrItRgz");
 
 	$('#addFile').click(function() {
@@ -46,7 +45,7 @@ $(function() {
 		makeDraggable();
 	}
 
-	$('#card-form').ajaxForm({
+	/*$('#card-form').ajaxForm({
 		dataType : "json",
 		type : "post",
 		//beforeSubmit: showRequest,
@@ -59,7 +58,7 @@ $(function() {
 			// addCard(card); // post-submit callback
 			
 		}
-	});
+	});*/
 
 	$('#indicate-ready').click(function() {
 		jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
@@ -107,13 +106,16 @@ function instantiateSocket() {
 		// click handler for add card
 		$("#btnAddCard").click(function() {
 			var newCard = {
+				"callType" : "addCard",	
+				"thinkingSession" : "thinkingSession_" + SESSION_ID,	
 				"hat" : $("#form-hat").val(),
 				"content" : $("#content").val(),
-				"username" : $('#form-user').val()
+				"user" : "Dummy"
 			};
 			var message = JSON.stringify(newCard);
-			// here the topic should be addCard
-			session.publish(SESSION_TOPIC, message);
+			// here the topic should be addCard - no it shouldn't :)
+			//session.publish(SESSION_TOPIC, message);
+			session.call(CALL_URI + "#addCard", message)
 		});
 
 		console.log("Connected to " + WSURI);
@@ -145,9 +147,9 @@ function onEvent(topic, event) {
 	// event.username = "FooUser";
 	// event.id = 1e4;
 	//if (userid != incoming user) OR use skip paramters in session.send
-	var card = JSON.parse(event);
-	addCard(card, true);
-	window.progressBar.add(card);
+	addCard(event, true);
+	window.progressBar.add(event);
+	
 }
 
 function makeDraggable() {
@@ -175,13 +177,11 @@ function moveTo(hat) {
 	$('#form-hat').val(hat.toLowerCase());
 	
 	// change tooltip text for input
-	var popover = $('#content'), content = TOOLTIPS[hat.toLowerCase()];
-	popover.attr('data-content', content);
-	// for some reason, data-title does not work, so we use this workaround
-	popover.attr('data-original-title', "<strong>The " + hat.substr(0,1).toUpperCase() + hat.substr(1) + " Hat:</strong>");
+	var modal = $('#hatchange-modal');
+	$('.hat', modal).html(hat.toLowerCase());
+	$('.message', modal).html(TOOLTIPS[hat.toLowerCase()]);
 	
-	// now let's show the popover.
-	$('#content').popover('show');
+	modal.modal();
 	
 	// overwrite global HAT var
 	HAT = hat.toLowerCase();
@@ -214,6 +214,8 @@ function validateForm() {
 		}
 		return false;
 	}
+	
+	
 	var field = $("#tokenfield");
 	var mails = field.tokenfield('getTokens');
 	var mailString = '';
@@ -226,7 +228,6 @@ function validateForm() {
 		}
 		mailString += mail + ',';
 	}
-	;
 	field.val(mailString); // mails for form form binding on server side
 	return true;
 }
