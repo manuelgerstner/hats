@@ -46,6 +46,16 @@ public class WebSocket extends WAMPlayContoller {
 				jsonCard);
 	}
 
+	@onRPC("#deleteCard")
+	public static void deleteCard(String sessionId, JsonNode[] args) {
+		// TODO
+	}
+
+	@onRPC("#moveHat")
+	public static void moveHat(String sessionId) {
+
+	}
+
 	@onSubscribe
 	public static boolean onSubscribe(String sessionID) {
 		Logger.debug("subscribing session id" + sessionID);

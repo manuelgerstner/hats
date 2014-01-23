@@ -162,16 +162,27 @@ function instantiateSocket() {
 		// click handler for add card
 		$("#btnAddCard").click(function() {
 			var newCard = {
-				"callType" : "addCard",	
 				"thinkingSession" : "thinkingSession_" + SESSION_ID,	
 				"hat" : $("#form-hat").val(),
 				"content" : $("#content").val(),
 				"user" : "Dummy"
 			};
-			var message = JSON.stringify(newCard);
-			// here the topic should be addCard - no it shouldn't :)
-			//session.publish(SESSION_TOPIC, message);
+			var event = {
+				"eventType" : "addCard",
+				"eventData" : newCard
+			}
+			var message = JSON.stringify(event);
 			session.call(CALL_URI + "#addCard", message)
+		});
+		
+		// click handler for moving to next hat
+		$("#indicate-ready").click(function() {
+			var event = {
+				"eventType" : "moveHat",
+				"eventData" : newCard
+			}
+			var message = JSON.stringify(event);
+			session.call(CALL_URI + "#moveHat", message)
 		});
 
 		console.log("Connected to " + WSURI);
