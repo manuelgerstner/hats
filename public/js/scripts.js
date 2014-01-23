@@ -108,10 +108,10 @@ $(function() {
 		$("#invite-panel").scrollView();
 	});
 
-	$('#start-button').click(function() {
-		$('#control-panel').removeClass('hidden');
-		$("#control-panel").scrollView();
-	});
+	//$('#start-button').click(function() {
+		//$('#control-panel').removeClass('hidden');
+		//$("#control-panel").scrollView();
+	//});
 	$('#help-button').click(function() {
 		$('body').chardinJs('start');
 	});

@@ -11,46 +11,41 @@
 		<div align="center">
 	        <img src="assets/img/hats_small.png" />
 	    </div>
-	    <h1>@message</h1>
-	    <p class="lead">Six Thinking Hats and the associated idea
+	    <h4>@message</h4>
+	    <p style="font-size:20px">Six Thinking Hats and the associated idea
 	        <em>parallel thinking</em> provide a means for groups to plan thinking processes in a detailed and cohesive way, and in doing so to think together more effectively.</p>
-	    
-	    <p><a id="start-button" class="btn btn-primary btn-lg" role="button">Get started!</a>
 	    </p>
-	</div>
-
-	<div id="control-panel" class="well hidden">	    
-	  	@helper.form(action = routes.ThinkingSessions.createSession, 'id -> "session-form", 'onsubmit->"return validateForm();", 'class->"form-horizontal") {
-	    <div id="rootwizard">
-	    	<ul>
-               <li><a href="#tab1" data-toggle="tab" style="display:none;">First</a></li>
-               <li><a href="#tab2" data-toggle="tab" style="display:none;">Second</a></li>                                           
-              </ul>
-	    	<div class="tab-content">		    
-			    <div class="tab-pane" id="tab1">
-			    	<div class="control-group">
-					    <label class="control-label" for="email"><h3>Topic*</h3></label>
-					    <div class="controls">
-					      @helper.inputText(sessionConfig("topic"), 'class -> "required form-control", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "topicfield")
-					    </div>
-					  </div>
-			    </div>
-			    <div class="tab-pane" id="tab2">
-			      <div class="control-group">
-					    <label class="control-label" for="url"><h3>Participants to invite by mail*</h3></label>
-					    <div class="controls">
-					      @helper.inputText(sessionConfig("mailAddresses"), 'class -> "form-control", 'id -> "tokenfield", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "emailfield")
-					    </div>
-					  </div>
-			    </div>
-				<ul class="pager wizard" style=" text-align:left; list-style:none;">
-				  	<li class="next"><input type="button" class="btn btn-primary" role="button" value="Next" /></li>
-				  	<li class="next finish" style="display:none;"><input type="submit" class="btn btn-primary" role="button" value="Initiate session!" data-position="right"/></li>
-				</ul>
+		    <div id="control-panel" class="jumbotron">	    
+		  	@helper.form(action = routes.ThinkingSessions.createSession, 'id -> "session-form", 'onsubmit->"return validateForm();", 'class->"form-horizontal") {
+		    <div id="rootwizard">
+		    	<ul>
+	               <li><a href="#tab1" data-toggle="tab" style="display:none;">First</a></li>
+	               <li><a href="#tab2" data-toggle="tab" style="display:none;">Second</a></li>                                           
+	              </ul>
+		    	<div class="tab-content">		    
+				    <div class="tab-pane" id="tab1">
+				    	<div class="control-group">
+				    		<div class="controls">
+						    	<label class="control-label" for="email"><h3>Topic*</h3></label>
+						      	@helper.inputText(sessionConfig("topic"), 'class -> "required form-control", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "topicfield")
+						    </div>
+						  </div>
+				    </div>
+				    <div class="tab-pane" id="tab2">
+				    	<div class="control-group">
+				      		<div class="controls">
+						    <label class="control-label" for="url"><h3>Participants to invite by mail*</h3></label>
+						      @helper.inputText(sessionConfig("mailAddresses"), 'class -> "form-control", 'id -> "tokenfield", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "emailfield")
+						 	</div>
+						</div>
+				    </div>
+					<ul class="pager wizard" style=" text-align:left; list-style:none;">
+					  	<li class="next"><input type="button" class="btn btn-primary" role="button" value="Next" /></li>
+					  	<li class="next finish" style="display:none;"><input type="submit" class="btn btn-primary" role="button" value="Initiate session!" data-position="right"/></li>
+					</ul>
+				</div>
 			</div>
+			}
 		</div>
-		}
 	</div>
-	
-
 }
