@@ -25,6 +25,9 @@ POST   /:id/changeHat                   controllers.ThinkingSessions.changeHat(i
 POST   /:id/indicateReady               controllers.ThinkingSessions.indicateReady(id: Long)
 POST   /:id/closeSession                controllers.ThinkingSessions.closeSession(id: Long)
 
+# Dashboard for the Creator
+POST   /:id/dashboardSummary					controllers.Dashboard.showReport(id: Long)
+
 # rest
 POST   /rest/:id/addCard          		controllers.Cards.restFormAddCard(id:Long)
 POST   /rest/:id/forceChangeHat         controllers.ThinkingSessions.restChangeHat(id:Long)

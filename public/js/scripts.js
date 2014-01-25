@@ -148,10 +148,21 @@ $(function() {
         }
 	}
 	});
-		
-
+	
+	//if(HAT == "blue"){
+		//$('#indicate-finish').show();
+		//$('#indicate-ready').hide();		
+	//}
+	var finishButton = setInterval(function(){finishTrip()},1000);
 });
 
+function finishTrip(){
+	if (HAT == "blue"){
+		//window.location.reload(true); 
+		$('#indicate-finish').show();
+		$('#indicate-ready').hide();
+	}
+}
 // get websocket up and running
 function instantiateSocket() {
 	// connect to WAMPlay server

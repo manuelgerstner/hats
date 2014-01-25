@@ -61,11 +61,11 @@
 							<input data-toggle="popover" data-placement="bottom" data-trigger="manual" 	type="text"
 								class="form-control" name="content" id="content" placeholder="Add new Card"/>
 						</div>
-						
 						<button type="button" class="btn btn-info" id="addFile">Add File</button>
 						
 						<button type="submit" class="btn btn-success" id="btnAddCard">Add Card &raquo;</button>
 						<button type="button" class="btn btn-info pull-right" id="indicate-ready">Move to next Hat</button>
+						<button type="button" class="btn btn-info pull-right" id="indicate-finish" style="display:none;" onclick="window.location.href = '@controllers.Dashboard.showReport((session.id).toLong)';" >Finish!</button>
 						<!-- 
 								
 								<button type="button" class="btn btn-warning pull-right" id="finish">Finish Session</button>
