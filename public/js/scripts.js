@@ -162,7 +162,7 @@ function instantiateSocket() {
 		// click handler for add card
 		$("#btnAddCard").click(function() {
 			var newCard = {
-				"thinkingSession" : "thinkingSession_" + SESSION_ID,	
+				"thinkingSession" : SESSION_ID,	
 				"hat" : $("#form-hat").val(),
 				"content" : $("#content").val(),
 				"user" : "Dummy"
@@ -187,8 +187,9 @@ function instantiateSocket() {
 
 		console.log("Connected to " + WSURI);
 		// subscribe to add cards here, give a callback
-		session.subscribe(SESSION_TOPIC, onEvent);
-		console.log("Subscribed to " + SESSION_TOPIC);
+		// ID needs to be string
+		session.subscribe(SESSION_ID.toString(), onEvent);
+		console.log("Subscribed to session number " + SESSION_ID);
 	},
 
 	// WAMP session is gone
