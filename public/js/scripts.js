@@ -154,6 +154,11 @@ $(function() {
 		//$('#indicate-ready').hide();		
 	//}
 	var finishButton = setInterval(function(){finishTrip()},1000);
+	$('#myModal').on('shown.bs.modal', function () {
+	    $(this).find('.modal-dialog').css({width:'auto',
+	                               height:'auto', 
+	                              'max-height':'100%'});
+	});
 });
 
 function finishTrip(){
@@ -309,3 +314,5 @@ function validateForm() {
 	field.val(mailString); // mails for form form binding on server side
 	return true;
 }
+
+

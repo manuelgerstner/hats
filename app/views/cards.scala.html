@@ -65,11 +65,7 @@
 						
 						<button type="submit" class="btn btn-success" id="btnAddCard">Add Card &raquo;</button>
 						<button type="button" class="btn btn-info pull-right" id="indicate-ready">Move to next Hat</button>
-						<button type="button" class="btn btn-info pull-right" id="indicate-finish" style="display:none;" onclick="window.location.href = '@controllers.Dashboard.showReport((session.id).toLong)';" >Finish!</button>
-						<!-- 
-								
-								<button type="button" class="btn btn-warning pull-right" id="finish">Finish Session</button>
-						 -->
+						<button type="button" class="btn btn-info pull-right" id="indicate-finish" style="display:none;" data-toggle="modal" data-target="#myModal">Finish!</button>
 					</div>
 			</div>
 								
@@ -116,6 +112,16 @@
 		</div>
 	</div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+     @dashboard.render
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
 
 <script id="card-template" type="text/x-handlebars-template">
 		<div data-cardid="{{id}}" class="card {{hat}}">
