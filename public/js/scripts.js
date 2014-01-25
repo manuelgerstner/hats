@@ -1,5 +1,3 @@
-// test
-
 // Scrolls the view down to the config pane on the frontpage
 $.fn.scrollView = function() {
 	return this.each(function() {
@@ -82,20 +80,7 @@ $(function() {
 		}
 	});*/
 
-	$('#indicate-ready').click(function() {
-		jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
-			dataType : "json",
-			type : "post",
-			success : function(data) {
-				if (data.error === true) {
-					alert(data.message);
-					return;
-				}
-				$('circle.' + data.hat).show();
-				moveTo(data.hat);
-			}
-		});
-	});
+
 
 	$('.tooltipster').tooltipster();
 	
@@ -178,33 +163,48 @@ function instantiateSocket() {
 		// click handler for add card
 		$("#btnAddCard").click(function() {
 			var newCard = {
-				"thinkingSession" : "thinkingSession_" + SESSION_ID,	
+				"thinkingSession" : SESSION_ID,	
 				"hat" : $("#form-hat").val(),
 				"content" : $("#content").val(),
 				"user" : "Dummy"
 			};
-			var event = {
+			var addCardEvent = {
 				"eventType" : "addCard",
 				"eventData" : newCard
 			}
-			var message = JSON.stringify(event);
+			var message = JSON.stringify(addCardEvent);
 			session.call(CALL_URI + "#addCard", message)
 		});
-		
-		// click handler for moving to next hat
-		$("#indicate-ready").click(function() {
-			var event = {
-				"eventType" : "moveHat",
-				"eventData" : newCard
-			}
-			var message = JSON.stringify(event);
-			session.call(CALL_URI + "#moveHat", message)
-		});
 
+		$('#indicate-ready').click(function() {
+			var hatInfo = {
+				"thinkingSession" : SESSION_ID,	
+				"hat" : $("#form-hat").val()
+			};
+			var moveHatEvent = {
+				"eventType" : "moveHat",
+				"eventData" : hatInfo
+			}
+			var message = JSON.stringify(moveHatEvent);
+			session.call(CALL_URI + "#moveHat", message)
+		// jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
+		// 	dataType : "json",
+		// 	type : "post",
+		// 	success : function(data) {
+		// 		if (data.error === true) {
+		// 			alert(data.message);
+		// 			return;
+		// 		}
+		// 		$('circle.' + data.hat).show();
+		// 		moveTo(data.hat);
+		// 	}
+		// });
+		});
 		console.log("Connected to " + WSURI);
 		// subscribe to add cards here, give a callback
-		session.subscribe(SESSION_TOPIC, onEvent);
-		console.log("Subscribed to " + SESSION_TOPIC);
+		// ID needs to be string
+		session.subscribe(SESSION_ID.toString(), onEvent);
+		console.log("Subscribed to session number " + SESSION_ID);
 	},
 
 	// WAMP session is gone
@@ -220,18 +220,22 @@ function instantiateSocket() {
 }
 
 // debugging handler for websocket events coming in
-function onEvent(topic, event) {
+function onEvent(topic, e) {
 
 	// add switch case for topic here:
 
 	console.log("Message from topic: " + topic + ":");
 	// event holds the actual message that is being sent
-	console.log(event);
+	console.log(e);
 	// event.username = "FooUser";
 	// event.id = 1e4;
 	//if (userid != incoming user) OR use skip paramters in session.send
-	addCard(event, true);
-	window.progressBar.add(event);
+	if(e.eventType === "addCard") {
+		addCard(e.eventData, true);
+	} else if (e.eventType === "moveHat") {
+		moveTo(e.eventData.hat);
+	}
+	window.progressBar.add(e);
 	
 }
 
