@@ -7,6 +7,7 @@ import models.ThinkingSession;
 import models.User;
 import play.Logger;
 import play.libs.Json;
+import scala.Option;
 import wamplay.annotations.URIPrefix;
 import wamplay.annotations.onPublish;
 import wamplay.annotations.onRPC;
@@ -25,25 +26,19 @@ public class WebSocket extends WAMPlayContoller {
 	@onRPC("#addCard")
 	public static void add(String sessionId, JsonNode[] args)
 			throws JsonProcessingException, IOException {
-		JsonNode jsonCard = new ObjectMapper().readTree(args[0].asText());
+		JsonNode jsonResponse = new ObjectMapper().readTree(args[0].asText());
 
 		// message to be added as a Card
-		String content = jsonCard.get("content").asText();
-
+		JsonNode eventData = jsonResponse.get("eventData");
 		// hat color
-		String hatAsString = jsonCard.get("hat").asText();
-		Hat hat = Hat.byName(hatAsString);
+		Hat hat = Hat.byName(eventData.get("hat").asText());
 
 		// user name DUMMY TODO
-		String userAsString = jsonCard.get("user").asText();
 		User user = User.dummy();
-
-		ThinkingSession tSession = ThinkingSession.dummy();
-
-		controllers.Cards.addCardRPC(content, tSession, hat, user);
-
-		WAMPlayServer.publish(jsonCard.get("thinkingSession").asText(),
-				jsonCard);
+		ThinkingSession tSession = ThinkingSession.byId(eventData.get("thinkingSession").asLong()).get();
+		controllers.Cards.addCardRPC(eventData.get("content").asText(), tSession, hat, user);
+		WAMPlayServer.publish(eventData.get("thinkingSession").asText(),
+				jsonResponse);
 	}
 
 	@onRPC("#deleteCard")
