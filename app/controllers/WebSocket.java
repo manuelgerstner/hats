@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 
 import models.Hat;
+import models.HatFlow;
 import models.ThinkingSession;
 import models.User;
 import play.Logger;
@@ -18,6 +19,7 @@ import wamplay.controllers.WAMPlayServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @URIPrefix("http://sixhats.com/cards")
 public class WebSocket extends WAMPlayContoller {
@@ -47,8 +49,23 @@ public class WebSocket extends WAMPlayContoller {
 	}
 
 	@onRPC("#moveHat")
-	public static void moveHat(String sessionId) {
-
+	public static void moveHat(String sessionId, JsonNode[] args) throws JsonProcessingException, IOException {
+		JsonNode jsonResponse = new ObjectMapper().readTree(args[0].asText());
+		
+		// event data containing current hat and session id
+		JsonNode eventData = jsonResponse.get("eventData");
+		
+		long tSessionId = eventData.get("thinkingSession").asLong();
+		
+		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(tSessionId).get());
+		Hat nextHat = Hat.byId(nextHatId);
+		
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode pubResponse = mapper.readTree("{ \"eventType\" : \"moveHat\" ,\"eventData\": {\"hat\":\"" + nextHat.name() + "\" }}");
+		System.out.println(pubResponse.asText());		
+		ThinkingSessions.changeHat(tSessionId);
+		WAMPlayServer.publish(String.valueOf(tSessionId),
+				pubResponse);
 	}
 
 	@onSubscribe
