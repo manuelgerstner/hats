@@ -215,7 +215,9 @@ function onEvent(topic, event) {
 	// event.username = "FooUser";
 	// event.id = 1e4;
 	//if (userid != incoming user) OR use skip paramters in session.send
-	addCard(event, true);
+	if(event.eventType = "addCard") {
+		addCard(event.eventData, true);
+	}
 	window.progressBar.add(event);
 	
 }

@@ -34,9 +34,8 @@ public class WebSocket extends WAMPlayContoller {
 		Hat hat = Hat.byName(eventData.get("hat").asText());
 
 		// user name DUMMY TODO
-		User user = User.byId(Long.getLong(sessionId)).get();
-
-		ThinkingSession tSession = ThinkingSession.byId(Long.getLong(eventData.get("thinkingSession").asText())).get();
+		User user = User.dummy();
+		ThinkingSession tSession = ThinkingSession.byId(eventData.get("thinkingSession").asLong()).get();
 		controllers.Cards.addCardRPC(eventData.get("content").asText(), tSession, hat, user);
 		WAMPlayServer.publish(eventData.get("thinkingSession").asText(),
 				jsonResponse);
