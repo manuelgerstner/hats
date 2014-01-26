@@ -8,7 +8,6 @@ import models.ThinkingSession;
 import models.User;
 import play.Logger;
 import play.libs.Json;
-import scala.Option;
 import wamplay.annotations.URIPrefix;
 import wamplay.annotations.onPublish;
 import wamplay.annotations.onRPC;
@@ -19,7 +18,6 @@ import wamplay.controllers.WAMPlayServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @URIPrefix("http://sixhats.com/cards")
 public class WebSocket extends WAMPlayContoller {
@@ -56,14 +54,12 @@ public class WebSocket extends WAMPlayContoller {
 		JsonNode eventData = jsonResponse.get("eventData");
 		
 		long tSessionId = eventData.get("thinkingSession").asLong();
-		
 		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(tSessionId).get());
 		Hat nextHat = Hat.byId(nextHatId);
 		
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode pubResponse = mapper.readTree("{ \"eventType\" : \"moveHat\" ,\"eventData\": {\"hat\":\"" + nextHat.name() + "\" }}");
-		System.out.println(pubResponse.asText());		
-		ThinkingSessions.changeHat(tSessionId);
+		ThinkingSession.changeHatTo(tSessionId, nextHatId);
 		WAMPlayServer.publish(String.valueOf(tSessionId),
 				pubResponse);
 	}
