@@ -18,7 +18,7 @@ import anorm.SqlParser._
  *
  * @author Nemo
  */
-case class User(id: Long, name: String)
+case class User(id: Long, name: String, mail: Option[String])
 
 object User {
 
@@ -29,8 +29,9 @@ object User {
    */
   def simple = {
     get[Long]("id") ~
-      get[String]("name") map {
-        case id ~ name => User(id, name)
+      get[String]("name") ~
+      (get[String]("mail")?) map {
+        case id ~ name ~ mail => User(id, name, mail)
       }
   }
 
@@ -61,12 +62,13 @@ object User {
    * Create a new user by a name.
    * This will NOT return the created User!
    */
-  def create(name: String): Long = {
+  def create(name: String, mail: Option[String]): Long = {
     val id: Int = (name + System.currentTimeMillis).hashCode
     DB.withConnection { implicit connection =>
-      SQL("insert into user (id,name) values ({id},{name})").on(
+      SQL("insert into user (id,name,mail) values ({id},{name},{mail})").on(
         'id -> id,
-        'name -> name
+        'name -> name,
+        'mail -> mail
       ).executeUpdate()
     }
     id

@@ -46,7 +46,7 @@ object Cards extends Controller {
       case Some(cookie) => {
         val form = cardForm.bindFromRequest.get
         val user = User.byCookie(cookie).get;
-        val cardId = Card.create(form, thinkingSessionId, User.dummyId, None, None)
+        val cardId = Card.create(form, thinkingSessionId, User.dummyId, 0, 0, None, None)
         Logger.debug("Found user cookie, creating card " + cardId)
         Redirect(routes.ThinkingSessions.index(thinkingSessionId))
       }
@@ -62,7 +62,7 @@ object Cards extends Controller {
    */
   def addCardRPC(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User) = {
     Logger.debug("Cards.addCard")
-    val cardId = Card.create(content, thinkingSession, hat, creator, None, None)
+    val cardId = Card.create(content, thinkingSession, hat, creator, 0, 0, None, None)
     Logger.debug("Creating card thru RPC with id: " + cardId)
     Redirect(routes.ThinkingSessions.index(thinkingSession.id))
   }
@@ -86,7 +86,7 @@ object Cards extends Controller {
       case Some(cookie) => {
         val user = User.byCookie(cookie).get;
         val hat = Hat.byName(formCard.hat);
-        val cardId = Card.create(formCard.content, sessionId, hat.id, user.id, None, None);
+        val cardId = Card.create(formCard.content, sessionId, hat.id, user.id, 0, 0, None, None);
         Ok(Json.obj("id" -> cardId,
           "hat" -> hat.name.toLowerCase,
           "content" -> formCard.content,
@@ -112,7 +112,7 @@ object Cards extends Controller {
                     case Some(cookie) => {
                       val user = User.byCookie(cookie).get;
                       val hat = Hat.byId(hatId)
-                      val cardId = Card.create(content, sessionId, hatId, user.id, None, None)
+                      val cardId = Card.create(content, sessionId, hatId, user.id, 0, 0, None, None)
 
                       val json = Json.obj(
                         "status" -> 200,
@@ -122,7 +122,6 @@ object Cards extends Controller {
                           "hat" -> hat.name,
                           "content" -> content,
                           "user" -> user.name))
-                      // Return reponse with 200 (OK) status and JSON body
                       Ok(Json.obj("content" -> json)).as("application/json")
 
                     }

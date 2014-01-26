@@ -22,6 +22,8 @@ case class Card(
   content: String,
   hat: Hat,
   creator: User,
+  posX: Int,
+  posY: Int,
   imgUrl: Option[String],
   imgMime: Option[String]) {
 
@@ -32,6 +34,8 @@ case class Card(
       "thinkingSessionId" -> this.thinkingSession.id,
       "content" -> this.content,
       "username" -> this.creator.name,
+      "posX" -> this.posX,
+      "posY" -> this.posY,
       "imgUrl" -> this.imgUrl,
       "imgMime" -> this.imgMime)
   }
@@ -40,7 +44,7 @@ case class Card(
 object Card {
 
   def dummy: Card = {
-    Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummy, User.dummy, None, None);
+    Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummy, User.dummy, 0, 0, None, None);
   }
 
   /**
@@ -53,12 +57,14 @@ object Card {
       get[String]("content") ~
       get[Long]("hat") ~
       get[Long]("creator") ~
+      get[Int]("pos_x") ~
+      get[Int]("pos_y") ~
       (get[String]("img_url") ?) ~
       (get[String]("img_mime") ?) map {
-        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId ~ imgUrl ~ imgMime =>
+        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId ~ posX ~ posY ~ imgUrl ~ imgMime =>
           Card(id,
             ThinkingSession.byId(thinkingSessionId).get, content, Hat.byId(hatId),
-            User.byId(creatorId).get, imgUrl, imgMime);
+            User.byId(creatorId).get, posX, posY, imgUrl, imgMime);
       }
   }
 
@@ -133,19 +139,22 @@ object Card {
    * Create a new card.
    * This will return the id of the created card
    */
-  def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long, imgUrl: Option[String], imgMime: Option[String]): Int = {
+  def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long,
+    posX: Int, posY: Int, imgUrl: Option[String], imgMime: Option[String]): Int = {
     DB.withConnection { implicit connection =>
       // create unique id by hashing contents + timestamp
       val id: Int = (content + thinkingSessionId + hatId + creatorId + System.currentTimeMillis).hashCode
       SQL("""
-          insert into card (id,content,thinking_session,hat,creator,img_url,img_mime) 
-          values ({id},{content},{thinkingSessionId},{hat},{creatorId},{imgUrl},{imgMime})
+          insert into card (id,content,thinking_session,hat,creator,pos_x,pos_y,img_url,img_mime) 
+          values ({id},{content},{thinkingSessionId},{hat},{creatorId},{posX},{posY},{imgUrl},{imgMime})
           """).on(
         'id -> id,
         'content -> content,
         'thinkingSessionId -> thinkingSessionId,
         'hat -> hatId,
         'creatorId -> creatorId,
+        'posX -> posX,
+        'posY -> posY,
         'imgUrl -> imgUrl,
         'imgMime -> imgMime
       ).executeUpdate()
@@ -157,20 +166,20 @@ object Card {
    * Convenience function creating a new Card from a formCard with bound values from a HTML form and the
    * creating user.
    */
-  def create(formCard: FormCard, thinkingSessionId: Long, userId: Long, imgUrl: Option[String], imgMime: Option[String]): Int = {
-    create(formCard.content, thinkingSessionId, Hat.byName(formCard.hat).id, userId, imgUrl, imgMime)
+  def create(formCard: FormCard, thinkingSessionId: Long, userId: Long, posX: Int, posY: Int, imgUrl: Option[String], imgMime: Option[String]): Int = {
+    create(formCard.content, thinkingSessionId, Hat.byName(formCard.hat).id, userId, posX, posY, imgUrl, imgMime)
   }
 
-  def create(formCard: FormCard, thinkingSession: ThinkingSession, user: User, imgUrl: Option[String], imgMime: Option[String]): Int = {
-    create(formCard, thinkingSession.id, user.id, imgUrl, imgMime)
+  def create(formCard: FormCard, thinkingSession: ThinkingSession, user: User, posX: Int, posY: Int, imgUrl: Option[String], imgMime: Option[String]): Int = {
+    create(formCard, thinkingSession.id, user.id, posX, posY, imgUrl, imgMime)
   }
 
   /**
    * Create a new card.
    * This will return the id of the created card
    */
-  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User, imgUrl: Option[String], imgMime: Option[String]): Int = {
-    create(content, thinkingSession.id, hat.id, creator.id, imgUrl, imgMime)
+  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User, posX: Int, posY: Int, imgUrl: Option[String], imgMime: Option[String]): Int = {
+    create(content, thinkingSession.id, hat.id, creator.id, posX, posY, imgUrl, imgMime)
   }
 
   /**
