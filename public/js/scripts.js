@@ -142,6 +142,7 @@ $(function() {
  // get dashboard for session id
         $('#indicate-finish').click(function() {
         	window.location.href = '/' + SESSION_ID + '/dashboard';
+        	$('body').removeClass().addClass("dashboard");
         });
 
 });
