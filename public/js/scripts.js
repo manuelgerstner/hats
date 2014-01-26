@@ -8,25 +8,30 @@ $.fn.scrollView = function() {
 };
 
 $(function() {
-        
+
         filepicker.setKey("ALJ5oSFlR428EQekrItRgz");
         $('#addFile').click(function() {
                 filepicker.pick({
-                        mimetypes: ['image/*', 'text/plain'],
-                    services:['COMPUTER', 'FACEBOOK', 'GMAIL'],
-                }, function (inkBlob) {
+                        mimetypes : [ 'image/*', 'text/plain' ],
+                        services : [ 'COMPUTER', 'FACEBOOK', 'GMAIL' ],
+                }, function(inkBlob) {
                         var imgUrl = inkBlob.url, imgMine = inkBlob.mime;
                         // inject into hidden fields
                         $('#imgUrl').val(imgUrl);
                         $('#imgMime').val(imgMime);
                 });
-        })
-        
-        
+        });
+
+        $("table").tablesorter({
+                debug : true
+        });
+
         $('#modal-button').click(function() {
                 /* new user? */
                 var isNewUser = ($('#form-user').val() === "New User");
-                
+
+                console.log(isNewUser);
+
                 /* force new user to enter name */
                 if (isNewUser) {
                         var name = $('#modal-username');
@@ -39,18 +44,11 @@ $(function() {
                                 $('#hatchange-modal').modal('hide');
                         }
                 } else {
-                        $('#hatchange-modal').modal('hide');        
+                        $('#hatchange-modal').modal('hide');
                 }
-                
+
         });
-        
-        
-        // get dashboard for session id
-        $('#indicate-finish').click(function() {
-        	window.location.href = '/' + SESSION_ID + '/dashboard';
-        });
-        
-        
+
         // only show first hat in progress bar
         if (typeof HAT !== "undefined") {
                 //$('circle:not(.' + HAT + ')').hide();
@@ -87,10 +85,8 @@ $(function() {
                 }
         });*/
 
-
-
         $('.tooltipster').tooltipster();
-        
+
         $('#tokenfield').tokenfield();
 
         $('#moveToConfig-button').click(function() {
@@ -101,54 +97,58 @@ $(function() {
         });
 
         //$('#start-button').click(function() {
-                //$('#control-panel').removeClass('hidden');
-                //$("#control-panel").scrollView();
+        //$('#control-panel').removeClass('hidden');
+        //$("#control-panel").scrollView();
         //});
         $('#help-button').click(function() {
                 $('body').chardinJs('start');
         });
         var $validator = $("#session-form").validate({
-        rules: {
-                topicfield: {
-                        required: true,
-                        minlength: 3
+                rules : {
+                        topicfield : {
+                                required : true,
+                                minlength : 3
+                        }
                 }
-        }
-      });
-        $('#rootwizard').bootstrapWizard({
-                onTabShow: function(tab, navigation, index) {
-                var $total = navigation.find('li').length;
-                var $current = index+1;
-                var $percent = ($current/$total) * 100;
-                $('#rootwizard').find('.bar').css({width:$percent+'%'});
-                
-                // If it's the last tab then hide the last button and show the finish instead
-                if($current >= $total) {
-                        $('#rootwizard').find('.pager .next').hide();
-                        $('#rootwizard').find('.pager .finish').show();
-                        $('#rootwizard').find('.pager .finish').removeClass('disabled');
-                } else {
-                        $('#rootwizard').find('.pager .next').show();
-                        $('#rootwizard').find('.pager .finish').hide();
-                }                        
-        },
-        onNext: function(tab, navigation, index) {
-        var $valid = $("#session-form").valid();
-        if(!$valid) {
-                $validator.focusInvalid();
-                return false;
-        }
-        }
         });
-        var finishButton = setInterval(function(){finishTrip()},1000);
+        $('#rootwizard').bootstrapWizard({
+                onTabShow : function(tab, navigation, index) {
+                        var $total = navigation.find('li').length;
+                        var $current = index + 1;
+                        var $percent = ($current / $total) * 100;
+                        $('#rootwizard').find('.bar').css({
+                                width : $percent + '%'
+                        });
+
+                        // If it's the last tab then hide the last button and show the finish instead
+                        if ($current >= $total) {
+                                $('#rootwizard').find('.pager .next').hide();
+                                $('#rootwizard').find('.pager .finish').show();
+                                $('#rootwizard').find('.pager .finish').removeClass(
+                                                'disabled');
+                        } else {
+                                $('#rootwizard').find('.pager .next').show();
+                                $('#rootwizard').find('.pager .finish').hide();
+                        }
+                },
+                onNext : function(tab, navigation, index) {
+                        var $valid = $("#session-form").valid();
+                        if (!$valid) {
+                                $validator.focusInvalid();
+                                return false;
+                        }
+                }
+        });
+        
+        $('#dashboardModal').on('shown.bs.modal', function() {
+                $(this).find('.modal-dialog').css({
+                        width : 'auto',
+                        height : 'auto',
+                        'max-height' : '100%'
+                });
+        });
+
 });
-function finishTrip(){
-	if (HAT == "blue"){
-		//window.location.reload(true); 
-		$('#indicate-finish').show();
-		$('#indicate-ready').hide();
-	}
-}
 // get websocket up and running
 function instantiateSocket() {
         // connect to WAMPlay server
@@ -159,7 +159,7 @@ function instantiateSocket() {
                 // click handler for add card
                 $("#btnAddCard").click(function() {
                         var newCard = {
-                                "thinkingSession" : SESSION_ID,        
+                                "thinkingSession" : SESSION_ID,
                                 "hat" : $("#form-hat").val(),
                                 "content" : $("#content").val(),
                                 "user" : "Dummy"
@@ -174,7 +174,7 @@ function instantiateSocket() {
 
                 $('#indicate-ready').click(function() {
                         var hatInfo = {
-                                "thinkingSession" : SESSION_ID,        
+                                "thinkingSession" : SESSION_ID,
                                 "hat" : $("#form-hat").val()
                         };
                         var moveHatEvent = {
@@ -183,18 +183,18 @@ function instantiateSocket() {
                         }
                         var message = JSON.stringify(moveHatEvent);
                         session.call(CALL_URI + "#moveHat", message)
-                // jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
-                //         dataType : "json",
-                //         type : "post",
-                //         success : function(data) {
-                //                 if (data.error === true) {
-                //                         alert(data.message);
-                //                         return;
-                //                 }
-                //                 $('circle.' + data.hat).show();
-                //                 moveTo(data.hat);
-                //         }
-                // });
+                        // jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
+                        //         dataType : "json",
+                        //         type : "post",
+                        //         success : function(data) {
+                        //                 if (data.error === true) {
+                        //                         alert(data.message);
+                        //                         return;
+                        //                 }
+                        //                 $('circle.' + data.hat).show();
+                        //                 moveTo(data.hat);
+                        //         }
+                        // });
                 });
                 console.log("Connected to " + WSURI);
                 // subscribe to add cards here, give a callback
@@ -216,23 +216,23 @@ function instantiateSocket() {
 }
 
 // debugging handler for websocket events coming in
-function onEvent(topic, e) {
+function onEvent(topic, event) {
 
         // add switch case for topic here:
 
         console.log("Message from topic: " + topic + ":");
         // event holds the actual message that is being sent
-        console.log(e);
+        console.log(event);
         // event.username = "FooUser";
         // event.id = 1e4;
         //if (userid != incoming user) OR use skip paramters in session.send
-        if(e.eventType === "addCard") {
-                addCard(e.eventData, true);
-        } else if (e.eventType === "moveHat") {
-                moveTo(e.eventData.hat);
+        if (event.eventType === "addCard") {
+                addCard(event.eventData, true);
+        } else if (event.eventType === "moveHat") {
+                moveTo(event.eventData.hat);
         }
-        window.progressBar.add(e);
-        
+        window.progressBar.add(event);
+
 }
 
 function makeDraggable() {
@@ -258,17 +258,25 @@ function moveTo(hat) {
         $('#hat').removeClass().addClass(hat.toLowerCase());
         $('body').removeClass().addClass(hat.toLowerCase());
         $('#form-hat').val(hat.toLowerCase());
-        
+
         // change tooltip text for input
         var modal = $('#hatchange-modal');
         $('.hat', modal).html(hat.toLowerCase());
         $('.message', modal).html(TOOLTIPS[hat.toLowerCase()]);
-        
+
         modal.modal();
-        
+
         // overwrite global HAT var
         HAT = hat.toLowerCase();
+
         makeDraggable();
+        
+        if (HAT === "blue") {
+                //window.location.reload(true); 
+                $('#indicate-finish').show();
+                $('#indicate-ready').hide();
+        }
+        
 }
 
 function addCard(card, effect) {
@@ -297,8 +305,7 @@ function validateForm() {
                 }
                 return false;
         }
-        
-        
+
         var field = $("#tokenfield");
         var mails = field.tokenfield('getTokens');
         var mailString = '';
