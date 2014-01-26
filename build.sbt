@@ -4,7 +4,8 @@ libraryDependencies ++= Seq(
   javaCore,
   jdbc,
   anorm,
-  cache
+  cache,
+  "com.typesafe" %% "play-plugins-mailer" % "2.1-RC2"
 )
 
 sources in doc in Compile := List()

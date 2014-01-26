@@ -28,7 +28,7 @@ object ThinkingSessions extends Controller {
 
     val user: User = request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie).get;
-      case None         => User.byId(User.create("New User")).get;
+      case None => User.byId(User.create("New User")).get;
     }
 
     ThinkingSession.byId(id) match {
@@ -46,7 +46,7 @@ object ThinkingSessions extends Controller {
     Logger.debug("ThinkingSessions.changeHat")
     val user = request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie).get;
-      case None         => User.byId(User.create("New User")).get;
+      case None => User.byId(User.create("New User")).get;
     }
     ThinkingSession.byId(id) match {
       case Some(session) =>
@@ -118,7 +118,7 @@ object ThinkingSessions extends Controller {
         val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
         sendMails(form.mailAddressList, form.topic, routes.ThinkingSessions.index(newSessionId).absoluteURL(false))
 
-        WAMPlayServer.addTopic("thinkingSession_" + newSessionId)
+        WAMPlayServer.addTopic(newSessionId.toString)
         Logger.debug("Found user cookie, creating session " + newSessionId)
         Redirect(routes.ThinkingSessions.index(newSessionId))
       case None =>
