@@ -12,7 +12,7 @@
 	        <img src="assets/img/hats_small.png" />
 	    </div>
 	    <h4>@message</h4>
-	    <p style="font-size:20px">Six Thinking Hats and the associated idea
+	    <p>Six Thinking Hats and the associated idea
 	        <em>parallel thinking</em> provide a means for groups to plan thinking processes in a detailed and cohesive way, and in doing so to think together more effectively.</p>
 	    </p>
 		    <div id="control-panel" class="jumbotron">	    
@@ -26,7 +26,7 @@
 				    <div class="tab-pane" id="tab1">
 				    	<div class="control-group">
 				    		<div class="controls">
-						    	<label class="control-label" for="email"><h3>Topic*</h3></label>
+						    	<h3><label class="control-label" for="topic">Topic*</label></h3>
 						      	@helper.inputText(sessionConfig("topic"), 'class -> "required form-control", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "topicfield")
 						    </div>
 						  </div>
@@ -34,7 +34,7 @@
 				    <div class="tab-pane" id="tab2">
 				    	<div class="control-group">
 				      		<div class="controls">
-						    <label class="control-label" for="url"><h3>Participants to invite by mail*</h3></label>
+						    <h3><label class="control-label" for="mailAddresses">Participants to invite by mail*</label></h3>
 						      @helper.inputText(sessionConfig("mailAddresses"), 'class -> "form-control", 'id -> "tokenfield", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "emailfield")
 						 	</div>
 						</div>
