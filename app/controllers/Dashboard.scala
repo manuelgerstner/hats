@@ -18,10 +18,10 @@ object Dashboard extends Controller {
   /**
    * show summary report
    */
-  def showReport() = TODO
+  def showReport(id: Long) = Action { implicit request =>
   //Action { implicit request =>
   //Logger.debug("Dashboard")
-  // Ok(views.html.dashboard("hello"))
+  	Ok(views.html.dashboard())
 
-  //}
+  }
 }
