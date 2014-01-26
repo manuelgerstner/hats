@@ -1,10 +1,8 @@
 @main("Six thinking Hats", null) {
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Dashboard</title>
-</head>
-<body>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
+	<script type="text/javascript" src="//cdn.jsdelivr.net/morris.js/0.4.1/morris.min.js"></script>
+	<meta charset=utf-8 />
 	<div id="wrapper">
 		<div id="page-wrapper">
 			<div class="row">
@@ -45,84 +43,108 @@
 				</div>
 				<div class="col-lg-3">
 					<div class="panel panel-primary">
-		              <div class="panel-heading">
-		                <h3 class="panel-title"><i class="fa fa-clock-o"></i> User Interaction Metrices</h3>
-		              </div>
-		              <div class="panel-body">
-		                <div class="list-group">
-		                  <a href="#" class="list-group-item">
-		                    <span class="badge">just now</span>
-		                    <i class="fa fa-comment"></i> Marin Created a Session
-		                  </a>
-		                  <a href="#" class="list-group-item">
-		                    <span class="badge">4 minutes ago</span>
-		                    <i class="fa fa-comment"></i> Manu wears Blue hat
-		                  </a>
-		                  <a href="#" class="list-group-item">
-		                    <span class="badge">23 minutes ago</span>
-		                    <i class="fa fa-comment"></i> Doque wears Red hat
-		                  </a>
-		                  <a href="#" class="list-group-item">
-		                    <span class="badge">56 minutes ago</span>
-		                    <i class="fa fa-comment"></i> David wears Yellow hat
-		                  </a>
-		                  <a href="#" class="list-group-item">
-		                    <span class="badge">1 hour ago</span>
-		                    <i class="fa fa-comment"></i> Anamika wears Green hat
-		                  </a>
-		                </div>
-		              </div>
-		            </div>
-		          </div>
-		          <div class="col-lg-3">
-		            <div class="panel panel-primary">
-		              <div class="panel-heading">
-		                <h3 class="panel-title"><i class="fa fa-comments-o"></i> Thinking Message Statistics</h3>
-		              </div>
-		              <div class="panel-body">
-		                <div class="table-responsive">
-		                  <table class="table table-bordered table-hover table-striped tablesorter">
-		                    <thead>
-		                      <tr>
-		                        <th>Hat<i class="fa fa-sort"></i></th>
-		                        <th>Per Hat Cards<i class="fa fa-sort"></i></th>
-		                      </tr>
-		                    </thead>
-		                    <tbody>
-		                      <tr>
-		                        <td>Blue</td>
-		                        <td>14</td>
-		                       
-		                      </tr>
-		                      <tr>
-		                        <td>White</td>
-		                        <td>10</td>
-		                      </tr>
-		                      <tr>
-		                        <td>Red</td>
-		                        <td>11</td>
-		                      </tr>
-		                      <tr>
-		                        <td>Yellow</td>
-		                        <td>25</td>
-		                      </tr>
-		                      <tr>
-		                        <td>Black</td>
-		                        <td>20</td>
-		                      </tr>
-		                      <tr>
-		                        <td>Green</td>
-		                        <td>6</td>
-		                      </tr>
+						<div class="panel-heading">
+							<h3 class="panel-title"><i class="fa fa-clock-o"></i> User Interaction Metrices</h3>
+						</div>
+						<div class="panel-body">
+							<div class="list-group">
+								<a href="#" class="list-group-item">
+									<span class="badge">just now</span>
+									<i class="fa fa-comment"></i> Marin Created a Session
+								</a>
+								<a href="#" class="list-group-item">
+									<span class="badge">4 minutes ago</span>
+									<i class="fa fa-comment"></i> Manu wears Blue hat
+								</a>
+								<a href="#" class="list-group-item">
+									<span class="badge">23 minutes ago</span>
+									<i class="fa fa-comment"></i> Doque wears Red hat
+								</a>
+								<a href="#" class="list-group-item">
+									<span class="badge">56 minutes ago</span>
+									<i class="fa fa-comment"></i> David wears Yellow hat
+								</a>
+								<a href="#" class="list-group-item">
+									<span class="badge">1 hour ago</span>
+									<i class="fa fa-comment"></i> Anamika wears Green hat
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3">
+					<div class="panel panel-primary">
+						<div class="panel-heading">
+							<h3 class="panel-title"><i class="fa fa-comments-o"></i> Thinking Message Statistics</h3>
+						</div>
+						<div class="panel-body">
+							<div class="table-responsive">
+								<table class="table table-bordered table-hover table-striped tablesorter">
+									<thead>
+										<tr>
+										<th>Hat<i class="fa fa-sort"></i></th>
+										<th>Per Hat Cards<i class="fa fa-sort"></i></th>
+										</tr>
+									</thead>
+		                    		<tbody>
+		                    			<tr>
+		                    			<td>Blue</td>
+		                    			<td>14</td>
+		                    			</tr>
+		                    			<tr>
+		                    			<td>White</td>
+		                    			<td>10</td>
+		                    			</tr>
+		                    			<tr>
+		                    			<td>Red</td>
+		                    			<td>11</td>
+		                    			</tr>
+		                    			<tr><td>Yellow</td>
+				                        <td>25</td>
+				                      </tr>
+				                      <tr>
+				                        <td>Black</td>
+				                        <td>20</td>
+				                      </tr>
+				                      <tr>
+				                        <td>Green</td>
+				                        <td>6</td>
+				                      </tr>
 		                    </tbody>
 		                  </table>
 		                </div>
 		              </div>
 		            </div>
 		          </div>
-		        </div><!-- /.row -->	
+		          <div class="col-lg-3">
+          				<div class="panel panel-primary">
+          					<div class="panel-heading">
+          						<h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Elapsed Time Per Hat</h3>
+          					</div>
+          					<div class="panel-body">
+          					<div id="elapsed-time-chart-donut"></div>
+				                <div class="text-right">
+				                	<a href="#">View Details <i class="fa fa-arrow-circle-right"></i></a>
+				                </div>
+              				</div>
+            			</div>
+          			</div>
+		        </div><!-- /.row -->
 		      </div><!-- /#page-wrapper -->		
 		    </div><!-- /#wrapper -->
-</body>
-</html>
+  
+    <script>
+        Morris.Donut({
+            element: 'elapsed-time-chart-donut',
+            data: [
+              { label: "Yellow Hat", value: 12 },
+              { label: "Blue Hat", value: 30 },
+              { label: "Black Hat", value: 20 },
+              { label: "Green Hat", value: 30 },
+              { label: "White Hat", value: 10 },
+              { label: "Red Hat", value: 20 }
+            ],
+            formatter: function (x) { return x + "%"}
+        });
+    </script>
 }
