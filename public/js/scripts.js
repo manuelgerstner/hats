@@ -44,6 +44,13 @@ $(function() {
                 
         });
         
+        
+        // get dashboard for session id
+        $('#indicate-finish').click(function() {
+        	window.location.href = '/' + SESSION_ID + '/dashboard';
+        });
+        
+        
         // only show first hat in progress bar
         if (typeof HAT !== "undefined") {
                 //$('circle:not(.' + HAT + ')').hide();
