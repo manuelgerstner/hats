@@ -139,13 +139,9 @@ $(function() {
                         }
                 }
         });
-        
-        $('#dashboardModal').on('shown.bs.modal', function() {
-                $(this).find('.modal-dialog').css({
-                        width : 'auto',
-                        height : 'auto',
-                        'max-height' : '100%'
-                });
+ // get dashboard for session id
+        $('#indicate-finish').click(function() {
+        	window.location.href = '/' + SESSION_ID + '/dashboard';
         });
 
 });
