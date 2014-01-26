@@ -26,9 +26,10 @@ object ThinkingSessions extends Controller {
   def index(id: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.index")
 
+    val test = request.cookies.get(User.idCookie)
     val user: User = request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie).get;
-      case None => User.byId(User.create("New User")).get;
+      case None         => User.byId(User.create("New User", None)).get;
     }
 
     ThinkingSession.byId(id) match {
@@ -46,7 +47,7 @@ object ThinkingSessions extends Controller {
     Logger.debug("ThinkingSessions.changeHat")
     val user = request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie).get;
-      case None => User.byId(User.create("New User")).get;
+      case None         => User.byId(User.create("New User", None)).get;
     }
     ThinkingSession.byId(id) match {
       case Some(session) =>
@@ -100,23 +101,9 @@ object ThinkingSessions extends Controller {
     request.cookies.get(User.idCookie) match {
       case Some(cookie) =>
 
-        def sendMails(mails: List[String], title: String, url: String) {
-          mails match {
-            case m :: ms =>
-              val body = new Body(views.txt.email.invite.render(title, url).toString(),
-                views.html.email.invite.render(title, url).toString());
-              Mailer.getDefaultMailer().sendMail("Invite to Thinking Session", body, m);
-              Logger.debug("Invited User " + m + " to thinking session " + title)
-              sendMails(ms, title, url)
-            case Nil =>
-              Logger.info("All Users invited to session " + title)
-          }
-        }
-
-        // TODO persist hatFlow
         val user = User.byCookie(cookie).get;
         val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
-        sendMails(form.mailAddressList, form.topic, routes.ThinkingSessions.index(newSessionId).absoluteURL(false))
+        sendInviteMails(form.mailAddressList, form.topic, routes.ThinkingSessions.index(newSessionId).absoluteURL(false))
 
         WAMPlayServer.addTopic(newSessionId.toString)
         Logger.debug("Found user cookie, creating session " + newSessionId)
@@ -124,6 +111,19 @@ object ThinkingSessions extends Controller {
       case None =>
         Logger.debug("No user cookie, bad request")
         BadRequest
+    }
+  }
+
+  def sendInviteMails(mails: List[String], title: String, url: String) {
+    mails match {
+      case m :: ms =>
+        val body = new Body(views.txt.email.invite.render(title, url).toString(),
+          views.html.email.invite.render(title, url).toString());
+        Mailer.getDefaultMailer().sendMail("Invite to Thinking Session", body, m);
+        Logger.debug("Invited User " + m + " to thinking session " + title)
+        sendInviteMails(ms, title, url)
+      case Nil =>
+        Logger.info("All Users invited to session " + title)
     }
   }
 
