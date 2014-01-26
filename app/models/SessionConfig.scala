@@ -29,6 +29,6 @@ case class SessionConfig(
   def black(sessionId: Long): HatFlow = HatFlow(3, sessionId, 4, get(blackTimeLimit), get(blackAloneTime));
   def green(sessionId: Long): HatFlow = HatFlow(4, sessionId, 5, get(greenTimeLimit), get(greenAloneTime));
   def blue(sessionId: Long): HatFlow = HatFlow(5, sessionId, 6, get(blueTimeLimit), get(blueAloneTime));
-  def mailAddressList: List[String] = mailAddresses.split(",").toList;
+  def mailAddressList: List[String] = mailAddresses.split(",").toList.filter(_ != "");
 
 }

@@ -10,7 +10,8 @@ CREATE SEQUENCE user_id_seq;
 -- needs \"\" because user is a reserved SQL table. To keep the Scala Play convention we keep the singular as name
 CREATE TABLE `user` (
   id                    integer NOT NULL DEFAULT nextval('user_id_seq') PRIMARY KEY,
-  name                  varchar(255) NOT NULL
+  name                  varchar(255) NOT NULL,
+  mail                  varchar(255) DEFAULT NULL
 );
 
 
@@ -30,6 +31,8 @@ CREATE TABLE card (
   content               text NOT NULL,
   hat						        integer REFERENCES hat(id),
   creator					      integer REFERENCES `user`(id),
+  pos_x                 integer DEFAULT 0,
+  pos_y                 integer DEFAULT 0,
   img_url               text DEFAULT NULL,
   img_mime              varchar(255) DEFAULT NULL
 );
@@ -44,10 +47,10 @@ INSERT INTO hat VALUES (5,'Green');
 INSERT INTO hat VALUES (6,'Blue');
 
 -- preload user table with the developer dummies
-INSERT INTO user VALUES (1,'David');
-INSERT INTO user VALUES (2,'Manu');
-INSERT INTO user VALUES (3,'Dom');
-INSERT INTO user VALUES (4,'Anamika');
+INSERT INTO user VALUES (1,'David',NULL);
+INSERT INTO user VALUES (2,'Manu',NULL);
+INSERT INTO user VALUES (3,'Dom',NULL);
+INSERT INTO user VALUES (4,'Anamika',NULL);
 
 INSERT INTO thinking_session VALUES (0, 1, 'Birthday Present for Manu', 1);
 
