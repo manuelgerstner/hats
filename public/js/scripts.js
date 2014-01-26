@@ -141,11 +141,11 @@ $(function() {
         }
         });
         var finishButton = setInterval(function(){finishTrip()},1000);
-    	$('#dashboardModal').on('shown.bs.modal', function () {
-    	    $(this).find('.modal-dialog').css({width:'auto',
-    	                               height:'auto', 
-    	                              'max-height':'100%'});
-    	});
+        $('#dashboardModal').on('shown.bs.modal', function () {
+        	$(this).find('.modal-dialog').css({width:'auto',
+        		height:'auto', 
+        		'max-height':'100%'});
+        	});
                 
 
 });
