@@ -9,10 +9,11 @@ import play.api.data.Forms._
 import play.api.libs.json._
 import models._
 import controllers._
-import com.feth.play.module.mail.Mailer;
-import com.feth.play.module.mail.Mailer.Mail.Body;
-import wamplay.controllers.WAMPlayServer;
+import com.feth.play.module.mail.Mailer
+import com.feth.play.module.mail.Mailer.Mail.Body
+
 import views.html.defaultpages.notFound
+import ws.wamplay.controllers.WAMPlayServer
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -53,7 +54,7 @@ object ThinkingSessions extends Controller {
       case Some(session) =>
         val nextHatId = HatFlow.nextDefaultHatId(session)
         ThinkingSession.changeHatTo(id, nextHatId)
-        Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId), user))
+        Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId).get, user))
       case None =>
         NotFound
     }
@@ -141,7 +142,7 @@ object ThinkingSessions extends Controller {
             val nextHatId = HatFlow.nextDefaultHatId(session)
             ThinkingSession.changeHatTo(sessionId, nextHatId)
             val nextHat = Hat.byId(nextHatId)
-            Ok(Json.obj("hat" -> nextHat.name.toLowerCase)).as("application/json")
+            Ok(Json.obj("hat" -> nextHat.get.name.toLowerCase)).as("application/json")
           case None => NotFound(Json.obj("error" -> "no session")).as("application/json")
         }
       case None => BadRequest(Json.obj("error" -> "no user")).as("application/json")
