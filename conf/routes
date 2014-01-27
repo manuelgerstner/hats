@@ -11,7 +11,8 @@ GET    /javascriptRoutes                controllers.Application.javascriptRoutes
 
 
 # WebSocket implementation
-GET    /wamp                     		wamplay.controllers.WAMPlayServer.connect()
+# Send websocket connections to the WAMPlay server
+GET     /wamp                     		ws.wamplay.controllers.WAMPlayServer.connect()
 
 
 # Cards in a Sessions
