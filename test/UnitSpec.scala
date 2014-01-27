@@ -3,12 +3,8 @@ import org.specs2.runner._
 import org.junit.runner._
 import play.api.test._
 import play.api.test.Helpers._
-import models.Card
-import models.ThinkingSession
-import models.Hat
-import models.User
-import controllers.ThinkingSessions
-import controllers.routes
+import models._
+import controllers._
 
 @RunWith(classOf[JUnitRunner])
 class UnitSpec extends Specification {
@@ -47,6 +43,21 @@ class UnitSpec extends Specification {
       dbUser must beSome
       dbUser.get.name must equalTo(name)
       dbUser.get.mail must equalTo(None)
+    }
+
+    "change hat of ThinkingSession" in new WithApplication {
+      val topic = "PersistenceSpecContent2"
+      val id = ThinkingSession.create(User.dummy, topic, Hat.dummy)
+      val dbSession = ThinkingSession.byId(id);
+      dbSession must beSome
+      val hatId = HatFlow.nextDefaultHatId(dbSession.get)
+      val newHat = Hat.byId(hatId);
+      newHat must beSome
+      ThinkingSession.changeHatTo(dbSession.get, newHat.get)
+      val updatedDbSession = ThinkingSession.byId(id);
+      updatedDbSession must beSome
+      updatedDbSession.get.currentHat.id must beEqualTo(newHat.get.id)
+
     }
   }
 
