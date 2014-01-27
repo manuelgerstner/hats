@@ -159,7 +159,8 @@ function instantiateSocket() {
                                 "thinkingSession" : SESSION_ID,
                                 "hat" : $("#form-hat").val(),
                                 "content" : $("#content").val(),
-                                "user" : "Dummy"
+                                "username" : USERNAME,
+                                "userId" : USER_ID
                         };
                         var addCardEvent = {
                                 "eventType" : "addCard",
