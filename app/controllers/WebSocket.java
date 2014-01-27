@@ -33,12 +33,22 @@ public class WebSocket extends WAMPlayContoller {
 		// hat color
 		Hat hat = Hat.byName(eventData.get("hat").asText());
 
-		// user name DUMMY TODO
-		User user = User.dummy();
-		ThinkingSession tSession = ThinkingSession.byId(eventData.get("thinkingSession").asLong()).get();
-		controllers.Cards.addCardRPC(eventData.get("content").asText(), tSession, hat, user);
-		WAMPlayServer.publish(eventData.get("thinkingSession").asText(),
-				jsonResponse);
+		long userId = eventData.get("userId").asLong();
+		long thinkingSessionId = eventData.get("thinkingSession").asLong();
+
+		if (User.byId(userId).isDefined()
+				&& ThinkingSession.byId(thinkingSessionId).isDefined()) {
+			User user = User.byId(userId).get();
+			ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
+					.get();
+			controllers.Cards.addCardRPC(eventData.get("content").asText(),
+					tSession, hat, user);
+			WAMPlayServer.publish(eventData.get("thinkingSession").asText(),
+					jsonResponse);
+		} else {
+			throw new IOException();
+		}
+
 	}
 
 	@onRPC("#deleteCard")
@@ -47,21 +57,24 @@ public class WebSocket extends WAMPlayContoller {
 	}
 
 	@onRPC("#moveHat")
-	public static void moveHat(String sessionId, JsonNode[] args) throws JsonProcessingException, IOException {
+	public static void moveHat(String sessionId, JsonNode[] args)
+			throws JsonProcessingException, IOException {
 		JsonNode jsonResponse = new ObjectMapper().readTree(args[0].asText());
-		
+
 		// event data containing current hat and session id
 		JsonNode eventData = jsonResponse.get("eventData");
-		
+
 		long tSessionId = eventData.get("thinkingSession").asLong();
-		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(tSessionId).get());
+		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(
+				tSessionId).get());
 		Hat nextHat = Hat.byId(nextHatId);
-		
+
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode pubResponse = mapper.readTree("{ \"eventType\" : \"moveHat\" ,\"eventData\": {\"hat\":\"" + nextHat.name() + "\" }}");
+		JsonNode pubResponse = mapper
+				.readTree("{ \"eventType\" : \"moveHat\" ,\"eventData\": {\"hat\":\""
+						+ nextHat.name() + "\" }}");
 		ThinkingSession.changeHatTo(tSessionId, nextHatId);
-		WAMPlayServer.publish(String.valueOf(tSessionId),
-				pubResponse);
+		WAMPlayServer.publish(String.valueOf(tSessionId), pubResponse);
 	}
 
 	@onSubscribe
