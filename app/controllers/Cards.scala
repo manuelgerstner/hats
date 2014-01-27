@@ -119,7 +119,7 @@ object Cards extends Controller {
                         "fn" -> "createCard",
                         "args" -> Json.obj(
                           "id" -> cardId,
-                          "hat" -> hat.name,
+                          "hat" -> hat.get.name,
                           "content" -> content,
                           "user" -> user.name))
                       Ok(Json.obj("content" -> json)).as("application/json")
