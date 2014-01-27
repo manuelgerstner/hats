@@ -44,15 +44,18 @@ object Hat {
   /**
    * Retrieves a hat by its id
    */
-  def byId(id: Long): Hat = {
-    all() filter ((hat: Hat) => hat.id == id) head
+  def byId(id: Long): Option[Hat] = {
+    all() filter ((hat: Hat) => hat.id == id) headOption
   }
 
   /**
    * Retrieves the human-readable name for a hat
    */
-  def nameById(id: Long): String = {
-    (byId(id).name) toLowerCase
+  def nameById(id: Long): Option[String] = {
+    (byId(id)) match {
+      case Some(hat) => Some(hat.name.toLowerCase)
+      case None      => None
+    }
   }
 
   /**

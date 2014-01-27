@@ -63,7 +63,7 @@ object Card {
       (get[String]("img_mime") ?) map {
         case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId ~ posX ~ posY ~ imgUrl ~ imgMime =>
           Card(id,
-            ThinkingSession.byId(thinkingSessionId).get, content, Hat.byId(hatId),
+            ThinkingSession.byId(thinkingSessionId).get, content, Hat.byId(hatId).get,
             User.byId(creatorId).get, posX, posY, imgUrl, imgMime);
       }
   }
