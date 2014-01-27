@@ -32,7 +32,7 @@ object ThinkingSession {
       get[String]("title") ~
       get[Long]("current_hat") map {
         case id ~ ownerId ~ title ~ hatId =>
-          ThinkingSession(id, User.byId(ownerId) match { case Some(user) => user case None => null }, title, Hat.byId(hatId));
+          ThinkingSession(id, User.byId(ownerId).get, title, Hat.byId(hatId).get);
       }
   }
 
