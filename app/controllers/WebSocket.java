@@ -1,7 +1,9 @@
 package controllers;
 
 import java.io.IOException;
+import java.util.HashMap;
 
+import models.Event;
 import models.Hat;
 import models.HatFlow;
 import models.ThinkingSession;
@@ -56,25 +58,29 @@ public class WebSocket extends WAMPlayContoller {
 		// TODO
 	}
 
+	@SuppressWarnings("serial")
 	@onRPC("#moveHat")
 	public static void moveHat(String sessionId, JsonNode[] args)
 			throws JsonProcessingException, IOException {
-		JsonNode jsonResponse = new ObjectMapper().readTree(args[0].asText());
 
-		// event data containing current hat and session id
-		JsonNode eventData = jsonResponse.get("eventData");
+		JsonNode data = new ObjectMapper().readTree(args[0].asText());
 
-		long tSessionId = eventData.get("thinkingSession").asLong();
+		long thinkingSessionId = data.get("eventData").get("thinkingSession")
+				.asLong();
 		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(
-				tSessionId).get());
-		Hat nextHat = Hat.byId(nextHatId);
+				thinkingSessionId).get());
+		final Hat nextHat = Hat.byId(nextHatId);
 
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode pubResponse = mapper
-				.readTree("{ \"eventType\" : \"moveHat\" ,\"eventData\": {\"hat\":\""
-						+ nextHat.name() + "\" }}");
-		ThinkingSession.changeHatTo(tSessionId, nextHatId);
-		WAMPlayServer.publish(String.valueOf(tSessionId), pubResponse);
+		ThinkingSession.changeHatTo(thinkingSessionId, nextHatId);
+
+		JsonNode response = new Event().setType("moveHat")
+				.setData(new HashMap<String, String>() {
+					{
+						put("hat", nextHat.name());
+					}
+				}).toJson();
+
+		WAMPlayServer.publish(String.valueOf(thinkingSessionId), response);
 	}
 
 	@onSubscribe
