@@ -73,8 +73,8 @@ public class WebSocket extends WAMPlayContoller {
 
 		ThinkingSession.changeHatTo(thinkingSessionId, nextHatId);
 
-		JsonNode response = new Event().setType("moveHat")
-				.setData(new HashMap<String, String>() {
+		JsonNode response = new Event("moveHat").setData(
+				new HashMap<String, String>() {
 					{
 						put("hat", nextHat.name());
 					}

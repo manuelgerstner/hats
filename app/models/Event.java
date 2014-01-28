@@ -9,12 +9,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class Event {
 
 	public String eventType;
-
 	public Object eventData;
 
-	public Event() {
-		this.eventType = "";
-		this.eventData = null;
+	public Event(String eventType) {
+
+		this.eventType = eventType;
 	}
 
 	public Event setType(String eventType) {
@@ -28,7 +27,7 @@ public class Event {
 	}
 
 	public JsonNode toJson() throws IllegalArgumentException {
-		if (this.eventType.equals("") || this.eventData == null) {
+		if (this.eventType == null || this.eventData == null) {
 			throw new IllegalArgumentException();
 		}
 
