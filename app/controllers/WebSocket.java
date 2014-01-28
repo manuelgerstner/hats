@@ -10,12 +10,12 @@ import models.ThinkingSession;
 import models.User;
 import play.Logger;
 import play.libs.Json;
-import wamplay.annotations.URIPrefix;
-import wamplay.annotations.onPublish;
-import wamplay.annotations.onRPC;
-import wamplay.annotations.onSubscribe;
-import wamplay.controllers.WAMPlayContoller;
-import wamplay.controllers.WAMPlayServer;
+import ws.wamplay.annotations.URIPrefix;
+import ws.wamplay.annotations.onPublish;
+import ws.wamplay.annotations.onRPC;
+import ws.wamplay.annotations.onSubscribe;
+import ws.wamplay.controllers.WAMPlayContoller;
+import ws.wamplay.controllers.WAMPlayServer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -69,7 +69,7 @@ public class WebSocket extends WAMPlayContoller {
 				.asLong();
 		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(
 				thinkingSessionId).get());
-		final Hat nextHat = Hat.byId(nextHatId);
+		final Hat nextHat = Hat.byId(nextHatId).get();
 
 		ThinkingSession.changeHatTo(thinkingSessionId, nextHatId);
 
