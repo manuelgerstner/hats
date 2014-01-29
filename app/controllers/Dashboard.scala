@@ -20,6 +20,7 @@ object Dashboard extends Controller {
    */
   def showReport(id: Long) = Action { implicit request =>
     Ok(views.html.dashboard())
+    //test dashboard
 
   }
 }
