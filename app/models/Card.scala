@@ -3,6 +3,7 @@ package models
 import anorm._
 import anorm.SqlParser._
 import models._
+import models.forms._
 import play.api.db._
 import play.api.Play.current
 import play.api.libs.json._
@@ -43,9 +44,7 @@ case class Card(
 
 object Card {
 
-  def dummy: Card = {
-    Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummy, User.dummy, 0, 0, None, None);
-  }
+  val dummy: Card = Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummy, User.dummy, 0, 0, None, None);
 
   /**
    * ORM simple
