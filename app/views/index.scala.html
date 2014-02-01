@@ -5,36 +5,42 @@
 @import helper._
 
 
-@main("Six Thinking Hats", null) {
-	<div class="jumbotron" id="content">
-		<div align="center">
-	        <img src="assets/img/hats_mini_small.png" align="left"/>       
-	    		<p style="font-size:15px" align="right">Six Thinking Hats,a
-	        	<em>parallel thinking process,</em> helps people in groups to be more productive, focused, and mindfully involved.</p>
-	    </div>    
-		    <div id="control-panel" class="jumbotron">	    
-		  	@helper.form(action = routes.ThinkingSessions.createSession, 'id -> "session-form", 'onsubmit->"return validateForm();", 'class->"form-horizontal") {
-		    <div id="rootwizard">
-		    	<ul>
-	               <li><a href="#tab1" data-toggle="tab" style="display:none;">First</a></li>
-	               <li><a href="#tab2" data-toggle="tab" style="display:none;">Second</a></li>                                           
-	              </ul>
-		    	<div class="tab-content">		    
-				    <div class="tab-pane" id="tab1">
-						    	<label class="control-label" for="topic">Topic*</label>
-						      	@helper.inputText(sessionConfig("topic"), 'class -> "required form-control", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "topicfield")
-				    </div>
-				    <div class="tab-pane" id="tab2">
-						    <label class="control-label" for="mailAddresses">Participants to invite by mail*</label>
-						      @helper.inputText(sessionConfig("mailAddresses"), 'class -> "form-control", 'id -> "tokenfield", '_showErrors -> false, '_showConstraints -> false,  '_label -> null, 'name -> "emailfield")
-				    </div>
-					<ul class="pager wizard" style=" text-align:left; list-style:none;">
-					  	<li class="next"><input type="button" class="btn btn-primary" role="button" value="Next" /></li>
-					  	<li class="next finish" style="display:none;"><input type="submit" class="btn btn-primary" role="button" value="Initiate session!" data-position="right"/></li>
-					</ul>
-				</div>
+@main(null, null) {
+	<div id="content" class="well container">
+		<div class="row">
+			<div class="col-md-6 col-md-offset-3">				 	
+				<div class="row well">
+				 	<p class="lead">
+						<img src="assets/img/hats_small.png" class="pull-right" width="200"/>
+					 	<strong>Six Thinking Hats</strong>, a <em>parallel thinking process,</em> 
+		    			helps people in groups to be more productive, focused, and mindfully involved.
+		    		</p>
+	    		</div>
+	    		<div class="row" style="margin-top: 20px;">
+	    			@helper.form(action = routes.ThinkingSessions.createSession,
+			  			'id -> "session-form", 'role->"form", 'class -> "") {
+						<div class="form-group">
+							<label for="topic">First, think of a good title:</label>
+							<input id="topic" class="form-control" type="text" required name="topic" placeholder="Try and be specific!"/>
+						</div>
+						
+						<div class="form-group">
+							<label for="mailAddresses">Now let's invite some friends!</label>
+							<div class="input-group">
+								<input id="mailAddresses" class="tokenfield input-xlarge" type="text" required name="mailAddresses" placeholder="john@@company.co"/>
+								<span class="input-group-addon">separate with ,</span>
+							</div>
+						</div>
+						
+						<div class="form-group col-md-6 col-md-offset-3 center">
+							<button type="submit" class="btn btn-success btn-lg btn-block">
+								<span class="glyphicon glyphicon-plus"></span>
+								Get Started	
+							</button>
+						</div>
+					}
+	    		</div>
 			</div>
-			}
 		</div>
 	</div>
 }

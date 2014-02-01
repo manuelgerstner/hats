@@ -87,58 +87,8 @@ $(function() {
 
         $('.tooltipster').tooltipster();
 
-        $('#tokenfield').tokenfield();
+        $('.tokenfield').tokenfield();
 
-        $('#moveToConfig-button').click(function() {
-                $("#config-panel").scrollView();
-        });
-        $('#moveToInvite-button').click(function() {
-                $("#invite-panel").scrollView();
-        });
-
-        //$('#start-button').click(function() {
-        //$('#control-panel').removeClass('hidden');
-        //$("#control-panel").scrollView();
-        //});
-        $('#help-button').click(function() {
-                $('body').chardinJs('start');
-        });
-        var $validator = $("#session-form").validate({
-                rules : {
-                        topicfield : {
-                                required : true,
-                                minlength : 3
-                        }
-                }
-        });
-        $('#rootwizard').bootstrapWizard({
-                onTabShow : function(tab, navigation, index) {
-                        var $total = navigation.find('li').length;
-                        var $current = index + 1;
-                        var $percent = ($current / $total) * 100;
-                        $('#rootwizard').find('.bar').css({
-                                width : $percent + '%'
-                        });
-
-                        // If it's the last tab then hide the last button and show the finish instead
-                        if ($current >= $total) {
-                                $('#rootwizard').find('.pager .next').hide();
-                                $('#rootwizard').find('.pager .finish').show();
-                                $('#rootwizard').find('.pager .finish').removeClass(
-                                                'disabled');
-                        } else {
-                                $('#rootwizard').find('.pager .next').show();
-                                $('#rootwizard').find('.pager .finish').hide();
-                        }
-                },
-                onNext : function(tab, navigation, index) {
-                        var $valid = $("#session-form").valid();
-                        if (!$valid) {
-                                $validator.focusInvalid();
-                                return false;
-                        }
-                }
-        });
  // get dashboard for session id
         $('#indicate-finish').click(function() {
         	window.location.href = '/' + SESSION_ID + '/dashboard';
@@ -294,28 +244,4 @@ function addCard(card, effect) {
         // reset card content field
         $('#content, imgUrl, imgMime').val("");
         $('#nocardsyet').remove();
-}
-
-function validateForm() {
-        var isValidMail = function(mail) {
-                if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(mail)) {
-                        return true;
-                }
-                return false;
-        }
-
-        var field = $("#tokenfield");
-        var mails = field.tokenfield('getTokens');
-        var mailString = '';
-        for (var i = mails.length - 1; i >= 0; i--) {
-                var mail = mails[i].value.trim()
-                if (!isValidMail(mail)) {
-                        alert(mails[i].value.trim()
-                                        + ' seems to be invalid mail address... =(');
-                        return false;
-                }
-                mailString += mail + ',';
-        }
-        field.val(mailString); // mails for form form binding on server side
-        return true;
 }
