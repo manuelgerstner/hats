@@ -1,3 +1,6 @@
+@(noCards: List[(String,Long)])
+@import models._
+
 @main("Dashboard", null) {
 
 	<div id="wrapper">
@@ -84,29 +87,12 @@
 										</tr>
 									</thead>
 									<tbody>
-										<tr>
-											<td>Blue</td>
-											<td>14</td>
+										@for( sCard <- noCards) {
+											<tr>
+											<td>@sCard._1</td>
+											<td>@sCard._2</td>
 										</tr>
-										<tr>
-											<td>White</td>
-											<td>10</td>
-										</tr>
-										<tr>
-											<td>Red</td>
-											<td>11</td>
-										</tr>
-										<tr><td>Yellow</td>
-											<td>25</td>
-										</tr>
-										<tr>
-											<td>Black</td>
-											<td>20</td>
-										</tr>
-										<tr>
-											<td>Green</td>
-											<td>6</td>
-										</tr>
+										}
 									</tbody>
 								</table>
 							</div>

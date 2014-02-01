@@ -156,8 +156,7 @@ object Card {
         'posX -> posX,
         'posY -> posY,
         'imgUrl -> imgUrl,
-        'imgMime -> imgMime
-      ).executeUpdate()
+        'imgMime -> imgMime).executeUpdate()
       id
     }
   }
@@ -198,5 +197,16 @@ object Card {
 
   def listToJson(cards: List[Card]) = {
     Json.toJson(cards.map(card => card.toJson()))
+  }
+
+  /**
+   * Count number of cards per hat
+   */
+  def byHatNoCards: List[(String, Long)] = {
+    DB.withConnection { implicit connection =>
+      SQL("""select name , COUNT(card.id) as cNO from card, hat where card.hat = hat.id GROUP BY card.hat order by card.hat""")
+        .as(str("name") ~ long("cNO") map { case name ~ cNO => (name, cNO) } *)
+    }
+
   }
 }
