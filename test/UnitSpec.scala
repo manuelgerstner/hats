@@ -5,6 +5,8 @@ import play.api.test._
 import play.api.test.Helpers._
 import models._
 import controllers._
+import org.clapper.classutil.ClassFinder
+import java.util.Date
 
 @RunWith(classOf[JUnitRunner])
 class UnitSpec extends Specification {
@@ -43,6 +45,21 @@ class UnitSpec extends Specification {
       dbUser must beSome
       dbUser.get.name must equalTo(name)
       dbUser.get.mail must equalTo(None)
+    }
+
+    "create and retrive Event" in new WithApplication {
+      val name = "PersistenceSpecType"
+      val date = new Date();
+      val eventId = Event.create(name, ThinkingSession.dummyId, Hat.dummyId,
+        None, None, date);
+      val event = Event.byId(eventId)
+      event must beSome
+      event.get.eventType must beEqualTo(name)
+      event.get.thinkingSession.id must beEqualTo(ThinkingSession.dummyId)
+      event.get.hat.id must beEqualTo(Hat.dummyId)
+      event.get.user must beNone
+      event.get.card must beNone
+      event.get.time.getTime() must beEqualTo(date.getTime())
     }
 
     "change hat of ThinkingSession" in new WithApplication {

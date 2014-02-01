@@ -1,7 +1,7 @@
 package controllers;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Date;
 
 import models.Event;
 import models.Hat;
@@ -10,6 +10,7 @@ import models.ThinkingSession;
 import models.User;
 import play.Logger;
 import play.libs.Json;
+import scala.Option;
 import ws.wamplay.annotations.URIPrefix;
 import ws.wamplay.annotations.onPublish;
 import ws.wamplay.annotations.onRPC;
@@ -20,9 +21,12 @@ import ws.wamplay.controllers.WAMPlayServer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @URIPrefix("http://sixhats.com/cards")
 public class WebSocket extends WAMPlayContoller {
+	// make scala option's None available in Java
+	private static Option<Object> none = scala.Option.apply(null);
 
 	// call addCard server-side
 	@onRPC("#addCard")
@@ -58,7 +62,6 @@ public class WebSocket extends WAMPlayContoller {
 		// TODO
 	}
 
-	@SuppressWarnings("serial")
 	@onRPC("#moveHat")
 	public static void moveHat(String sessionId, JsonNode[] args)
 			throws JsonProcessingException, IOException {
@@ -69,16 +72,20 @@ public class WebSocket extends WAMPlayContoller {
 				.asLong();
 		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(
 				thinkingSessionId).get());
-		final Hat nextHat = Hat.byId(nextHatId).get();
+		// final Hat nextHat = Hat.byId(nextHatId).get();
 
 		ThinkingSession.changeHatTo(thinkingSessionId, nextHatId);
 
-		JsonNode response = new Event("moveHat").setData(
-				new HashMap<String, String>() {
-					{
-						put("hat", nextHat.name());
-					}
-				}).toJson();
+		long eventId = Event.create("moveHat", thinkingSessionId, nextHatId,
+				none, none, new Date());
+		Option<Event> event = Event.byId(eventId);
+		JsonNode response = null;
+		if (event.isDefined()) {
+			response = event.get().toJson();
+		} else {
+			response = Json.newObject();
+			((ObjectNode) response).put("error", "500");
+		}
 
 		WAMPlayServer.publish(String.valueOf(thinkingSessionId), response);
 	}
