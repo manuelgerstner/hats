@@ -19,7 +19,18 @@ object Dashboard extends Controller {
    * show summary report
    */
   def showReport(id: Long) = Action { implicit request =>
-    Ok(views.html.dashboard(Card.byHatNoCards))
+    val sess1: Long = id * 10
+    val sess2: Long = (id - 1) * 10
+    val sess3: Long = (id - 2) * 10
+    Ok(views.html.dashboard(sess1, sess2, sess3, HatElapsed.byHatNoCards(id), HatElapsed.hatTimeForCurrentSession(id), HatElapsed.byHatNoCardsPrev(id), HatElapsed.byHatNoCardsPrev2(id)))
 
+  }
+  /**
+   * save the Elapsed time per hat for Current Session
+   */
+  def saveDuration(id: Long, hat_name: String, elapsedTime: Long) = Action {
+    Logger.debug("Save ElapsedTime:" + elapsedTime + hat_name + id)
+    HatElapsed.insertElapsedTime(id, hat_name, elapsedTime)
+    Ok("okay")
   }
 }

@@ -1,3 +1,24 @@
+var clicked = false;
+var sec = 0;
+var elapsedTime = 0;
+function startClock() {
+	_initial = new Date();
+	if (clicked === false) {
+		clock = setInterval("stopWatch()", 1000);
+		clicked = true;
+	}
+	else if (clicked === true) {
+	}
+}
+function stopWatch() {
+	sec++;
+}
+function stopClock() {
+	window.clearInterval(clock);
+	sec = 0;
+	clicked = false;
+	startClock();
+}
 // Scrolls the view down to the config pane on the frontpage
 $.fn.scrollView = function() {
         return this.each(function() {
@@ -93,6 +114,18 @@ $(function() {
         $('#indicate-finish').click(function() {
         	window.location.href = '/' + SESSION_ID + '/dashboard';
         	$('body').removeClass().addClass("dashboard");
+        	elapsedTime = sec;
+        	stopClock();//Stop clock
+        	jsRoutes.controllers.Dashboard.saveDuration(SESSION_ID,HAT,elapsedTime).ajax({
+        		dataType : "json",
+        		type : "post",
+        		success : function(data) {
+        			if (data.error === true) {
+        				alert(data.message);
+        			}
+        			return;
+        			}
+        	});
         });
 
 });
@@ -100,6 +133,7 @@ $(function() {
 function instantiateSocket() {
         // connect to WAMPlay server
         console.log("Connecting to WAMPlay server...");
+        startClock();
         // successful setup
         ab.connect(WSURI, function(session) {
 
@@ -143,6 +177,18 @@ function instantiateSocket() {
                         //                 moveTo(data.hat);
                         //         }
                         // });
+                        elapsedTime = sec;
+                        stopClock();//Stop clock
+                        jsRoutes.controllers.Dashboard.saveDuration(SESSION_ID,HAT,elapsedTime).ajax({
+                    		dataType : "json",
+                    		type : "post",
+                    		success : function(data) {
+                    			if (data.error === true) {
+                    				alert(data.message);
+                    			}
+                    			return;
+                    			}
+                    	});
                 });
                 console.log("Connected to " + WSURI);
                 // subscribe to add cards here, give a callback
