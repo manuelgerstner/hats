@@ -16,6 +16,7 @@ case class SessionConfig(
   blueAloneTime: Option[Int],
   blackTimeLimit: Option[Int],
   blackAloneTime: Option[Int],
+  adminMailAddress: Option[String],
   mailAddresses: String) {
 
   def get(num: Option[Int]) = num match {
@@ -30,5 +31,10 @@ case class SessionConfig(
   def green(sessionId: Long): HatFlow = HatFlow(4, sessionId, 5, get(greenTimeLimit), get(greenAloneTime));
   def blue(sessionId: Long): HatFlow = HatFlow(5, sessionId, 6, get(blueTimeLimit), get(blueAloneTime));
   def mailAddressList: List[String] = mailAddresses.split(",").toList.filter(_ != "");
+  def adminMail: Option[String] = adminMailAddress match {
+    case Some(mail) =>
+      Some(mail.split(",").toList.filter(_ != "").head)
+    case None => None
+  }
 
 }

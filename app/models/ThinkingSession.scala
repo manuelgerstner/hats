@@ -1,19 +1,23 @@
 package models
 
 import scala.concurrent.Future
-
+import scala.util.Random
 import anorm._
 import anorm.SqlParser._
 import play.api.Play.current
 import play.api.db._
 import play.api.mvc.AsyncResult
 import scala.language.postfixOps
+import java.util.Date
+import play.Logger
 
 /**
  * The ThinkingSession models a whole session of the process. Don't read the code, read the comments ;-D
  * @author Nemo
  */
-case class ThinkingSession(id: Long, owner: User, title: String, currentHat: Hat)
+case class ThinkingSession(id: Long, owner: User, title: String, currentHat: Hat) {
+  def isOwner(user: User): Boolean = owner.id == user.id
+}
 
 object ThinkingSession {
 
@@ -135,6 +139,128 @@ object ThinkingSession {
     }
   }
 
+  def addUser(session: ThinkingSession, user: User): Long = {
+    addUser(session.id, user.id)
+  }
+
+  /**
+   * returns the join token for the user
+   */
+  def addUser(sessionId: Long, userId: Long): Long = {
+    DB.withConnection { implicit connection =>
+      val token = (sessionId + userId + (new Date()).getTime() + Random.nextLong).hashCode
+      SQL("""
+          insert into participating (thinking_session,user,token) 
+          values ({sessionId},{userId},{token})
+          """).on(
+        'sessionId -> sessionId,
+        'userId -> userId,
+        'token -> token)
+        .executeUpdate()
+      Logger.debug("token = " + token + " for session " + sessionId)
+      token
+    }
+  }
+
+  def userIds(session: ThinkingSession): List[Long] = {
+    userIds(session.id)
+  }
+
+  def userIds(sessionId: Long): List[Long] = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          select user 
+          from participating 
+          where thinking_session = {sessionId}
+          """").on(
+        'sessionId -> sessionId)
+        .as(get[Long]("user") *)
+    }
+  }
+
+  def user(session: ThinkingSession): List[User] = {
+    user(session.id)
+  }
+
+  def user(sessionId: Long): List[User] = {
+    userIds(sessionId).map(id => User.byId(id)).filter(o => o != None).map(o => o.get)
+  }
+
+  def userCount(session: ThinkingSession): Int = {
+    userCount(session.id)
+  }
+
+  def userCount(sessionId: Long): Int = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          select count(*) as num
+          from participating 
+          where thinking_session = {sessionId}
+          """").on(
+        'sessionId -> sessionId)
+        .as(get[Int]("num").single)
+    }
+  }
+
+  def readyCount(session: ThinkingSession): Int = {
+    readyCount(session.id)
+  }
+
+  def readyCount(sessionId: Long): Int = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          select count(*) as num
+          from participating 
+          where thinking_session = {sessionId} and ready = 1
+          """").on(
+        'sessionId -> sessionId)
+        .as(get[Int]("num").single)
+    }
+  }
+
+  /**
+   * returns Some(userId) if the user is part of the session or None if not
+   */
+  def checkJoinToken(session: ThinkingSession, token: Long): Option[Long] = {
+    checkJoinToken(session.id, token)
+  }
+
+  /**
+   * returns Some(userId) if the user is part of the session or None if not
+   */
+  def checkJoinToken(sessionId: Long, token: Long): Option[Long] = {
+    DB.withConnection { implicit connection =>
+      val sql = SQL("""select user
+          from participating 
+          where token={token} 
+          and thinking_session={session}""").on('token -> token, 'session -> sessionId)
+      sql.apply().headOption match {
+        case Some(h) => Some(h[Long]("user"))
+        case None    => None
+      }
+    }
+  }
+
+  def checkUser(session: ThinkingSession, user: User): Boolean = {
+    checkUser(session.id, user.id)
+  }
+
+  def checkUser(sessionId: Long, userId: Long): Boolean = {
+    DB.withConnection { implicit connection =>
+      val test = SQL("""
+          select count(*) as num
+          from participating 
+          where user={user} 
+          and thinking_session={session}""")
+        .on('user -> userId,
+          'session -> sessionId)
+        .as(get[Long]("num").single)
+      test > 0
+    }
+  }
+
+  def allUsersReady(session: ThinkingSession): Boolean = allUsersReady(session.id)
+  def allUsersReady(sessionId: Long): Boolean = (userCount(sessionId) - readyCount(sessionId)) == 0
   /**
    * Dummy Session for dev purposes
    */

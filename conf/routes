@@ -15,19 +15,20 @@ GET    /javascriptRoutes                controllers.Application.javascriptRoutes
 # Send websocket connections to the WAMPlay server
 GET     /wamp                     		ws.wamplay.controllers.WAMPlayServer.connect()
 
-
 # Cards in a Sessions
 # should be HTTP PUT, but play fucks with REST here...
-POST   /:id/addCard                     controllers.Cards.addCard(id: Long)
-POST   /:id/editCard/:cardId            controllers.Cards.editCard(id: Long,cardId: Long)
+# POST   /:id/addCard                     controllers.Cards.addCard(id: Long)
+# POST   /:id/editCard/:cardId            controllers.Cards.editCard(id: Long,cardId: Long)
 # should be HTTP DELETE, but play fucks with REST here...
-POST   /:id/deleteCard/:cardId          controllers.Cards.deleteCard(id: Long,cardId: Long)
+# POST   /:id/deleteCard/:cardId          controllers.Cards.deleteCard(id: Long,cardId: Long)
+
+GET    /:id/join/:token					controllers.ThinkingSessions.join(id: Long, token: String)
 
 # Session control
 GET    /:id                             controllers.ThinkingSessions.index(id: Long)
 # both hat urls could use the string names of the hats as well (haven't worked out the enum quite yet)
-POST   /:id/changeHat                   controllers.ThinkingSessions.changeHat(id: Long)
-POST   /:id/indicateReady               controllers.ThinkingSessions.indicateReady(id: Long)
+# POST   /:id/changeHat                   controllers.ThinkingSessions.changeHat(id: Long)
+# POST   /:id/indicateReady               controllers.ThinkingSessions.indicateReady(id: Long)
 POST   /:id/closeSession                controllers.ThinkingSessions.closeSession(id: Long)
 
 # rest

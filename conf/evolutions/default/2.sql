@@ -2,9 +2,9 @@
 
 # --- !Ups
 CREATE TABLE hat_flow (
-  index                 integer NOT NULL,
-  thinking_session		integer NOT NULL REFERENCES thinking_session(id),
-  hat                  	integer NOT NULL,
+  index                 BIGINT NOT NULL,
+  thinking_session		BIGINT NOT NULL REFERENCES thinking_session(id),
+  hat                  	BIGINT NOT NULL REFERENCES hat(id),
   time_limit			integer,
   alone_time			integer,
   PRIMARY KEY (index,thinking_session)
