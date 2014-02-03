@@ -64,7 +64,10 @@ ProgressBar.prototype.render = function() {
 		if (count > 0) {
 			var circle = $(self.container).find('circle.' + hat);
 			//console.log("current size %d", circle.attr("r"));
-			circle.attr('r', (getSize(count)));
+			//console.log(Math.ceil(getSize(count)));
+			var count = Math.ceil(getSize(count));
+			console.log("sizing %s hat to %dpx", hat, count);
+			circle.attr("r", count);
 		}
 	}
 };

@@ -225,7 +225,7 @@ function onEvent(topic, event) {
         } else if (event.eventType === "moveHat") {
                 moveTo(event.eventData.hat);
         }
-        window.progressBar.add(event);
+        window.progressBar.add(event.eventData);
 
 }
 
