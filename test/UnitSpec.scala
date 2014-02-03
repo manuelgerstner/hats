@@ -5,9 +5,7 @@ import play.api.test._
 import play.api.test.Helpers._
 import models._
 import controllers._
-import org.clapper.classutil.ClassFinder
 import java.util.Date
-
 @RunWith(classOf[JUnitRunner])
 class UnitSpec extends Specification {
 
