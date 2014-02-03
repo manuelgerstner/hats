@@ -33,13 +33,17 @@ public class WebSocket extends WAMPlayContoller {
 	public static void add(String sessionId, JsonNode[] args)
 			throws JsonProcessingException, IOException {
 		JsonNode jsonResponse = new ObjectMapper().readTree(args[0].asText());
-
-		// message to be added as a Card
 		JsonNode eventData = jsonResponse.get("eventData");
+
+		// check if user exists
+		long userId = eventData.get("userId").asLong();
+		if (userId == 0) {
+			userId = User.create(eventData.get("form-user").asText(), null);
+		}
+
 		// hat color
 		Hat hat = Hat.byName(eventData.get("hat").asText());
 
-		long userId = eventData.get("userId").asLong();
 		long thinkingSessionId = eventData.get("thinkingSession").asLong();
 
 		if (User.byId(userId).isDefined()
