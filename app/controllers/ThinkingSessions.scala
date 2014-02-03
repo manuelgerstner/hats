@@ -11,9 +11,9 @@ import models._
 import controllers._
 import com.feth.play.module.mail.Mailer
 import com.feth.play.module.mail.Mailer.Mail.Body
-
 import views.html.defaultpages.notFound
 import ws.wamplay.controllers.WAMPlayServer
+import scala.collection.JavaConversions
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -28,16 +28,33 @@ object ThinkingSessions extends Controller {
     Logger.debug("ThinkingSessions.index")
 
     val test = request.cookies.get(User.idCookie)
-    val user: User = request.cookies.get(User.idCookie) match {
-      case Some(cookie) => User.byCookie(cookie).get;
-      case None         => User.byId(User.create("New User", None)).get;
+    request.cookies.get(User.idCookie) match {
+      case Some(cookie) => // found user cookie
+        User.byCookie(cookie) match {
+          case Some(user) => // user in db
+            ThinkingSession.byId(id) match {
+              case Some(session) => // session exists
+                if (ThinkingSession.checkUser(session, user)) // check if user is part of session
+                  Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user))
+                else
+                  BadRequest
+              case None =>
+                NotFound
+            }
+          case None => BadRequest
+        }
+      case None => BadRequest;
     }
+  }
 
-    ThinkingSession.byId(id) match {
-      case Some(session) =>
-        Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user))
+  def join(id: Long, token: String) = Action {
+    val t: Long = java.lang.Long.parseLong(token, 16)
+    ThinkingSession.checkJoinToken(id, t) match {
+      case Some(userId) => // set token
+        Logger.debug("User " + userId + " joined session " + id)
+        Redirect(routes.ThinkingSessions.index(id)).withCookies(Cookie(User.idCookie, userId.toString))
       case None =>
-        NotFound
+        BadRequest
     }
   }
 
@@ -46,17 +63,25 @@ object ThinkingSessions extends Controller {
    */
   def changeHat(id: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.changeHat")
-    val user = request.cookies.get(User.idCookie) match {
-      case Some(cookie) => User.byCookie(cookie).get;
-      case None         => User.byId(User.create("New User", None)).get;
-    }
-    ThinkingSession.byId(id) match {
-      case Some(session) =>
-        val nextHatId = HatFlow.nextDefaultHatId(session)
-        ThinkingSession.changeHatTo(id, nextHatId)
-        Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId).get, user))
-      case None =>
-        NotFound
+    request.cookies.get(User.idCookie) match {
+      case Some(cookie) =>
+        User.byCookie(cookie) match {
+          case Some(user) =>
+            ThinkingSession.byId(id) match {
+              case Some(session) =>
+                if (session.isOwner(user)) {
+                  val nextHatId = HatFlow.nextDefaultHatId(session)
+                  ThinkingSession.changeHatTo(id, nextHatId)
+                  Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId).get, user))
+                } else
+                  BadRequest
+              case None =>
+                NotFound
+            }
+
+          case None => BadRequest
+        }
+      case None => BadRequest
     }
   }
 
@@ -91,6 +116,7 @@ object ThinkingSessions extends Controller {
       "blueAloneTime" -> optional(number),
       "blackTimeLimit" -> optional(number),
       "blackAloneTime" -> optional(number),
+      "adminMailAddress" -> optional(text),
       "mailAddresses" -> text)(SessionConfig.apply)(SessionConfig.unapply))
 
   /*
@@ -101,30 +127,60 @@ object ThinkingSessions extends Controller {
     val form = sessionConfigForm.bindFromRequest.get;
     request.cookies.get(User.idCookie) match {
       case Some(cookie) =>
+        User.byCookie(cookie) match {
+          case Some(user) =>
+            val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
+            if (user.mail == None) {
+              User.saveMail(user, form.adminMail.get)
+            }
+            val mailsAndTokens = addUsersToSessions(form.mailAddressList, newSessionId)
+            sendInviteMails(mailsAndTokens, form.topic, newSessionId)
+            ThinkingSession.addUser(newSessionId, user.id)
 
-        val user = User.byCookie(cookie).get;
-        val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
-        sendInviteMails(form.mailAddressList, form.topic, routes.ThinkingSessions.index(newSessionId).absoluteURL(false))
+            WAMPlayServer.addTopic(newSessionId.toString)
+            Logger.debug("Found user cookie, creating session " + newSessionId)
+            Redirect(routes.ThinkingSessions.index(newSessionId))
 
-        WAMPlayServer.addTopic(newSessionId.toString)
-        Logger.debug("Found user cookie, creating session " + newSessionId)
-        Redirect(routes.ThinkingSessions.index(newSessionId))
+          case None => BadRequest
+        }
       case None =>
         Logger.debug("No user cookie, bad request")
         BadRequest
     }
   }
 
-  def sendInviteMails(mails: List[String], title: String, url: String) {
+  def sendInviteMails(mails: List[(String, Long)], title: String, sessionId: scala.Long)(implicit request: Request[AnyContent]) {
     mails match {
-      case m :: ms =>
+      case (m, t) :: ms =>
+        def toHexString(l: Long): String = if (l < 0l) "-" + (-1 * l).toHexString else l.toHexString
+
+        val url = routes.ThinkingSessions.join(sessionId, toHexString(t)).absoluteURL(false)(request)
         val body = new Body(views.txt.email.invite.render(title, url).toString(),
           views.html.email.invite.render(title, url).toString());
         Mailer.getDefaultMailer().sendMail("Invite to Thinking Session", body, m);
         Logger.debug("Invited User " + m + " to thinking session " + title)
-        sendInviteMails(ms, title, url)
+        sendInviteMails(ms, title, sessionId)
       case Nil =>
         Logger.info("All Users invited to session " + title)
+    }
+  }
+
+  /**
+   * returns a list of (mail,token)
+   */
+  def addUsersToSessions(mails: List[String], sessionId: Long): List[(String, Long)] = {
+    mails match {
+      case m :: ms =>
+        val token: Long = User.byMail(m) match {
+          case Some(u) => // user already exists
+            Logger.debug("Adding existing user with mail " + m)
+            ThinkingSession.addUser(sessionId, u.id)
+          case None => // create new user
+            Logger.debug("Adding new user with mail " + m)
+            ThinkingSession.addUser(sessionId, User.create("New User", Some(m)))
+        }
+        (m, token) :: addUsersToSessions(ms, sessionId)
+      case Nil => Nil
     }
   }
 
@@ -135,17 +191,22 @@ object ThinkingSessions extends Controller {
     Logger.debug("ThinkingSessions.restChangeHat(" + sessionId + ")")
     request.cookies.get(User.idCookie) match {
       case Some(cookie) =>
-        val user = User.byCookie(cookie).get;
-        /// TODO Add check is user is owner later on
-        ThinkingSession.byId(sessionId) match {
-          case Some(session) =>
-            val nextHatId = HatFlow.nextDefaultHatId(session)
-            ThinkingSession.changeHatTo(sessionId, nextHatId)
-            val nextHat = Hat.byId(nextHatId)
-            Ok(Json.obj("hat" -> nextHat.get.name.toLowerCase)).as("application/json")
-          case None => NotFound(Json.obj("error" -> "no session")).as("application/json")
+        User.byCookie(cookie) match {
+          case Some(user) =>
+            ThinkingSession.byId(sessionId) match {
+              case Some(session) =>
+                if (session.isOwner(user)) {
+                  val nextHatId = HatFlow.nextDefaultHatId(session)
+                  ThinkingSession.changeHatTo(sessionId, nextHatId)
+                  val nextHat = Hat.byId(nextHatId)
+                  Ok(Json.obj("hat" -> nextHat.get.name.toLowerCase)).as("application/json")
+                } else
+                  NotFound(Json.obj("error" -> "not owner")).as("application/json")
+              case None => NotFound(Json.obj("error" -> "no session")).as("application/json")
+            }
+          case None => NotFound(Json.obj("error" -> "no user")).as("application/json")
         }
-      case None => BadRequest(Json.obj("error" -> "no user")).as("application/json")
+      case None => BadRequest(Json.obj("error" -> "no cookie")).as("application/json")
     }
   }
 

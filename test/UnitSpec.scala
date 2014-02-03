@@ -81,8 +81,8 @@ class UnitSpec extends Specification {
   "Sending Mails" should {
     "test send mail" in new WithApplication {
       // add some emails to the list for testing
-      val emails: List[String] = Nil
-      ThinkingSessions.sendInviteMails(emails, "Unit Test", routes.ThinkingSessions.index(ThinkingSession.dummyId).absoluteURL(false)(FakeRequest()))
+      val emails: List[(String, Long)] = Nil
+      ThinkingSessions.sendInviteMails(emails, "Unit Test", ThinkingSession.dummyId)(FakeRequest())
     }
   }
 }

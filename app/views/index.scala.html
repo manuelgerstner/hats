@@ -23,11 +23,20 @@
 							<label for="topic">First, think of a good title:</label>
 							<input id="topic" class="form-control" type="text" required name="topic" placeholder="Try and be specific!"/>
 						</div>
+						@if(user.mail == None) {
+  						<div class="form-group">
+							<label for="adminMailAddress">Tell us your eMail!</label>
+							<div class="input-group">
+								<input id="adminMailAddress" class="tokenfield input-xlarge" type="text" required name="adminMailAddress" placeholder="admin@@company.com"/>
+								<span class="input-group-addon">session admin</span>
+							</div>
+						</div>
+						}
 						
 						<div class="form-group">
 							<label for="mailAddresses">Now let's invite some friends!</label>
 							<div class="input-group">
-								<input id="mailAddresses" class="tokenfield input-xlarge" type="text" name="mailAddresses" placeholder="john@@company.co"/>
+								<input id="mailAddresses" class="tokenfield input-xlarge" type="text" required name="mailAddresses" placeholder="john@@company.com"/>
 								<span class="input-group-addon">separate with ,</span>
 							</div>
 						</div>

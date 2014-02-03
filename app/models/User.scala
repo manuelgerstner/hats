@@ -30,7 +30,7 @@ object User {
   def simple = {
     get[Long]("id") ~
       get[String]("name") ~
-      (get[String]("mail")?) map {
+      (get[String]("mail") ?) map {
         case id ~ name ~ mail => User(id, name, mail)
       }
   }
@@ -51,10 +51,7 @@ object User {
     DB.withConnection { implicit connection =>
       SQL("select * from user where id = {id}").on(
         'id -> id
-      ).as(User.simple *) match {
-          case x :: _ => Some(x)
-          case Nil    => None
-        }
+      ).as(User.simple *) headOption
     }
   }
 
@@ -85,8 +82,27 @@ object User {
     }
   }
 
-  def byCookie(cookie: Cookie): Option[User] = {
-    byId(java.lang.Long.parseLong(cookie.value))
+  def byCookie(cookie: Cookie): Option[User] = byId(java.lang.Long.parseLong(cookie.value))
+
+  def byMail(mail: String): Option[User] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from user where mail = {mail}").on(
+        'mail -> mail
+      ).as(User.simple *) headOption
+    }
+  }
+
+  def saveMail(user: User, mail: String): Int = saveMail(user.id, mail)
+  def saveMail(userId: Long, mail: String): Int = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          update user
+          set mail = {mail}
+          where id = {userId}
+          """).on(
+        'mail -> mail,
+        'userId -> userId).executeUpdate()
+    }
   }
 
   /**
