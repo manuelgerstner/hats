@@ -6,6 +6,7 @@ import play.api.test.Helpers._
 import models._
 import controllers._
 import java.util.Date
+
 @RunWith(classOf[JUnitRunner])
 class UnitSpec extends Specification {
 
