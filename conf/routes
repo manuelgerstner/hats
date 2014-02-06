@@ -5,7 +5,6 @@
 GET    /                                controllers.Application.index
 POST   /createSession                   controllers.ThinkingSessions.createSession
 GET   /:id/dashboard					controllers.Dashboard.showReport(id: Long)
-POST  /:id/saveDuration					controllers.Dashboard.saveDuration(id: Long, hatName: String, elapsedTime: Long)
 
 # JS Routes
 GET    /javascriptRoutes                controllers.Application.javascriptRoutes

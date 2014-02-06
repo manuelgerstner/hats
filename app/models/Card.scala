@@ -198,4 +198,20 @@ object Card {
     Json.toJson(cards.map(card => card.toJson()))
   }
 
+  def byOnlyInSession(sessionId: Long): List[Long] = {
+    DB.withConnection { implicit connection =>
+      SQL("""select DISTINCT creator from card where thinking_session ={sessionId}""").on(
+        'sessionId -> sessionId).as(long("creator") map { case creator => creator } *)
+    }
+  }
+
+  def byCardsforUser(sessionId: Long, hatID: Long, creatorID: Long): Long = {
+    DB.withConnection { implicit connection =>
+      SQL("""select count(card.id) as cNO  from card where thinking_session ={sessionId} and creator = {creatorID} and card.hat = {hatID}""").on(
+        'sessionId -> sessionId,
+        'creatorID -> creatorID,
+        'hatID -> hatID).as(get[Long]("cNO").single)
+    }
+  }
+
 }
