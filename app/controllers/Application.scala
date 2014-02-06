@@ -20,7 +20,7 @@ object Application extends Controller {
     val cook = request.cookies.get(User.idCookie)
     val user: User = (request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie);
-      case None         => User.byId(User.create("New User", None));
+      case None => User.byId(User.create("New User", None));
     }).get
     Ok(views.html.index("Six Thinking Hats", user, sessionConfigForm)).withCookies(Cookie(User.idCookie, user.id.toString))
   }
@@ -31,8 +31,7 @@ object Application extends Controller {
 
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        routes.javascript.ThinkingSessions.restChangeHat,
-        routes.javascript.Dashboard.saveDuration)).as("text/javascript")
+        routes.javascript.ThinkingSessions.restChangeHat)).as("text/javascript")
   }
 
 }

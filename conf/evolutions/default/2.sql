@@ -10,12 +10,6 @@ CREATE TABLE hat_flow (
   PRIMARY KEY (index,thinking_session)
 );
 
-CREATE TABLE hat_elapsed (
-  thinking_session		integer NOT NULL REFERENCES thinking_session(id),
-  hat_id                varchar,
-  elapsed_time          integer NOT NULL
-);
-
 INSERT INTO hat_flow VALUES (0,0,1,-1,-1);
 INSERT INTO hat_flow VALUES (1,0,2,-1,-1);
 INSERT INTO hat_flow VALUES (2,0,3,-1,-1);

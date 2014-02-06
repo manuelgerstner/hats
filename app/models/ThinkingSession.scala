@@ -9,6 +9,7 @@ import play.api.db._
 import play.api.mvc.AsyncResult
 import scala.language.postfixOps
 import java.util.Date
+import org.joda.time._
 import play.Logger
 
 /**
@@ -147,6 +148,7 @@ object ThinkingSession {
    * returns the join token for the user
    */
   def addUser(sessionId: Long, userId: Long): Long = {
+    val createTime = (new Date()).getTime().toString()
     DB.withConnection { implicit connection =>
       val token = (sessionId + userId + (new Date()).getTime() + Random.nextLong).hashCode
       SQL("""
@@ -236,7 +238,7 @@ object ThinkingSession {
           and thinking_session={session}""").on('token -> token, 'session -> sessionId)
       sql.apply().headOption match {
         case Some(h) => Some(h[Long]("user"))
-        case None    => None
+        case None => None
       }
     }
   }
@@ -257,6 +259,15 @@ object ThinkingSession {
         .as(get[Long]("num").single)
       test > 0
     }
+  }
+  def checkCreationDate(sessionId: Long, userId: Long): Date = {
+    DB.withConnection { implicit connection =>
+      SQL("""select time from participating where user={user} and thinking_session={session}""")
+        .on('user -> userId,
+          'session -> sessionId)
+        .as((get[Date]("time").single))
+    }
+
   }
 
   def allUsersReady(session: ThinkingSession): Boolean = allUsersReady(session.id)

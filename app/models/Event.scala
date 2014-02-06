@@ -44,12 +44,12 @@ case class Event(
 
   val hasCard: Boolean = card match {
     case Some(_) => true
-    case None    => false
+    case None => false
   }
 
   val hasUser: Boolean = user match {
     case Some(_) => true
-    case None    => false
+    case None => false
   }
 }
 
@@ -85,8 +85,7 @@ object Event {
         'hatId -> hatId,
         'userId -> userId,
         'cardId -> cardId,
-        'time -> time
-      )
+        'time -> time)
 
       sql.executeUpdate()
       id
