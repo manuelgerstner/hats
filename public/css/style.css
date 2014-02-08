@@ -102,6 +102,11 @@ div.card {
 	white-space: normal;
 }
 
+div.card a {
+	color: inherit;
+	text-decoration: underline;
+	font-style: italic;
+}
 
 div.card:hover {
 	opacity: 1;

@@ -9,18 +9,17 @@ $(function() {
             if (name.val() === "") {
                 name.parent().addClass('has-error');
             } else {
-                var nameString = name.val()
-                var dataString = 'new-name=' + nameString;
-                $.ajax({
-                    type: "POST",
-                    dataType: "text/plain",
-                    url: "/user/saveName",
-                    data: dataString
+                jsRoutes.controllers.Users.saveName().ajax({
+                	data: {
+                		"name": name.val()
+                	},
+                	success: function() {
+                		 USER_NAME = name.val();
+                         name.parent().removeClass('has-error');
+                         $('#first-time').remove();
+                         $('#hatchange-modal').modal('hide');
+                	}
                 });
-                USER_NAME = nameString;
-                name.parent().removeClass('has-error');
-                $('#first-time').remove();
-                $('#hatchange-modal').modal('hide');
             }
         } else {
             $('#hatchange-modal').modal('hide');
@@ -49,7 +48,23 @@ $(function() {
     });
     $(document).on('blur', '.bucketname', function() {
         renameBucket(this); // this = element
-    })
+    });
+    $(document).on('click', 'a.fancybox', function(e) {
+    	e.preventDefault();
+    	var options = {
+    		speed: "slow"
+    	}
+    	var href = $(this).attr("href");
+    	if (!!~href.indexOf("youtube.com/watch?v=")) {
+    		$(this).attr("href", href.replace("watch?v=", "v/"));
+    		options.type = "swf";
+            //options.swf= {"wmode":'transparent','allowfullscreen':'true'}
+    	}
+    	$.fancybox.open(this, options);
+    });
+    $('#indicate-finish').click(function() {
+    	location.href = "/" + SESSION_ID + "/dashboard";
+    });
 
 });
 // get websocket up and running
@@ -214,6 +229,9 @@ function addCard(card, effect) {
      * card json: {"id":5, "hat": "Green", "content": "card content",
      * "username":"username"}
      */
+	// create clickable links
+	if (card.content.trim() === "") return;
+	card.content = linkify(card.content);
 
     var template = Handlebars.compile($('#card-template').html());
     var compiled = template(card);
@@ -246,7 +264,7 @@ var options = {
         containment: "#hat-cards",
         cursor: "move",
         stack: "div.card",
-        snap: true,
+       // snap: true,
         revert: "invalid" // revert, if not dropped to droppable
     },
 
@@ -267,6 +285,15 @@ var options = {
             // finally, post
             jsRoutes.controllers.Cards.addCardToBucket(bucketId, cardId).ajax({method: "post"});
         }
+    },
+    fancybox: {
+    	speed: "slow"
+    	// override youtube,
     }
-
 };
+
+function linkify(text) {
+	// only use direct jp(e)g/png links or youtube links
+    var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+    return text.replace(exp,"<a class='fancybox' href='$1'>$1</a>"); 
+}

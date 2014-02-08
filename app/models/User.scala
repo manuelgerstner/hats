@@ -50,8 +50,7 @@ object User {
   def byId(id: Long): Option[User] = {
     DB.withConnection { implicit connection =>
       SQL("select * from user where id = {id}").on(
-        'id -> id
-      ).as(User.simple *) headOption
+        'id -> id).as(User.simple *) headOption
     }
   }
 
@@ -65,8 +64,7 @@ object User {
       SQL("insert into user (id,name,mail) values ({id},{name},{mail})").on(
         'id -> id,
         'name -> name,
-        'mail -> mail
-      ).executeUpdate()
+        'mail -> mail).executeUpdate()
     }
     id
   }
@@ -77,8 +75,7 @@ object User {
   def delete(user: User) = {
     DB.withConnection { implicit connection =>
       SQL("delete from user where id = {id}").on(
-        'id -> user.id
-      ).executeUpdate()
+        'id -> user.id).executeUpdate()
     }
   }
 
@@ -87,8 +84,7 @@ object User {
   def byMail(mail: String): Option[User] = {
     DB.withConnection { implicit connection =>
       SQL("select * from user where mail = {mail}").on(
-        'mail -> mail
-      ).as(User.simple *) headOption
+        'mail -> mail).as(User.simple *) headOption
     }
   }
 
@@ -106,6 +102,7 @@ object User {
   }
 
   def saveName(user: User, name: String): Int = saveName(user.id, name)
+
   def saveName(userId: Long, name: String): Int = {
     DB.withConnection { implicit connection =>
       SQL("""

@@ -18,12 +18,6 @@
 			var CALL_URI = "http://sixhats.com/cards";
             var USER_NAME = "@user.name";
             var USER_ID = "@user.id"
-			//console.log(CARDS);
-
-			// set up socket on load event
-			window.onload = function() {
-				instantiateSocket();
-			};
 			var TOOLTIPS = {
 				"white": "The White Hat calls for information known or needed. The facts, just the facts.",
 				"yellow": "The Yellow Hat symbolizes brightness and optimism. Under this hat you explore the positives and probe for value and benefit.",
@@ -32,9 +26,7 @@
 				"black": "The Black Hat is judgment - the devil's advocate or why something may not work. Spot the difficulties and dangers; where things might go wrong.",
 				"green": "The Green Hat focuses on creativity; the possibilities, alternatives, and new ideas. It's an opportunity to express new concepts and new perceptions."
 			};
-
 		</script>
-
 
 		<div id="hat-feed" class="well col-md-3">
 			@hatfeed.render
@@ -45,12 +37,6 @@
 			<div class="row" id="card-create">
 				<div class="form-group">
 					<div class="col-xs-6">
-
-
-
-
-
-
 						<input data-toggle="popover" data-placement="bottom" data-trigger="manual" type="text"
 						class="form-control" name="content" id="content" placeholder="Add new Card"/>
 					</div>
@@ -63,14 +49,14 @@
 						Move to next Hat
 						<span class="glyphicon glyphicon-forward"></span>
 					</button>
-					<a href="@routes.Dashboard.showReport(session.id)" class="btn btn-info pull-right hide" id="indicate-finish"><strong>Finish Session</strong></a>						
+					<button type="submit" class="btn btn-info pull-right hide" id="indicate-finish">Finish Session</a>
 				</div>
 			</div>
 
 			<div id="cards" class="well">
 				@if(cards.isEmpty) {
 					<div id="nocardsyet" class="row">
-						<div class="col-md-6 col-md-offset-3 alert alert-success" id="nocardsyet">
+						<div class="col-md-8 col-md-offset-2 alert alert-success" id="nocardsyet">
 							Nobody has added any cards yet, go ahead and add some!
 						</div>
 					</div>
@@ -154,7 +140,7 @@
 <script id="card-template" type="text/x-handlebars-template">
 	<div data-cardid="{{id}}" class="card {{hat}}">
 		<span class="name">@@{{username}}:</span>
-		<div class="content">{{content}}</div>
+		<div class="content">{{{content}}}</div>
 	</div>
 </script>	
 
@@ -162,6 +148,8 @@
 <script type="text/javascript">
 	//set up initial tooltip
 	$(window).load(function() {
+		instantiateSocket();
+		
 		if (USER_NAME !== "New User") {
 			$('#first-time').remove();
 		}

@@ -27,13 +27,13 @@ object Users extends Controller {
   def saveName = Action { implicit request =>
     val name = request.body.asFormUrlEncoded match {
       case Some(map) =>
-        map.get("new-name") match {
+        map.get("name") match {
           case Some(names) => names head
-          case None        => "New User"
+          case None => "New User"
         }
       case None => "New User"
     }
-    Logger.debug("Users.svaeName " + name)
+    Logger.debug("Users.saveName " + name)
     request.cookies.get(User.idCookie) match {
       case Some(cookie) => // found user cookie
         User.byCookie(cookie) match {
