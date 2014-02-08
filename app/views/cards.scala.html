@@ -33,12 +33,6 @@
 				"green": "The Green Hat focuses on creativity; the possibilities, alternatives, and new ideas. It's an opportunity to express new concepts and new perceptions."
 			};
 
-
-
-
-
-
-
 		</script>
 
 
@@ -133,10 +127,10 @@
 
 <script id="bucket-template" type="text/x-handlebars-template">
 <div class="col-md-6">
-	<div class="bucket" data-id="{{id}}" id="bucket-{{id}}">
+	<div class="bucket" data-bucketid="{{bucketId}}" id="bucket-{{bucketId}}">
 		<form>
 			<h4 class="hide"></h4>
-			<input type="text" class="form-control bucketname" placeholder="Name this bucket" data-bucketid="{{id}}" placeholder="{{name}}"/>
+			<input type="text" class="form-control bucketname" data-bucketid="{{bucketId}}" placeholder="Name this Bucket"/>
 			<div class="row">
 				<div class="col-md-12">
 					<div class="cards">
@@ -168,9 +162,14 @@
 <script type="text/javascript">
 	//set up initial tooltip
 	$(window).load(function() {
-		if (USER_NAME !== "") {
+		if (USER_NAME !== "New User") {
 			$('#first-time').remove();
 		}
 		moveTo(HAT);
 	});
 </script>
+
+
+	
+<script type="text/javascript" src="@routes.Assets.at("js/scripts.js")?@System.currentTimeMillis"></script>
+<script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")?@System.currentTimeMillis"></script>

@@ -72,6 +72,7 @@ div.bucket div.cards {
 	margin: 10px 0;
 	min-height: 30px;
 }
+.dropit .cards { background: rgba(92, 184, 92, 0.41); }
 
 /**
  * Card colors:
