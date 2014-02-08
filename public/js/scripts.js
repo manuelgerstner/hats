@@ -28,27 +28,38 @@ $(function() {
 	});
 
 	$('#modal-button').click(function() {
-		/* new user? */
-		var isNewUser = ($('#form-user').val() === "New User");
+        /* new user? */
+        var test = $('#form-user').val();
+        var isNewUser = ($('#form-user').val() === "New User");
 
-		console.log("Is new user? = " + isNewUser);
+        console.log("Is new user? = " + isNewUser);
 
-		/* force new user to enter name */
-		if (isNewUser) {
-			var name = $('#modal-username');
-			if (name.val() === "") {
-				name.parent().addClass('has-error');
-			} else {
-				name.parent().removeClass('has-error');
-				$('#form-user').val(name.val());
-				$('#first-time').remove();
-				$('#hatchange-modal').modal('hide');
-			}
-		} else {
-			$('#hatchange-modal').modal('hide');
-		}
+        /* force new user to enter name */
+        if (isNewUser) {
+            var name = $('#modal-username');
 
-	});
+            if (name.val() === "") {
+                name.parent().addClass('has-error');
+            } else {
+                var nameString = name.val()
+                var dataString = 'new-name=' + nameString;
+                $.ajax({
+                    type: "POST",
+                    dataType: "text/plain",
+                    url: "/user/saveName",
+                    data: dataString
+                });
+                USERNAME = nameString;
+                name.parent().removeClass('has-error');
+                $('#form-user').val(nameString);
+                $('#first-time').remove();
+                $('#hatchange-modal').modal('hide');
+            }
+        } else {
+            $('#hatchange-modal').modal('hide');
+        }
+
+    });
 
 	// only show first hat in progress bar
 	if (typeof HAT !== "undefined") {

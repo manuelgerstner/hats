@@ -105,6 +105,19 @@ object User {
     }
   }
 
+  def saveName(user: User, name: String): Int = saveName(user.id, name)
+  def saveName(userId: Long, name: String): Int = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          update user
+          set name = {name}
+          where id = {userId}
+          """).on(
+        'name -> name,
+        'userId -> userId).executeUpdate()
+    }
+  }
+
   /**
    * some dummy users for dev purposes
    */
