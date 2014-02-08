@@ -19,7 +19,7 @@ function ProgressBar(container, bubbles) {
 		"green": 5,
 		"black": 5
 	};
-	hats = [ 
+	this.hats = [ 
 		"white",
 		"red",
 		"yellow",
@@ -28,6 +28,7 @@ function ProgressBar(container, bubbles) {
 		"blue"
 	];
 	this.render();
+	this.addTooltips(false);
 }
 /**
  * adds a card to the progress bar inside the corresponding hat
@@ -35,7 +36,8 @@ function ProgressBar(container, bubbles) {
  * @param card - a Card object that should be added to the progress bar
  */
 ProgressBar.prototype.add = function(card) {
-	//console.log("adding card: ", card);
+	//console.log("adding card: ", card);	
+	this.addTooltips(this.hats, true);
 	this.bubbles[card.hat]++;
 	this.render();
 	this.setBubbleSizes(this.bubbles);
@@ -47,6 +49,7 @@ ProgressBar.prototype.add = function(card) {
  */
 ProgressBar.prototype.render = function() {
 	var self = this;
+	var hats = self.hats;
 
 	for(var i = 0; i < hats.indexOf(HAT) + 1; i++) {
 			var cirque = $(self.container).find('circle.' + hats[i]);
@@ -91,5 +94,36 @@ ProgressBar.prototype.setBubbleSizes = function(bubbles) {
 	for(var hat in bubbles) {
 		var cirque = $(this.container).find('circle.' + hat);
 		cirque.attr("r", bubbles[hat]);
+	}
+}
+
+ProgressBar.prototype.addTooltips = function(update) {
+	var hats = this.hats;
+	for (var hat in hats) {
+		var addedCards = 0;
+		var users = [];
+		CARDS.forEach(function(card) {
+			if(card.hat === hats[hat]) {
+				addedCards++;
+				if(users.indexOf(card.username) === -1) {
+					users.push(card.username);
+				}
+			}
+		});
+		var contributors = "<li>" + users.join(",") + "</li>";
+		if(!update) {
+			$(this.container).find('circle.' + hats[hat]).qtip({
+			    content: {
+			        text: 'Number of cards in ' + hats[hat] + ' hat: ' + addedCards + '<br/> Contributors: ' + contributors
+			    }, 
+			    style: {
+			    	classes: 'qtip-bootstrap'
+			    }
+			});
+		} else {
+			var qapi = $(this.container).find('circle.' + hats[hat]).data('qtip');
+			var newContent = 'Number of cards in ' + hats[hat] + ' hat: ' + addedCards + '<br/> Contributors: ' + contributors;
+			qapi.set('content.text', newContent);
+		}
 	}
 }
