@@ -9,7 +9,7 @@ import play.api.libs.json._
 
 case class Bucket(id: Long, sessionId: Long, name: String) {
   def asJson: JsObject = Json.obj(
-    "id" -> id,
+    "bucketId" -> id,
     "sessionId" -> sessionId,
     "name" -> name)
 

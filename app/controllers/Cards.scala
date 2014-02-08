@@ -49,9 +49,9 @@ object Cards extends Controller {
 
   // no return necessary
   def renameBucket(bucketId: Long) = Action { implicit request =>
-    //    val name = (request.body.asJson \ "name").as[]
-    //    Bucket.saveName(name, bucketId)
-    Ok
+    val name = "abcdef"
+    Bucket.saveName(name, bucketId)
+    Ok.as("application/json")
   }
 
 }

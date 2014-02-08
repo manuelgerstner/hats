@@ -35,7 +35,7 @@
 						<div class="form-group">
 							<label for="mailAddresses">Now let's invite some of your friends!</label>
 							<div class="input-group">
-								<input id="mailAddresses" class="tokenfield input-xlarge" type="text" name="mailAddresses" placeholder="john@@company.com"/>
+								<input id="mailAddresses" class="tokenfield form-control" type="text" name="mailAddresses" placeholder="john@@company.com"/>
 								<span class="input-group-addon">separate with ,</span>
 							</div>
 						</div>
@@ -51,4 +51,9 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		$(function() {
+			$('.tokenfield').tokenfield();
+		});
+	</script>
 }

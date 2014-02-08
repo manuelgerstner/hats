@@ -1,22 +1,8 @@
-// Scrolls the view down to the config pane on the frontpage
-$.fn.scrollView = function() {
-    return this.each(function() {
-        $('html, body').animate({
-            scrollTop: $(this).offset().top - 10
-        }, 1000);
-    });
-};
-
 $(function() {
-
-    $("table").tablesorter({
-        debug: true
-    });
 
     $('#modal-button').click(function() {
         /* new user? */
-        var isNewUser = ($('#form-user').val() === "New User");
-
+        var isNewUser = (USER_NAME === "New User");
         /* force new user to enter name */
         if (isNewUser) {
             var name = $('#modal-username');
@@ -31,7 +17,7 @@ $(function() {
                     url: "/user/saveName",
                     data: dataString
                 });
-                USERNAME = nameString;
+                USER_NAME = nameString;
                 name.parent().removeClass('has-error');
                 $('#first-time').remove();
                 $('#hatchange-modal').modal('hide');
@@ -74,7 +60,7 @@ $(function() {
 
 function instantiateSocket() {
     // connect to WAMPlay server
-    console.log("Connecting to WAMPlay server...");
+    //console.log("Connecting to WAMPlay server...");
     // successful setup
     ab.connect(WSURI, function(session) {
 
@@ -107,17 +93,17 @@ function instantiateSocket() {
                 var message = JSON.stringify(moveHatEvent);
                 session.call(CALL_URI + "#moveHat", message);
             });
-            console.log("Connected to " + WSURI);
+           // console.log("Connected to " + WSURI);
             // subscribe to add cards here, give a callback
             // ID needs to be string
             session.subscribe(SESSION_ID.toString(), onEvent);
-            console.log("Subscribed to session number " + SESSION_ID);
+            //console.log("Subscribed to session number " + SESSION_ID);
         },
 
         // WAMP session is gone
-
         function(code, reason) {
-            console.log("Connection lost (" + reason + ")", true);
+        	if (confirm('an error occured, reload?')) location.reload();
+            //console.log("Connection lost (" + reason + ")", true);
             // should probably reconnect here
         },
         // additional options
@@ -133,9 +119,9 @@ function onEvent(topic, event) {
 
     // add switch case for topic here:
 
-    console.log("Message from topic: " + topic + ":");
+    //console.log("Message from topic: " + topic + ":");
     // event holds the actual message that is being sent
-    console.log(event);
+    //console.log(event);
     // event.username = "FooUser";
     // event.id = 1e4;
     //if (userid != incoming user) OR use skip paramters in session.send
@@ -178,18 +164,13 @@ function moveTo(hat) {
 function addBucket() {
     // get bucket info from server
     jsRoutes.controllers.Cards.createBucket(SESSION_ID).ajax({
-        method: "post",
         success: function(bucket) {
-            console.log("todo: remove dummy bucket in addBucket()");
-            bucket = bucket || {
-                id: 1,
-                name: "Testing Bucket"
-            };
-
+        	console.log("adding a bucket", bucket);
+            //console.log("todo: remove dummy bucket in addBucket()");
             var template = Handlebars.compile($('#bucket-template').html());
             var compiled = template(bucket).toString(); // workaround   
             // workaround
-            $('#buckets-list').append(compiled).find('div.bucket').droppable(options.drop); //.sortable(sortOptions);
+            $('#buckets-list').append(compiled).find('div.bucket').droppable(options.droppable); //.sortable(sortOptions);
         }
     });
 
@@ -200,17 +181,15 @@ function renameBucket(elem) {
     var name = $(elem).val();
     // ajax to bucket name change
 
-    var url = jsRoutes.controllers.Cards.renameBucket(SESSION_ID);
-
-    $.ajax(url.url, {
-        dataType: "application/json",
-        method: "post",
+    jsRoutes.controllers.Cards.renameBucket(SESSION_ID).ajax({
         data: {
             "name": name
         },
-        success: function() {
-            elem.parent().find("h4").removeClass("hide").text(name);
-            elem.remove();
+        // have to use complete since no data is returned
+        complete: function(e) {
+        	console.log("renamed bucket");
+            $(elem).parent().find("h4").removeClass("hide").text(name);
+            $(elem).remove();
         }
     });
 }
@@ -259,7 +238,7 @@ function addCard(card, effect) {
 }
 
 function enableDragDrop() {
-    $('#cards-list div.card').draggable(options.drag);
+    $('#cards-list div.card').draggable(options.draggable);
 }
 
 
@@ -267,35 +246,31 @@ function enableDragDrop() {
 
 var options = {
     // drag options for cards
-    drag: {
-        drop: function(event, ui) {
-            // this = target element
-            var groupId = $(this).data('groupid');
-        },
+    draggable: {
         containment: "#hat-cards",
         cursor: "move",
         stack: "div.card",
         snap: true,
-        revert: "invalid" // revert is not dropped to droppable
+        revert: "invalid" // revert, if not dropped to droppable
     },
 
-    drop: {
+    droppable: {
+    	hoverClass: "dropit",
         drop: function(event, ui) {
-
+        	// grab bucket id
+        	var bucketId = $(event.target).data('bucketid');
+        	// kill placeholder
             $(this).find(".placeholder").remove();
-            var card = ui.draggable;
+            // bind card
+            var card = ui.draggable, cardId = card.data('cardid');
             // css fix
-            card.css("position", "").off();
-
-            card.draggable("disable");
+            card.css("position", "").off(); // unbind all drag shit
+            card.draggable("disable"); // disable further dragging
+            // inject into container
             $(this).find(".cards").append(card);
-            // post to server
+            // finally, post
+            jsRoutes.controllers.Cards.addCardToBucket(bucketId, cardId).ajax({method: "post"});
         }
-    },
-
-    sort: {
-        connectWith: ".cards",
-        placeholder: "portlet-placeholder"
     }
 
 };
