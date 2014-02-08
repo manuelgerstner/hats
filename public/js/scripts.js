@@ -155,18 +155,15 @@ function moveTo(hat) {
 
 }
 
-function addBucket(bucket) {
-	// bucket should be {id, name}
-	
-    // drop options for buckets
-    var dropOptions = {
-    };
 
-    // append bucket
-	$(bucket).appendTo('#buckets').droppable(dropOptions);
-	
+// bucket should be {id, name}
+function addBucket(bucket) {
 	var template = Handlebars.compile($('#bucket-template').html());
-	var bucket = template(bucket);
+	var compiled = template(bucket).toString(); // workaround
+
+	 $('#buckets').append(compiled);
+	// append bucket
+	//$(bucket).appendTo($('#buckets')).droppable(dropOptions);
 	
 }
 
@@ -182,7 +179,8 @@ function prepareBlueHat() {
     	},
         containment: "#hat-cards",
         cursor: "move",
-        stack: "div.card"
+        stack: "div.card",
+        revert: "invalid" // revert is not dropped to droppable
     };
 
     // enable drag drop for all cards (remove transitions!)
@@ -192,6 +190,11 @@ function prepareBlueHat() {
     $('#indicate-ready').addClass('hide');
     
     // enable buckets here
+    $('#buckets').removeClass("hide");
+    addBucket({
+    	id: 2, 
+    	name: "My Bucket"
+    });
     
 }
 

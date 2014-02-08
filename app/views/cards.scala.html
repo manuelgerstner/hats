@@ -35,7 +35,6 @@
 				if (USER_NAME !== "") {
 					$('#first-time').remove();
 				}
-				moveTo(HAT);
 			});
 		</script>
 
@@ -85,9 +84,7 @@
 				<h4 class="modal-title">You're now wearing a <span class="hat"></span> hat!</h4>
 			</div>
 			<div class="modal-body">
-	       		<p>
-					<blockquote class="message"></blockquote>
-				</p>
+				<blockquote class="message"></blockquote>
 				<div id="first-time">
 					<form class="form-inline">
 						<div class="form-group">
@@ -109,8 +106,8 @@
 
 
 <script id="bucket-template" type="text/x-handlebars-template">
-	<div class="col-md-3 bucket" data-id="{id}" id="bucket-{{id}}">
-		Drop cards here
+	<div class="col-md-3 bucket droppable" data-id="{{id}}" id="bucket-{{id}}">
+		{{name}}
 	</div>
 </script>
 
