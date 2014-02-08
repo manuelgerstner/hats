@@ -42,7 +42,7 @@ case class Event(
       "hat" -> hat.name.toLowerCase,
       "time" -> time.getTime().toString(),
       "username" -> userName,
-      "card" -> cardId,
+      "cardid" -> cardId,
       "bucket" -> bucketId,
       "content" -> cardContent)
     JavaConversions.mapAsJavaMap(baseData)
@@ -50,32 +50,32 @@ case class Event(
 
   def cardId: String = card match {
     case Some(c) => c.id.toString
-    case None    => "null"
+    case None => "null"
   }
 
   def bucketId: String = bucket match {
     case Some(b) => b.id.toString
-    case None    => "null"
+    case None => "null"
   }
 
   def cardContent = card match {
     case Some(c) => c.content
-    case None    => "null"
+    case None => "null"
   }
 
   def userName = user match {
     case Some(u) => u.name
-    case None    => "null"
+    case None => "null"
   }
 
   val hasCard: Boolean = card match {
     case Some(_) => true
-    case None    => false
+    case None => false
   }
 
   val hasUser: Boolean = user match {
     case Some(_) => true
-    case None    => false
+    case None => false
   }
 }
 
