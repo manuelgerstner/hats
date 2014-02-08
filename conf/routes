@@ -19,12 +19,14 @@ GET    /:id                             	controllers.ThinkingSessions.index(id: 
 POST   /:id/closeSession                	controllers.ThinkingSessions.closeSession(id: Long)
 
 # rest
-POST   /rest/buckets/name/:bucketId 		controllers.Cards.renameBucket(bucketId:Long)
+POST   /rest/buckets/name/:bucketId 	 	controllers.Cards.renameBucket(bucketId:Long)
 POST   /rest/buckets/:id					controllers.Cards.createBucket(id:Long)
 POST   /rest/buckets/:bucketId/:cardId		controllers.Cards.addCardToBucket(bucketId:Long, cardId:Long)
+
 
 # User controll
 POST   /user/saveName	                	controllers.Users.saveName
 
 # Map static resources from the /public folder to the /assets URL path
 GET    /assets/*file                    	controllers.Assets.at(path="/public", file)
+
