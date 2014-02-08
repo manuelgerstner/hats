@@ -64,6 +64,7 @@ body.white {
  * are shown in the Blue hat. By default, cards will be white.
  */
 
+
 div.card {
 	display: inline-block;
 	background: #FEFEFE;
@@ -78,10 +79,10 @@ div.card {
 	column-break-inside: avoid;
 	padding: 10px;
 	opacity: 0.3;
-	-webkit-transition: all .2s ease;
+	/*-webkit-transition: all .2s ease;
 	-moz-transition: all .2s ease;
 	-o-transition: all .2s ease;
-	transition: all .2s ease;
+	transition: all .2s ease;*/
 	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
 	white-space: -pre-wrap;      			/* Opera 4-6 */
 	white-space: -o-pre-wrap;    			/* Opera 7 */
@@ -90,10 +91,12 @@ div.card {
 	word-break: break-all;
 	white-space: normal;
 }
+
+
 div.card:hover {
 	opacity: 1;
 }
-div.card.draggable {
+#hat.blue div.card {
 	cursor: move;
 }
 div.card span.name {

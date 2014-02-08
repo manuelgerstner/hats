@@ -9,20 +9,6 @@ $.fn.scrollView = function() {
 
 $(function() {
 
-//    filepicker.setKey("ALJ5oSFlR428EQekrItRgz");
-//    $('#addFile').click(function() {
-//        filepicker.pick({
-//            mimetypes: ['image/*', 'text/plain'],
-//            services: ['COMPUTER', 'FACEBOOK', 'GMAIL'],
-//        }, function(inkBlob) {
-//            var imgUrl = inkBlob.url,
-//                imgMine = inkBlob.mime;
-//            // inject into hidden fields
-//            $('#imgUrl').val(imgUrl);
-//            $('#imgMime').val(imgMime);
-//        });
-//    });
-
     $("table").tablesorter({
         debug: true
     });
@@ -65,41 +51,10 @@ $(function() {
         });
     }
 
-    /*$('#card-form').ajaxForm({
-	        dataType : "json",
-	        type : "post",
-	        //beforeSubmit: showRequest,
-	        success : function(card) {
-	                return;
-	                // if (card.error === true) {
-	                //         alert(card.message);
-	                //         return;
-	                // }
-	                // addCard(card); // post-submit callback
-	                
-	        }
-	});*/
-
     $('.tooltipster').tooltipster();
-
     $('.tokenfield').tokenfield();
-
-    // get dashboard for session id
-    $('#indicate-finish').click(function() {
-        window.location.href = '/' + SESSION_ID + '/dashboard';
-        $('body').removeClass().addClass("dashboard");
-        jsRoutes.controllers.Dashboard.saveDuration(SESSION_ID, HAT,
-        elapsedTime).ajax({
-            dataType: "json",
-            type: "post",
-            success: function(data) {
-                if (data.error === true) {
-                    alert(data.message);
-                }
-                return;
-            }
-        });
-    });
+    
+    moveTo(HAT);
 
 });
 // get websocket up and running
@@ -136,32 +91,7 @@ function instantiateSocket() {
                 "eventData": hatInfo
             };
             var message = JSON.stringify(moveHatEvent);
-            session.call(CALL_URI + "#moveHat", message)
-            // jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
-            //         dataType : "json",
-            //         type : "post",
-            //         success : function(data) {
-            //                 if (data.error === true) {
-            //                         alert(data.message);
-            //                         return;
-            //                 }
-            //                 $('circle.' + data.hat).show();
-            //                 moveTo(data.hat);
-            //         }
-            // });
-            elapsedTime = sec;
-            stopClock(); //Stop clock
-            jsRoutes.controllers.Dashboard.saveDuration(SESSION_ID,
-            HAT, elapsedTime).ajax({
-                dataType: "json",
-                type: "post",
-                success: function(data) {
-                    if (data.error === true) {
-                        alert(data.message);
-                    }
-                    return;
-                }
-            });
+            session.call(CALL_URI + "#moveHat", message);
         });
         console.log("Connected to " + WSURI);
         // subscribe to add cards here, give a callback
@@ -202,10 +132,6 @@ function onEvent(topic, event) {
 
 }
 
-function makeDraggable() {
-    $('#cards-list div.card').draggable();
-}
-
 function moveTo(hat) {
     // CSS changes for mood
     $('#hat').removeClass().addClass(hat.toLowerCase());
@@ -221,6 +147,7 @@ function moveTo(hat) {
 
     // overwrite global HAT var
     HAT = hat.toLowerCase();
+    console.log("changed to %s hat", HAT);
 
     if (HAT === "blue") {
         prepareBlueHat();
@@ -229,7 +156,6 @@ function moveTo(hat) {
 }
 
 function addBucket(bucket) {
-	
 	// bucket should be {id, name}
 	
     // drop options for buckets
@@ -246,6 +172,7 @@ function addBucket(bucket) {
 
 function prepareBlueHat() {
 
+	console.log("preparing blue hat, administrative controls enabled");
 	
 	// drag options for cards
     var dragOptions = {
@@ -255,16 +182,16 @@ function prepareBlueHat() {
     	},
         containment: "#hat-cards",
         cursor: "move",
-        stack: '.draggable'
+        stack: "div.card"
     };
 
-    // enable drag drop for all cards
-    $('#cards-list div.card').draggable('enable');
+    // enable drag drop for all cards (remove transitions!)
+    $('#cards-list div.card').addClass('notransitions').draggable(dragOptions);
     // toggle buttons
-    $('#indicate-finish').show();
-    $('#indicate-ready').hide();
+    $('#indicate-finish').removeClass('hide');
+    $('#indicate-ready').addClass('hide');
     
-    // enable buckets
+    // enable buckets here
     
 }
 

@@ -19,8 +19,6 @@ GET    /:id                             controllers.ThinkingSessions.index(id: L
 POST   /:id/closeSession                controllers.ThinkingSessions.closeSession(id: Long)
 
 # rest
-POST   /rest/:id/addCard          		controllers.Cards.restFormAddCard(id:Long)
-POST   /rest/:id/forceChangeHat         controllers.ThinkingSessions.restChangeHat(id:Long)
 POST   /rest/buckets/:id				controllers.Cards.createBucket(id:Long)
 POST   /rest/buckets/:bucketId/:cardId	controllers.Cards.addCardToBucket(bucketId:Long, cardId:Long)
 
