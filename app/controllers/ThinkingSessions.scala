@@ -26,8 +26,6 @@ object ThinkingSessions extends Controller {
    */
   def index(id: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.index")
-
-    val test = request.cookies.get(User.idCookie)
     request.cookies.get(User.idCookie) match {
       case Some(cookie) => // found user cookie
         User.byCookie(cookie) match {
@@ -59,33 +57,6 @@ object ThinkingSessions extends Controller {
   }
 
   /**
-   * Update Session state to respective hat, show session index of new hat.
-   */
-  def changeHat(id: Long) = Action { implicit request =>
-    Logger.debug("ThinkingSessions.changeHat")
-    request.cookies.get(User.idCookie) match {
-      case Some(cookie) =>
-        User.byCookie(cookie) match {
-          case Some(user) =>
-            ThinkingSession.byId(id) match {
-              case Some(session) =>
-                if (session.isOwner(user)) {
-                  val nextHatId = HatFlow.nextDefaultHatId(session)
-                  ThinkingSession.changeHatTo(id, nextHatId)
-                  Ok(views.html.cards(session, Card.byThinkingSession(id), Hat.byId(nextHatId).get, user))
-                } else
-                  BadRequest
-              case None =>
-                NotFound
-            }
-
-          case None => BadRequest
-        }
-      case None => BadRequest
-    }
-  }
-
-  /**
    * TODO: Conclude session and redirect to review page
    */
   def closeSession(id: Long) = TODO
@@ -104,18 +75,6 @@ object ThinkingSessions extends Controller {
   val sessionConfigForm: Form[SessionConfig] = Form(
     mapping(
       "topic" -> nonEmptyText,
-      "whiteTimeLimit" -> optional(number),
-      "whiteAloneTime" -> optional(number),
-      "yellowTimeLimit" -> optional(number),
-      "yeellowAloneTime" -> optional(number),
-      "redTimeLimit" -> optional(number),
-      "redAloneTime" -> optional(number),
-      "greenTimeLimit" -> optional(number),
-      "greenAloneTime" -> optional(number),
-      "blueTimeLimit" -> optional(number),
-      "blueAloneTime" -> optional(number),
-      "blackTimeLimit" -> optional(number),
-      "blackAloneTime" -> optional(number),
       "adminMailAddress" -> optional(text),
       "mailAddresses" -> text)(SessionConfig.apply)(SessionConfig.unapply))
 
@@ -183,31 +142,4 @@ object ThinkingSessions extends Controller {
       case Nil => Nil
     }
   }
-
-  /**
-   * Change the current Hat of a session. only owner (will be) allowed to do this
-   */
-  def restChangeHat(sessionId: Long) = Action { implicit request =>
-    Logger.debug("ThinkingSessions.restChangeHat(" + sessionId + ")")
-    request.cookies.get(User.idCookie) match {
-      case Some(cookie) =>
-        User.byCookie(cookie) match {
-          case Some(user) =>
-            ThinkingSession.byId(sessionId) match {
-              case Some(session) =>
-                if (session.isOwner(user)) {
-                  val nextHatId = HatFlow.nextDefaultHatId(session)
-                  ThinkingSession.changeHatTo(sessionId, nextHatId)
-                  val nextHat = Hat.byId(nextHatId)
-                  Ok(Json.obj("hat" -> nextHat.get.name.toLowerCase)).as("application/json")
-                } else
-                  NotFound(Json.obj("error" -> "not owner")).as("application/json")
-              case None => NotFound(Json.obj("error" -> "no session")).as("application/json")
-            }
-          case None => NotFound(Json.obj("error" -> "no user")).as("application/json")
-        }
-      case None => BadRequest(Json.obj("error" -> "no cookie")).as("application/json")
-    }
-  }
-
 }

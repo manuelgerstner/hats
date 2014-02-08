@@ -31,7 +31,8 @@ object Application extends Controller {
 
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        routes.javascript.ThinkingSessions.restChangeHat)).as("text/javascript")
+        routes.javascript.ThinkingSessions.createSession)
+    ).as("text/javascript")
   }
 
 }
