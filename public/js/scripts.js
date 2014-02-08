@@ -61,7 +61,7 @@ $(function() {
 
     $('.tooltipster').tooltipster();
     $('.tokenfield').tokenfield();
-    
+
     $(document).on('click', '.addbucket', function() {
         addBucket();
     });
@@ -71,61 +71,64 @@ $(function() {
 
 });
 // get websocket up and running
+
 function instantiateSocket() {
     // connect to WAMPlay server
     console.log("Connecting to WAMPlay server...");
     // successful setup
     ab.connect(WSURI, function(session) {
 
-        // click handler for add card
-        $("#btnAddCard").click(function() {
-            var newCard = {
-                "thinkingSession": SESSION_ID,
-                "hat": HAT,
-                "content": $("#content").val(),
-                "username": USER_NAME,
-                "userId": USER_ID
-            };
-            var addCardEvent = {
-                "eventType": "addCard",
-                "eventData": newCard
-            }
-            var message = JSON.stringify(addCardEvent);
-            session.call(CALL_URI + "#addCard", message)
-        });
+            // click handler for add card
+            $("#btnAddCard").click(function() {
+                var newCard = {
+                    "thinkingSession": SESSION_ID,
+                    "hat": HAT,
+                    "content": $("#content").val(),
+                    "username": USER_NAME,
+                    "userId": USER_ID
+                };
+                var addCardEvent = {
+                    "eventType": "addCard",
+                    "eventData": newCard
+                }
+                var message = JSON.stringify(addCardEvent);
+                session.call(CALL_URI + "#addCard", message)
+            });
 
-        $('#indicate-ready').click(function() {
-            var hatInfo = {
-                "thinkingSession": SESSION_ID,
-                "hat": HAT
-            };
-            var moveHatEvent = {
-                "eventType": "moveHat",
-                "eventData": hatInfo
-            };
-            var message = JSON.stringify(moveHatEvent);
-            session.call(CALL_URI + "#moveHat", message);
-        });
-        console.log("Connected to " + WSURI);
-        // subscribe to add cards here, give a callback
-        // ID needs to be string
-        session.subscribe(SESSION_ID.toString(), onEvent);
-        console.log("Subscribed to session number " + SESSION_ID);
-    },
+            $('#indicate-ready').click(function() {
+                var hatInfo = {
+                    "thinkingSession": SESSION_ID,
+                    "hat": HAT
+                };
+                var moveHatEvent = {
+                    "eventType": "moveHat",
+                    "eventData": hatInfo
+                };
+                var message = JSON.stringify(moveHatEvent);
+                session.call(CALL_URI + "#moveHat", message);
+            });
+            console.log("Connected to " + WSURI);
+            // subscribe to add cards here, give a callback
+            // ID needs to be string
+            session.subscribe(SESSION_ID.toString(), onEvent);
+            console.log("Subscribed to session number " + SESSION_ID);
+        },
 
-    // WAMP session is gone
-    function(code, reason) {
-        console.log("Connection lost (" + reason + ")", true);
-        // should probably reconnect here
-    },
-    // additional options
-    {
-        skipSubprotocolCheck: true,
-        skipSubprotocolAnnounce: true
-    }); // Important! Play rejects all subprotocols for some reason...
+        // WAMP session is gone
+
+        function(code, reason) {
+            console.log("Connection lost (" + reason + ")", true);
+            // should probably reconnect here
+        },
+        // additional options
+        {
+            skipSubprotocolCheck: true,
+            skipSubprotocolAnnounce: true
+        }); // Important! Play rejects all subprotocols for some reason...
 }
 
 // debugging handler for websocket events coming in
+
 function onEvent(topic, event) {
 
     // add switch case for topic here:
@@ -171,6 +174,7 @@ function moveTo(hat) {
 
 
 // bucket should be {id, name}
+
 function addBucket() {
     // get bucket info from server
     jsRoutes.controllers.Cards.createBucket(SESSION_ID).ajax({
@@ -178,24 +182,28 @@ function addBucket() {
         success: function(bucket) {
             console.log("todo: remove dummy bucket in addBucket()");
             bucket = bucket || {
-                id: 1, 
+                id: 1,
                 name: "Testing Bucket"
             };
-            
+
             var template = Handlebars.compile($('#bucket-template').html());
             var compiled = template(bucket).toString(); // workaround   
             // workaround
-            $('#buckets-list').append(compiled).find('div.bucket').droppable(options.drop);//.sortable(sortOptions);
+            $('#buckets-list').append(compiled).find('div.bucket').droppable(options.drop); //.sortable(sortOptions);
         }
     });
-    
+
 }
 
 function renameBucket(elem) {
     // post bucketname to server
-    var name = elem.val();
+    var name = $(elem).val();
     // ajax to bucket name change
-    jsRoutes.controllers.Cards.renameBucket(SESSION_ID).ajax({
+
+    var url = jsRoutes.controllers.Cards.renameBucket(SESSION_ID);
+
+    $.ajax(url.url, {
+        dataType: "application/json",
         method: "post",
         data: {
             "name": name
@@ -214,11 +222,11 @@ function prepareBlueHat() {
     console.log("preparing blue hat, administrative controls enabled");
 
     enableDragDrop();
-    
+
     // toggle buttons
     $('#indicate-finish').removeClass('hide');
     $('#indicate-ready').addClass('hide');
-    
+
     // enable buckets here
     $('#buckets').removeClass("hide");
     addBucket();
@@ -251,15 +259,15 @@ function addCard(card, effect) {
 }
 
 function enableDragDrop() {
-    $('#cards-list div.card').draggable(options.drag); 
+    $('#cards-list div.card').draggable(options.drag);
 }
 
 
 // jquery ui options
 
 var options = {
-        // drag options for cards
-   drag: {
+    // drag options for cards
+    drag: {
         drop: function(event, ui) {
             // this = target element
             var groupId = $(this).data('groupid');
@@ -270,25 +278,24 @@ var options = {
         snap: true,
         revert: "invalid" // revert is not dropped to droppable
     },
-    
+
     drop: {
-        drop: function( event, ui ) {
-            
+        drop: function(event, ui) {
+
             $(this).find(".placeholder").remove();
             var card = ui.draggable;
             // css fix
             card.css("position", "").off();
-            
+
             card.draggable("disable");
             $(this).find(".cards").append(card);
             // post to server
         }
     },
-    
+
     sort: {
         connectWith: ".cards",
         placeholder: "portlet-placeholder"
     }
-        
-};
 
+};

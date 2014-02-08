@@ -21,7 +21,7 @@ POST   /:id/closeSession                	controllers.ThinkingSessions.closeSessi
 # rest
 POST   /rest/buckets/:id					controllers.Cards.createBucket(id:Long)
 POST   /rest/buckets/:bucketId/:cardId		controllers.Cards.addCardToBucket(bucketId:Long, cardId:Long)
-POST   /rest/buckets/:bucketId 				controllers.Cards.renameBucket(bucketId:Long)
+POST   /rest/buckets/name/:bucketId 				controllers.Cards.renameBucket(bucketId:Long)
 
 # User controll
 POST   /user/saveName                	controllers.Users.saveName

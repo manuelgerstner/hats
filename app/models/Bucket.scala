@@ -19,7 +19,7 @@ object Bucket {
 
   val DBParser = {
     get[Long]("id") ~
-      get[Long]("session") ~
+      get[Long]("thinking_session") ~
       get[String]("name") map {
         case id ~ sessionId ~ name => Bucket(id, sessionId, name)
       }
@@ -36,13 +36,25 @@ object Bucket {
     }
   }
 
+  def saveName(name: String, id: Long) = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          update bucket
+          set name = {name}
+          where id = {bucketId}
+          """).on(
+        'bucketId -> id,
+        'name -> name).executeUpdate()
+    }
+  }
+
   def create(session: ThinkingSession): Long = create(session.id)
 
   def create(sessionId: Long): Long = {
     DB.withConnection { implicit connection =>
       val id: Long = sessionId.hashCode + Random.nextLong + System.currentTimeMillis
       SQL("""
-          insert into bucket (id,sesssion) 
+          insert into bucket (id,thinking_session) 
           values ({id},{sessionId})
           """).on(
         'id -> id,
