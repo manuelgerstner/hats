@@ -58,21 +58,7 @@ $(function() {
     	addBucket();
     });
     $(document).on('blur', '.bucketname', function() {
-    	// post bucketname to server
-    	
-    	var elem = $(this);
-    	var name = elem.val();
-    	// ajax to bucket name change
-    	jsRoutes.controllers.Cards.renameBucket(SESSION_ID).ajax({
-    		method: "post",
-    		data: {
-    			"name": name
-    		},
-    		success: function() {
-    			elem.parent().find("h4").removeClass("hide").text(name);
-    			elem.remove();
-    		}
-    	});
+    	renameBucket(this); // this = element
     })
 
 });
@@ -195,9 +181,25 @@ function addBucket() {
     	}
     });
 	
-	
-	
 }
+
+function renameBucket(elem) {
+	// post bucketname to server
+	var name = elem.val();
+	// ajax to bucket name change
+	jsRoutes.controllers.Cards.renameBucket(SESSION_ID).ajax({
+		method: "post",
+		data: {
+			"name": name
+		},
+		success: function() {
+			elem.parent().find("h4").removeClass("hide").text(name);
+			elem.remove();
+		}
+	});
+}
+
+
 
 function prepareBlueHat() {
 
