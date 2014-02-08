@@ -192,7 +192,8 @@ function renameBucket(elem) {
     var name = $(elem).val();
     // ajax to bucket name change
 
-    jsRoutes.controllers.Cards.renameBucket(SESSION_ID).ajax({
+    var bucketId = $(elem).data("bucketid");
+    jsRoutes.controllers.Cards.renameBucket(bucketId).ajax({
         data: {
             "name": name
         },

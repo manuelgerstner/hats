@@ -23,6 +23,7 @@ import ws.wamplay.controllers.WAMPlayServer
 object Cards extends Controller {
 
   def createBucket(id: Long) = Action { implicit request =>
+
     val user =
       request.cookies.get(User.idCookie) match {
         case Some(cookie) => User.byCookie(cookie)
@@ -32,6 +33,7 @@ object Cards extends Controller {
       case Some(session) =>
         if (ThinkingSession.checkUser(session, user)) {
           val bucketId = Bucket.create(session)
+          Logger.debug("Creating Bucket for session " + id + " with bucket.id = " + bucketId)
           val bucket = Bucket.byId(bucketId)
           val eventId = Event.create("createBucket", session, session.currentHat, user, None, bucket, new Date())
           val event = Event.byId(eventId);
@@ -63,6 +65,7 @@ object Cards extends Controller {
 
   // no return necessary
   def renameBucket(bucketId: Long) = Action { implicit request =>
+    Logger.debug("Rename Bucket " + bucketId)
     val user = request.cookies.get(User.idCookie) match {
       case Some(cookie) => // found user cookie
         User.byCookie(cookie)
@@ -76,7 +79,8 @@ object Cards extends Controller {
 
     name match {
       case Some(n) =>
-        val bucketid = Bucket.saveName(n head, bucketId)
+        Bucket.saveName(n.head, bucketId)
+        val test = bucketId
         val bucket = Bucket.byId(bucketId);
         val session = ThinkingSession.byId(bucket.get.sessionId).get
 
