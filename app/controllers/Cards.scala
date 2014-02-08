@@ -33,4 +33,8 @@ object Cards extends Controller {
     Logger.debug("Creating card thru RPC with id: " + cardId)
     //    Redirect(routes.ThinkingSessions.index(thinkingSession.id))
   }
+  def createBucket(sessionId: Long) = TODO
+
+  def addCardToBucket(bucketId: Long, cardId: Long) = TODO
+
 }
