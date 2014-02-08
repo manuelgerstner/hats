@@ -35,9 +35,6 @@ $(function() {
 
     window.progressBar = new ProgressBar('#progressBar');
 
-    // initialize tooltips
-    $('.tooltipster').tooltipster();
-
     // setup initial card setup
     if (typeof CARDS !== "undefined" && CARDS.length > 0) {
         $(CARDS).each(function() {
@@ -45,7 +42,6 @@ $(function() {
         });
     }
 
-    $('.tooltipster').tooltipster();
     $('.tokenfield').tokenfield();
 
     $(document).on('click', '.addbucket', function() {
@@ -73,6 +69,7 @@ function instantiateSocket() {
                     "username": USER_NAME,
                     "userId": USER_ID
                 };
+                CARDS.push(newCard);
                 var addCardEvent = {
                     "eventType": "addCard",
                     "eventData": newCard
@@ -131,7 +128,6 @@ function onEvent(topic, event) {
         moveTo(event.eventData.hat);
     }
     window.progressBar.add(event.eventData);
-
 }
 
 function moveTo(hat) {
