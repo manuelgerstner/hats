@@ -2,24 +2,29 @@
 # This file defines all application routes (Higher priority routes first)
 
 # Home page
-GET    /                                controllers.Application.index
-POST   /createSession                   controllers.ThinkingSessions.createSession
-GET   /:id/dashboard					controllers.Dashboard.showReport(id: Long)
+GET    /                                	controllers.Application.index
+POST   /createSession                   	controllers.ThinkingSessions.createSession
+GET   /:id/dashboard						controllers.Dashboard.showReport(id: Long)
 
 # JS Routes
-GET    /javascriptRoutes                controllers.Application.javascriptRoutes
+GET    /javascriptRoutes                	controllers.Application.javascriptRoutes
 
 # Send websocket connections to the WAMPlay server
-GET     /wamp                     		ws.wamplay.controllers.WAMPlayServer.connect()
+GET     /wamp                     			ws.wamplay.controllers.WAMPlayServer.connect()
 
-GET    /:id/join/:token					controllers.ThinkingSessions.join(id: Long, token: String)
+GET    /:id/join/:token						controllers.ThinkingSessions.join(id: Long, token: String)
 
 # Session control
-GET    /:id                             controllers.ThinkingSessions.index(id: Long)
-POST   /:id/closeSession                controllers.ThinkingSessions.closeSession(id: Long)
+GET    /:id                             	controllers.ThinkingSessions.index(id: Long)
+POST   /:id/closeSession                	controllers.ThinkingSessions.closeSession(id: Long)
+
+# rest
+POST   /rest/buckets/:id					controllers.Cards.createBucket(id:Long)
+POST   /rest/buckets/:bucketId/:cardId		controllers.Cards.addCardToBucket(bucketId:Long, cardId:Long)
+POST   /rest/buckets/name/:bucketId 				controllers.Cards.renameBucket(bucketId:Long)
 
 # User controll
 POST   /user/saveName                	controllers.Users.saveName
 
 # Map static resources from the /public folder to the /assets URL path
-GET    /assets/*file                    controllers.Assets.at(path="/public", file)
+GET    /assets/*file                    	controllers.Assets.at(path="/public", file)
