@@ -54,7 +54,26 @@ $(function() {
     $('.tooltipster').tooltipster();
     $('.tokenfield').tokenfield();
     
-    moveTo(HAT);
+    $(document).on('click', '.addbucket', function() {
+    	addBucket();
+    });
+    $(document).on('blur', '.bucketname', function() {
+    	// post bucketname to server
+    	
+    	var elem = $(this);
+    	var name = elem.val();
+    	// ajax to bucket name change
+    	jsRoutes.controllers.Cards.renameBucket(SESSION_ID).ajax({
+    		method: "post",
+    		data: {
+    			"name": name
+    		},
+    		success: function() {
+    			elem.parent().find("h4").removeClass("hide").text(name);
+    			elem.remove();
+    		}
+    	});
+    })
 
 });
 // get websocket up and running
@@ -148,6 +167,7 @@ function moveTo(hat) {
     // overwrite global HAT var
     HAT = hat.toLowerCase();
     console.log("changed to %s hat", HAT);
+    location.hash = HAT;
 
     if (HAT === "blue") {
         prepareBlueHat();
@@ -157,45 +177,41 @@ function moveTo(hat) {
 
 
 // bucket should be {id, name}
-function addBucket(bucket) {
-	var template = Handlebars.compile($('#bucket-template').html());
-	var compiled = template(bucket).toString(); // workaround
-
-	 $('#buckets').append(compiled);
-	// append bucket
-	//$(bucket).appendTo($('#buckets')).droppable(dropOptions);
+function addBucket() {
+	// get bucket info from server
+	jsRoutes.controllers.Cards.createBucket(SESSION_ID).ajax({
+    	method: "post",
+    	success: function(bucket) {
+    		console.log("todo: remove dummy bucket in addBucket()");
+    		bucket = bucket || {
+    	    	id: 1, 
+    	    	name: "Testing Bucket"
+    	    };
+    	    
+    		var template = Handlebars.compile($('#bucket-template').html());
+    		var compiled = template(bucket).toString(); // workaround	
+    		// workaround
+    		$('#buckets-list').append(compiled).find('div.bucket').droppable(options.drop);//.sortable(sortOptions);
+    	}
+    });
+	
+	
 	
 }
 
 function prepareBlueHat() {
 
 	console.log("preparing blue hat, administrative controls enabled");
-	
-	// drag options for cards
-    var dragOptions = {
-    	drop: function(event, ui) {
-    		// this = target element
-    		var groupId = $(this).data('groupid');
-    	},
-        containment: "#hat-cards",
-        cursor: "move",
-        stack: "div.card",
-        revert: "invalid" // revert is not dropped to droppable
-    };
 
-    // enable drag drop for all cards (remove transitions!)
-    $('#cards-list div.card').addClass('notransitions').draggable(dragOptions);
+	enableDragDrop();
+	
     // toggle buttons
     $('#indicate-finish').removeClass('hide');
     $('#indicate-ready').addClass('hide');
     
     // enable buckets here
     $('#buckets').removeClass("hide");
-    addBucket({
-    	id: 2, 
-    	name: "My Bucket"
-    });
-    
+    addBucket();
 }
 
 
@@ -214,10 +230,55 @@ function addCard(card, effect) {
     //if (effect) markup.effect('highlight', {}, 1000);
 
     // reset card content field
-    $('#content, imgUrl, imgMime').val("");
+    $('#content').val("");
     $('#nocardsyet').remove();
 
     window.progressBar.add(card);
-    //makeDraggable();
+    if (HAT === "blue") {
+    	enableDragDrop();
+    }
 
 }
+
+function enableDragDrop() {
+	$('#cards-list div.card').draggable(options.drag); 
+}
+
+
+// jquery ui options
+
+var options = {
+		// drag options for cards
+   drag: {
+    	drop: function(event, ui) {
+    		// this = target element
+    		var groupId = $(this).data('groupid');
+    	},
+        containment: "#hat-cards",
+        cursor: "move",
+        stack: "div.card",
+        snap: true,
+        revert: "invalid" // revert is not dropped to droppable
+    },
+    
+    drop: {
+		drop: function( event, ui ) {
+			
+			$(this).find(".placeholder").remove();
+			var card = ui.draggable;
+			// css fix
+			card.css("position", "").off();
+			
+			card.draggable("disable");
+			$(this).find(".cards").append(card);
+			// post to server
+		}
+	},
+	
+	sort: {
+		connectWith: ".cards",
+		placeholder: "portlet-placeholder"
+	}
+		
+};
+

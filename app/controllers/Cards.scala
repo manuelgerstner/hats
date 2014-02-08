@@ -37,4 +37,7 @@ object Cards extends Controller {
 
   def addCardToBucket(bucketId: Long, cardId: Long) = TODO
 
+  // no return necessary
+  def renameBucket(bucketId: Long) = TODO
+
 }
