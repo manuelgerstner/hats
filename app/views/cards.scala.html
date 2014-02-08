@@ -61,9 +61,9 @@
 
 					<button type="button" class="btn btn-info" id="addFile">Add File</button>
 
-					<button type="submit" class="btn btn-success" id="btnAddCard">Add Card &raquo;</button>
+					<button type="button" class="btn btn-success" id="btnAddCard">Add Card &raquo;</button>
 					<button type="button" class="btn btn-info pull-right" id="indicate-ready">Move to next Hat</button>
-					<button type="button" class="btn btn-info pull-right" style="display:none;" id="indicate-finish">Finish Session</button>						
+					<button type="button" class="btn btn-info pull-right" style="display:none;" id="indicate-finish" onClick="location.href='@routes.Dashboard.showReport(session.id)'">Finish Session</button>						
 				</div>
 			</div>
 
