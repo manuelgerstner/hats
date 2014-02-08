@@ -8,6 +8,7 @@ CREATE TABLE event (
   hat                  	BIGINT NOT NULL REFERENCES hat(id),
   user					BIGINT REFERENCES user(id),
   card					BIGINT REFERENCES card(id),
+  bucket				BIGINT REFERENCES bucket(id),
   time					datetime DEFAULT NOW()
 );
 

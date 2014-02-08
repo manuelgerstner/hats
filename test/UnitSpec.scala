@@ -47,7 +47,7 @@ class UnitSpec extends Specification {
       val name = "PersistenceSpecType"
       val date = new Date();
       val eventId = Event.create(name, ThinkingSession.dummyId, Hat.dummyId,
-        None, None, date);
+        None, None, None, date);
       val event = Event.byId(eventId)
       event must beSome
       event.get.eventType must beEqualTo(name)
