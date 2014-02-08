@@ -1,6 +1,10 @@
 package controllers
 
 import models._
+
+
+
+
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -44,5 +48,10 @@ object Cards extends Controller {
     }
   }
 
+
   def addCardToBucket(bucketId: Long, cardId: Long) = TODO
+
+  // no return necessary
+  def renameBucket(bucketId: Long) = TODO
+
 }

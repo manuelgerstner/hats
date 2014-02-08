@@ -31,8 +31,7 @@ object Application extends Controller {
 
     Ok(
       Routes.javascriptRouter("jsRoutes")(
-        routes.javascript.ThinkingSessions.createSession)
-    ).as("text/javascript")
+        routes.javascript.ThinkingSessions.createSession, routes.javascript.Cards.createBucket, routes.javascript.Cards.addCardToBucket)).as("text/javascript")
   }
 
 }
