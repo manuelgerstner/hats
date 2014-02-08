@@ -243,6 +243,22 @@ object ThinkingSession {
     }
   }
 
+  def checkUser(sessionOption: Option[ThinkingSession], userOption: Option[User]): Boolean = {
+    sessionOption match {
+      case Some(s) =>
+        checkUser(s, userOption)
+      case None => false;
+    }
+  }
+
+  def checkUser(session: ThinkingSession, userOption: Option[User]): Boolean = {
+    userOption match {
+      case Some(u) =>
+        checkUser(session, u)
+      case None => false;
+    }
+  }
+
   def checkUser(session: ThinkingSession, user: User): Boolean = {
     checkUser(session.id, user.id)
   }

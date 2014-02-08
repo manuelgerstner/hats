@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 import java.util.Date;
 
+import models.Bucket;
 import models.Card;
 import models.Event;
 import models.Hat;
@@ -28,6 +29,11 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class WebSocket extends WAMPlayContoller {
 	// make scala option's None available in Java
 	static Option<Object> none = scala.Option.apply(null);
+	static Option<Bucket> noBucket = scala.Option.apply(null);
+
+	public static String getTopicName(long id) {
+		return "thinkingSession_" + id;
+	}
 
 	// call addCard server-side
 	@onRPC("#addCard")
@@ -52,12 +58,12 @@ public class WebSocket extends WAMPlayContoller {
 			long cardId = Card.create(content, tSession, hat, user.get());
 			Option<Card> card = Card.byId(cardId);
 
-			long eventId = Event.create("addCard", tSession, hat, user,
-					card,new Date());
+			
+			long eventId = Event.create("addCard", tSession, hat, user, card,
+					noBucket, new Date());
 			Option<Event> event = Event.byId(eventId);
 			
-			WAMPlayServer.publish(eventData.get("thinkingSession").asText(),
-					event.get().asJson());
+			publishEvent(event.get(), thinkingSessionId);
 		} else {
 			throw new IOException();
 		}
@@ -86,17 +92,16 @@ public class WebSocket extends WAMPlayContoller {
 		ThinkingSession.changeHatTo(thinkingSessionId, nextHatId);
 
 		long eventId = Event.create("moveHat", thinkingSessionId, nextHatId,
-				none, none, new Date());
+				none, none, none, new Date());
 		Option<Event> event = Event.byId(eventId);
-		JsonNode response = null;
-		if (event.isDefined()) {
-			response = event.get().asJson();
-		} else {
-			response = Json.newObject();
-			((ObjectNode) response).put("error", "500");
-		}
 
-		WAMPlayServer.publish(String.valueOf(thinkingSessionId), response);
+		if (event.isDefined()) {
+			publishEvent(event.get(), thinkingSessionId);
+		} else {
+			JsonNode error = Json.newObject();
+			((ObjectNode) error).put("error", "500");
+			WAMPlayServer.publish(String.valueOf(thinkingSessionId), error);
+		}
 	}
 
 	@onSubscribe
@@ -112,6 +117,16 @@ public class WebSocket extends WAMPlayContoller {
 	public static JsonNode onPublish(String sessionID, JsonNode event) {
 
 		return Json.toJson(event);
+	}
+
+	public static void publishEvent(Event event, long sessionId) {
+		WAMPlayServer.publish(String.valueOf(sessionId), event.asJson());
+	}
+
+	public static void publishEvent(Option<Event> event, long sessionId) {
+		if (event.isDefined()) {
+			publishEvent(event.get(), sessionId);
+		}
 	}
 
 }
