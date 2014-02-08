@@ -1,10 +1,6 @@
 package controllers
 
-import models.Card
-import models.Hat
-import models.User
-import models.ThinkingSession
-import models.forms.FormCard
+import models._
 import play.api.Logger
 import play.api.data.Form
 import play.api.data.Forms.mapping
@@ -24,13 +20,29 @@ import play.api.mvc.Controller
  */
 object Cards extends Controller {
 
-  /**
-   * Handles adding cards for a remote procedure call
-   */
-  def addCardRPC(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User) = {
-    Logger.debug("Cards.addCard")
-    val cardId = Card.create(content, thinkingSession, hat, creator, 0, 0, None, None)
-    Logger.debug("Creating card thru RPC with id: " + cardId)
-    //    Redirect(routes.ThinkingSessions.index(thinkingSession.id))
+  def createBucket(id: Long) = Action { implicit request =>
+    request.cookies.get(User.idCookie) match {
+      case Some(cookie) =>
+        User.byCookie(cookie) match {
+          case Some(user) =>
+            ThinkingSession.byId(id) match {
+              case Some(session) =>
+                if (ThinkingSession.checkUser(session, user)) {
+                  val bucketId = Bucket.create(session)
+                  Bucket.byId(bucketId) match {
+                    case Some(bucket) =>
+                      // create event
+                      Ok(bucket.asJson).as("application/json")
+                    case None => BadRequest
+                  }
+                } else BadRequest
+              case None => NotFound
+            }
+          case None => BadRequest
+        }
+      case None => BadRequest
+    }
   }
+
+  def addCardToBucket(bucketId: Long, cardId: Long) = TODO
 }

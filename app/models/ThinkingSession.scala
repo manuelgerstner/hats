@@ -87,7 +87,7 @@ object ThinkingSession {
 
   def nextId(): Long = {
     DB.withConnection { implicit connection =>
-      SQL("SELECT CARD_ID_SEQ.nextval;").apply().map {
+      SQL("SELECT thinking_session_id_seq.nextval;").apply().map {
         case Row(nextId: Long) => nextId
       } head
     }
@@ -238,7 +238,7 @@ object ThinkingSession {
           and thinking_session={session}""").on('token -> token, 'session -> sessionId)
       sql.apply().headOption match {
         case Some(h) => Some(h[Long]("user"))
-        case None => None
+        case None    => None
       }
     }
   }

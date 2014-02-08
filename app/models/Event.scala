@@ -11,6 +11,8 @@ import scala.collection.immutable.HashMap
 import scala.collection.JavaConversions
 import play.api.Play.current
 import play.api.db.DB
+import scala.util.Random
+import play.api.libs.json.JsValue
 
 case class Event(
   id: Long,
@@ -21,7 +23,7 @@ case class Event(
   card: Option[Card],
   time: Date) {
 
-  def toJson(): JsonNode = {
+  def asJson(): JsonNode = {
     if (eventType == null) {
       throw new IllegalArgumentException();
     }
@@ -33,23 +35,40 @@ case class Event(
   }
 
   def getEventData: java.util.Map[String, String] = {
+
     val baseData = HashMap[String, String](
       "thinkinSession" -> thinkingSession.id.toString,
-      "hat" -> hat.name,
+      "hat" -> hat.name.toLowerCase,
       "time" -> time.getTime().toString(),
-      "user" -> user.collect({ case u: User => u.name }).toString(),
-      "card" -> card.collect({ case c: Card => c.id }).toString())
+      "user" -> userName,
+      "card" -> cardId,
+      "content" -> cardContent)
     JavaConversions.mapAsJavaMap(baseData)
+  }
+
+  def cardId: String = card match {
+    case Some(c) => c.id.toString
+    case None    => "null"
+  }
+
+  def cardContent = card match {
+    case Some(c) => c.content
+    case None    => "null"
+  }
+
+  def userName = user match {
+    case Some(u) => u.name
+    case None    => "null"
   }
 
   val hasCard: Boolean = card match {
     case Some(_) => true
-    case None => false
+    case None    => false
   }
 
   val hasUser: Boolean = user match {
     case Some(_) => true
-    case None => false
+    case None    => false
   }
 }
 
@@ -74,7 +93,7 @@ object Event {
 
   def create(eventType: String, thinkingSessionId: Long, hatId: Long, userId: Option[Long], cardId: Option[Long], time: Date): Long = {
     DB.withConnection { implicit connection =>
-      val id: Long = (eventType.hashCode() + thinkingSessionId + userId.hashCode() + cardId.hashCode() + time.getTime()).hashCode()
+      val id: Long = (eventType.hashCode() + thinkingSessionId + userId.hashCode() + cardId.hashCode() + time.getTime()).hashCode() + System.currentTimeMillis() + Random.nextLong
       val sql = SQL("""
           insert into event (id,type,thinking_session,hat,user,card,time) 
           values ({id},{eventType},{thinkingSessionId},{hatId},{userId},{cardId},{time})
