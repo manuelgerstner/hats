@@ -12,9 +12,9 @@ import controllers._
 import com.feth.play.module.mail.Mailer
 import com.feth.play.module.mail.Mailer.Mail.Body
 import views.html.defaultpages.notFound
-import ws.wamplay.controllers.WAMPlayServer
 import scala.collection.JavaConversions
 import java.util.Date
+import ws.wamplay.controllers.WAMPlayServer
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -27,25 +27,22 @@ object ThinkingSessions extends Controller {
    */
   def index(id: Long) = Action { implicit request =>
     Logger.debug("ThinkingSessions.index")
-    request.cookies.get(User.idCookie) match {
-      case Some(cookie) => // found user cookie
-        User.byCookie(cookie) match {
-          case Some(user) => // user in db
-            ThinkingSession.byId(id) match {
-              case Some(session) => // session exists
-                if (ThinkingSession.checkUser(session, user)) { // check if user is part of session
-                  //                  Event.create("userJoin", session, session.currentHat, user, None, new Date())
-
-                  Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user))
-                } else
-                  BadRequest
-              case None =>
-                NotFound
-            }
-          case None => BadRequest
-        }
-      case None => BadRequest;
+    val user =
+      request.cookies.get(User.idCookie) match {
+        case Some(cookie) => // found user cookie
+          User.byCookie(cookie)
+        case None => None
+      }
+    ThinkingSession.byId(id) match {
+      case Some(session) => // session exists
+        if (ThinkingSession.checkUser(session, user)) { // check if user is part of session
+          Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user.get))
+        } else
+          BadRequest
+      case None =>
+        NotFound
     }
+
   }
 
   def join(id: Long, token: String) = Action {
@@ -53,6 +50,12 @@ object ThinkingSessions extends Controller {
     ThinkingSession.checkJoinToken(id, t) match {
       case Some(userId) => // set token
         Logger.debug("User " + userId + " joined session " + id)
+        val session = ThinkingSession.byId(id).get;
+        val user = User.byId(userId)
+        val eventId = Event.create("userJoin", session, session.currentHat, user, None, None, new Date())
+        val event = Event.byId(eventId)
+        WebSocket.publishEvent(event, id)
+
         Redirect(routes.ThinkingSessions.index(id)).withCookies(Cookie(User.idCookie, userId.toString))
       case None =>
         BadRequest
@@ -62,7 +65,26 @@ object ThinkingSessions extends Controller {
   /**
    * TODO: Conclude session and redirect to review page
    */
-  def closeSession(id: Long) = TODO
+  def closeSession(id: Long) = Action { implicit request =>
+    val user = request.cookies.get(User.idCookie) match {
+      case Some(cookie) => User.byCookie(cookie)
+      case None         => None
+    }
+
+    val session = ThinkingSession.byId(id)
+
+    if (ThinkingSession.checkUser(session, user)) {
+
+      val eventId = Event.create("closeSession", session.get, session.get.currentHat, user, None, None, new Date())
+      val event = Event.byId(eventId);
+      WebSocket.publishEvent(event, id);
+
+      Redirect(routes.Dashboard.showReport(id))
+    } else {
+      BadRequest
+    }
+
+  }
 
   /**
    * Give a participant/user the opportunity to show she is ready to move on to the next hat.
@@ -87,28 +109,33 @@ object ThinkingSessions extends Controller {
   def createSession() = Action { implicit request =>
     Logger.debug("ThinkingSessions.createSession")
     val form = sessionConfigForm.bindFromRequest.get;
-    request.cookies.get(User.idCookie) match {
+
+    val userOption = request.cookies.get(User.idCookie) match {
       case Some(cookie) =>
-        User.byCookie(cookie) match {
-          case Some(user) =>
-            val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
-            if (user.mail == None) {
-              User.saveMail(user, form.adminMail.get)
-            }
-            val mailsAndTokens = addUsersToSessions(form.mailAddressList, newSessionId)
-            sendInviteMails(mailsAndTokens, form.topic, newSessionId)
-            ThinkingSession.addUser(newSessionId, user.id)
-
-            WAMPlayServer.addTopic(newSessionId.toString)
-            Logger.debug("Found user cookie, creating session " + newSessionId)
-            Redirect(routes.ThinkingSessions.index(newSessionId))
-
-          case None => BadRequest
-        }
-      case None =>
-        Logger.debug("No user cookie, bad request")
-        BadRequest
+        User.byCookie(cookie)
+      case None => None
     }
+
+    userOption match {
+      case Some(user) =>
+        val newSessionId = ThinkingSession.create(user, form.topic, Hat.dummy)
+        if (user.mail == None) {
+          User.saveMail(user, form.adminMail.get)
+        }
+        val mailsAndTokens = addUsersToSessions(form.mailAddressList, newSessionId)
+        sendInviteMails(mailsAndTokens, form.topic, newSessionId)
+        ThinkingSession.addUser(newSessionId, user.id)
+        val session = ThinkingSession.byId(newSessionId)
+
+        Event.create("createSession", session.get, session.get.currentHat, userOption, None, None, new Date())
+
+        WAMPlayServer.addTopic(newSessionId.toString)
+
+        Logger.debug("Found user cookie, creating session " + newSessionId)
+        Redirect(routes.ThinkingSessions.index(newSessionId))
+      case None => BadRequest
+    }
+
   }
 
   def sendInviteMails(mails: List[(String, Long)], title: String, sessionId: scala.Long)(implicit request: Request[AnyContent]) {
