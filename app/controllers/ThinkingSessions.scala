@@ -14,6 +14,7 @@ import com.feth.play.module.mail.Mailer.Mail.Body
 import views.html.defaultpages.notFound
 import ws.wamplay.controllers.WAMPlayServer
 import scala.collection.JavaConversions
+import java.util.Date
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -32,9 +33,11 @@ object ThinkingSessions extends Controller {
           case Some(user) => // user in db
             ThinkingSession.byId(id) match {
               case Some(session) => // session exists
-                if (ThinkingSession.checkUser(session, user)) // check if user is part of session
+                if (ThinkingSession.checkUser(session, user)) { // check if user is part of session
+                  //                  Event.create("userJoin", session, session.currentHat, user, None, new Date())
+
                   Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user))
-                else
+                } else
                   BadRequest
               case None =>
                 NotFound

@@ -6,7 +6,6 @@ CREATE TABLE participating (
   user                 	BIGINT NOT NULL REFERENCES user(id),
   token					BIGINT, 
   ready					BIT DEFAULT False,
-  time					datetime DEFAULT NOW(),
   PRIMARY KEY (thinking_session,user)
 );
 

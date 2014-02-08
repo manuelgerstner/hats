@@ -14,7 +14,7 @@ class UnitSpec extends Specification {
   "Models and Persistence Layer" should {
     "create and retrieve card" in new WithApplication {
       val content = "PersistenceSpecContent"
-      val id = Card.create(content, ThinkingSession.dummyId, Hat.dummyId, User.dummyId, 0, 0, None, None)
+      val id = Card.create(content, ThinkingSession.dummyId, Hat.dummyId, User.dummyId)
       val dbCard = Card.byId(id)
       dbCard must beSome
       dbCard.get.id must equalTo(id)
@@ -22,8 +22,6 @@ class UnitSpec extends Specification {
       dbCard.get.thinkingSession.id must equalTo(ThinkingSession.dummyId)
       dbCard.get.hat.id must equalTo(Hat.dummyId)
       dbCard.get.creator.id must equalTo(User.dummyId)
-      dbCard.get.imgUrl must equalTo(None)
-      dbCard.get.imgMime must equalTo(None)
     }
 
     "create and retrive ThinkingSession" in new WithApplication {

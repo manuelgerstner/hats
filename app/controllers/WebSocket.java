@@ -3,6 +3,7 @@ package controllers;
 import java.io.IOException;
 import java.util.Date;
 
+import models.Card;
 import models.Event;
 import models.Hat;
 import models.HatFlow;
@@ -26,35 +27,37 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 @URIPrefix("http://sixhats.com/cards")
 public class WebSocket extends WAMPlayContoller {
 	// make scala option's None available in Java
-	private static Option<Object> none = scala.Option.apply(null);
+	static Option<Object> none = scala.Option.apply(null);
 
 	// call addCard server-side
 	@onRPC("#addCard")
 	public static void add(String sessionId, JsonNode[] args)
 			throws JsonProcessingException, IOException {
-		JsonNode jsonResponse = new ObjectMapper().readTree(args[0].asText());
-		JsonNode eventData = jsonResponse.get("eventData");
-
+		JsonNode eventData = new ObjectMapper().readTree(args[0].asText()).get(
+				"eventData");
 		// check if user exists
 		long userId = eventData.get("userId").asLong();
-		if (userId == 0) {
-			userId = User.create(eventData.get("form-user").asText(), null);
-		}
 
 		// hat color
 		Hat hat = Hat.byName(eventData.get("hat").asText());
+		Option<User> user = User.byId(userId);
 
 		long thinkingSessionId = eventData.get("thinkingSession").asLong();
 
 		if (User.byId(userId).isDefined()
-				&& ThinkingSession.byId(thinkingSessionId).isDefined()) {
-			User user = User.byId(userId).get();
+				&& ThinkingSession.byId(thinkingSessionId).isDefined()) {;
 			ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
 					.get();
-			controllers.Cards.addCardRPC(eventData.get("content").asText(),
-					tSession, hat, user);
+			String content = eventData.get("content").asText();
+			long cardId = Card.create(content, tSession, hat, user.get());
+			Option<Card> card = Card.byId(cardId);
+
+			long eventId = Event.create("addCard", tSession, hat, user,
+					card,new Date());
+			Option<Event> event = Event.byId(eventId);
+			
 			WAMPlayServer.publish(eventData.get("thinkingSession").asText(),
-					jsonResponse);
+					event.get().asJson());
 		} else {
 			throw new IOException();
 		}
@@ -63,7 +66,9 @@ public class WebSocket extends WAMPlayContoller {
 
 	@onRPC("#deleteCard")
 	public static void deleteCard(String sessionId, JsonNode[] args) {
-		// TODO
+		// long eventId = Event.create("deleteCard", thinkingSessionId,
+		// nextHatId,
+		// none, none, new Date());
 	}
 
 	@onRPC("#moveHat")
@@ -85,7 +90,7 @@ public class WebSocket extends WAMPlayContoller {
 		Option<Event> event = Event.byId(eventId);
 		JsonNode response = null;
 		if (event.isDefined()) {
-			response = event.get().toJson();
+			response = event.get().asJson();
 		} else {
 			response = Json.newObject();
 			((ObjectNode) response).put("error", "500");

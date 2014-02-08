@@ -4,10 +4,10 @@ import play.api.db.DB
 import play.api.db._
 import play.api.Logger
 import play.api.mvc.Cookie
-
 import play.api.Play.current
 import anorm._
 import anorm.SqlParser._
+import scala.util.Random
 
 /**
  * Models participants and moderators/creators of ThinkingSession. No authentication done by us, so
@@ -60,7 +60,7 @@ object User {
    * This will NOT return the created User!
    */
   def create(name: String, mail: Option[String]): Long = {
-    val id: Int = (name + System.currentTimeMillis).hashCode
+    val id: Long = (name + System.currentTimeMillis).hashCode + Random.nextLong
     DB.withConnection { implicit connection =>
       SQL("insert into user (id,name,mail) values ({id},{name},{mail})").on(
         'id -> id,
