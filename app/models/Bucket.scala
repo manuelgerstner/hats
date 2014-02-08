@@ -52,7 +52,7 @@ object Bucket {
 
   def create(sessionId: Long): Long = {
     DB.withConnection { implicit connection =>
-      val id: Long = sessionId.hashCode + Random.nextLong + System.currentTimeMillis
+      val id: Long = (sessionId + Random.nextLong + System.currentTimeMillis).hashCode
       SQL("""
           insert into bucket (id,thinking_session) 
           values ({id},{sessionId})
