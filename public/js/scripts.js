@@ -126,6 +126,10 @@ function instantiateSocket() {
 	}); // Important! Play rejects all subprotocols for some reason...
 }
 
+function setSessionData() {
+    $('session-info').html('Session has been on for ')
+}
+
 // debugging handler for websocket events coming in
 
 function onEvent(topic, event) {

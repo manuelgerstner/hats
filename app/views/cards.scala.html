@@ -148,8 +148,8 @@
 <script type="text/javascript">
 	//set up initial tooltip
 	$(window).load(function() {
+		setSessionData();
 		instantiateSocket();
-		
 		if (USER_NAME !== "New User") {
 			$('#first-time').remove();
 		}
