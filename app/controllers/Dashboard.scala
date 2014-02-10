@@ -35,7 +35,7 @@ object Dashboard extends Controller {
               case Some(session) => // session exists
                 if (ThinkingSession.checkUser(session, user)) // check if user is part of session
                 {
-                  var crTime: Date = ThinkingSession.checkCreationDate(id, user.id)
+                  /*var crTime: Date = ThinkingSession.checkCreationDate(id, user.id)
                   val eventList: List[Event] = Event.byThinkingSession(id)
                   Logger.debug("Session creation time" + crTime)
                   var creatTime: DateTime = new DateTime(crTime)
@@ -54,8 +54,9 @@ object Dashboard extends Controller {
                   Logger.debug("Hat name:" + hatName)
                   val elapsedTime1 = (endTime.getMillis() - creatTime.getMillis()) / 1000
                   hatNameTime += ((hatName -> elapsedTime1))
-                  val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
-                  Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id)))
+                  val hatElapsedTime: List[(String, Long)] = hatNameTime.toList*/
+                  //Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
+                  Ok(views.html.dashboard(Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
                 } else
                   BadRequest
               case None =>
