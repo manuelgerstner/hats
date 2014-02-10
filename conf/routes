@@ -10,7 +10,7 @@ GET   /:id/dashboard						controllers.Dashboard.showReport(id: Long)
 GET    /javascriptRoutes                	controllers.Application.javascriptRoutes
 
 # Send websocket connections to the WAMPlay server
-GET     /wamp                     			controllers.MyWAMPlayServer.connect()
+GET     /wamp                     			ws.wamplay.controllers.WAMPlayServer.connect()
 
 GET    /:id/join/:token						controllers.ThinkingSessions.join(id: Long, token: String)
 
