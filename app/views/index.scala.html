@@ -11,23 +11,23 @@
 			<div class="row">
 				<div class="col-md-6 col-md-offset-3">				 	
 					<div class="row well" style="background: #FDFDFD">
-					 	<p class="lead">
+						<p class="lead">
 							<img src="assets/img/hats_small.png" class="pull-right" width="200"/>
-						 	<strong>Six Thinking Hats</strong>, a <em>parallel thinking process,</em> 
-			    			helps people in groups to be more productive, focused, and mindfully involved.
-			    		</p>
-		    		</div>
-		    		<div class="row" style="margin-top: 20px;">
-		    			@helper.form(action = routes.ThinkingSessions.createSession,
-				  			'id -> "session-form", 'role->"form", 'class -> "") {
-				  			
+							<strong>Six Thinking Hats</strong>, a <em>parallel thinking process,</em> 
+							helps people in groups to be more productive, focused, and mindfully involved.
+						</p>
+					</div>
+					<div class="row" style="margin-top: 20px;">
+						@helper.form(action = routes.ThinkingSessions.createSession,
+							'id -> "session-form", 'role->"form", 'class -> "") {
+							
 							<div class="form-group">
 								<label for="topic">First, think of a good title:</label>
 								<input id="topic" class="form-control" type="text" required name="topic" placeholder="Try and be specific!"/>
 							</div>
 							
 							@if(user.mail == None) {
-		  						<div class="form-group">
+								<div class="form-group">
 									<label for="adminMailAddress">It seems this is the first time you're here, what is your e-mail address?</label>
 									<input id="adminMailAddress" class="tokenfield form-control" type="text" required name="adminMailAddress" placeholder="your@@email.com"/>
 								</div>
@@ -48,7 +48,7 @@
 								</button>
 							</div>
 						}
-		    		</div>
+					</div>
 				</div>
 			</div>
 		</div>

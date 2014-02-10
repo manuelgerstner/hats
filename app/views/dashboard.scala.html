@@ -58,9 +58,9 @@
 	$(function() {
 	
 
-	    $("table").tablesorter({
-	        debug: true
-	    });
+		$("table").tablesorter({
+			debug: true
+		});
 	
 		var hatArray = [];
 		var hatColor = [];
@@ -71,79 +71,79 @@
 	
 	
 		 @for(sUserWithHats <- userWithHats ){
-		 	cardArray.push(@sUserWithHats._2);
-		 	var obj = {
-	        	data: cardArray,
-	        	name: '@sUserWithHats._1',
-	    	}
-	    	cardArray = [];
-	    	resultArray.push(obj);
+			cardArray.push(@sUserWithHats._2);
+			var obj = {
+				data: cardArray,
+				name: '@sUserWithHats._1',
+			}
+			cardArray = [];
+			resultArray.push(obj);
 		 }
-	    
-	 	@for( uID <- usrIDs ){
+		
+		@for( uID <- usrIDs ){
 			userArray.push('@uID')
-	 	}
-	 	
+		}
+		
 		$('#cards-user-current-session').highcharts({
 				colors: ["#FFFF00", "#4876FF", "#E6E6FA", "#000033", "#FF0066", "#669966"],
-	            chart: {
-	            	 backgroundColor: {
-	         			linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
-	         				stops: [
-	            				[0, 'rgb(96, 96, 96)'],
-	            				[1, 'rgb(230, 230, 250)']
-	         				]
-	     				 },
-	                type: 'column'
-	            },
-	            title: {
-	                text: 'No. of Cards Per User'
-	            },
-	            xAxis: {
-	                categories: userArray
-	            },
-	            yAxis: {
-	                min: 0,
-	                title: {
-	                    text: 'Total Cards'
-	                },
-	                stackLabels: {
-	                    enabled: true,
-	                    style: {
-	                        fontWeight: 'bold',
-	                        color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
-	                    }
-	                }
-	            },
-	            legend: {
-	                align: 'right',
-	                x: -70,
-	                verticalAlign: 'top',
-	                y: 40,
-	                floating: true,
-	                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
-	                borderColor: '#CCC',
-	                borderWidth: 1,
-	                shadow: false
-	            },
-	            tooltip: {
-	                formatter: function() {
-	                    return '<b>'+ this.x +'</b><br/>'+
-	                        this.series.name +': '+ this.y +'<br/>'+
-	                        'Total: '+ this.point.stackTotal;
-	                }
-	            },
-	            plotOptions: {
-	                column: {
-	                    stacking: 'normal',
-	                    dataLabels: {
-	                        enabled: true,
-	                        color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
-	                    }
-	                }
-	            },
-	            series: resultArray
-	        });
+				chart: {
+					 backgroundColor: {
+						linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+							stops: [
+								[0, 'rgb(96, 96, 96)'],
+								[1, 'rgb(230, 230, 250)']
+							]
+						 },
+					type: 'column'
+				},
+				title: {
+					text: 'No. of Cards Per User'
+				},
+				xAxis: {
+					categories: userArray
+				},
+				yAxis: {
+					min: 0,
+					title: {
+						text: 'Total Cards'
+					},
+					stackLabels: {
+						enabled: true,
+						style: {
+							fontWeight: 'bold',
+							color: (Highcharts.theme && Highcharts.theme.textColor) || 'gray'
+						}
+					}
+				},
+				legend: {
+					align: 'right',
+					x: -70,
+					verticalAlign: 'top',
+					y: 40,
+					floating: true,
+					backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColorSolid) || 'white',
+					borderColor: '#CCC',
+					borderWidth: 1,
+					shadow: false
+				},
+				tooltip: {
+					formatter: function() {
+						return '<b>'+ this.x +'</b><br/>'+
+							this.series.name +': '+ this.y +'<br/>'+
+							'Total: '+ this.point.stackTotal;
+					}
+				},
+				plotOptions: {
+					column: {
+						stacking: 'normal',
+						dataLabels: {
+							enabled: true,
+							color: (Highcharts.theme && Highcharts.theme.dataLabelsColor) || 'white'
+						}
+					}
+				},
+				series: resultArray
+			});
 		});
 	</script>
 }

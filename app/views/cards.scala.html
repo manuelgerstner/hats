@@ -12,18 +12,18 @@
 
 		<script type="text/javascript">
 			@for(e <- events) {
-  				@if(e.eventType == "createSession") {
-  					var CREATION_TIME = new Date("@e.time");
-  					var userItem = "@e.user";
-  				}
+				@if(e.eventType == "createSession") {
+					var CREATION_TIME = new Date("@e.time");
+					var userItem = "@e.user";
+				}
 			}
 			var CARDS = @Html(Card.listToJson(cards).toString);
 			var SESSION_ID = @session.id;
 			var HAT = "@hat.name.toLowerCase";
 			var WSURI = "ws://" + window.location.host + "/wamp";
 			var CALL_URI = "http://sixhats.com/cards";
-            var USER_NAME = "@user.name";
-            var USER_ID = "@user.id"
+			var USER_NAME = "@user.name";
+			var USER_ID = "@user.id"
 			var TOOLTIPS = {
 				"white": "The White Hat calls for information known or needed. The facts, just the facts.",
 				"yellow": "The Yellow Hat symbolizes brightness and optimism. Under this hat you explore the positives and probe for value and benefit.",
