@@ -1,4 +1,4 @@
-@(usrIDs: List[Long], userWithHats:List[(String, List[Long])],events:List[Event])
+@(hatElapsedTime:List[(String, Long)], usrIDs: List[Long], userWithHats:List[(String, List[Long])],events:List[Event])
 @import models._
 
 @main("Dashboard", null) {
@@ -8,7 +8,7 @@
 				<div class="col-lg-12">
 					<h1>Dashboard <small>Statistics Overview</small></h1>
 					<ol class="breadcrumb">
-						<li class="active"><i class="fa fa-dashboard"></i>Dashboard </li>
+						<li class="active"><i class="fa fa-dashboard"></i>Dashboard...... @events </li>
 					</ol>
 				</div>
 			</div><!-- /.row -->
@@ -16,7 +16,7 @@
 			<div class="col-lg-12">
 					<div class="panel panel-primary">
 						<div class="panel-heading">
-							<h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Bucket Thing(Not Ready Yet)</h3>
+							<h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Bucket Thing(Not Ready Yet) @usrIDs</h3>
 						</div>
 						<div class="panel-body">
 							<div id="cards-user-bucket"> </div>
@@ -54,7 +54,24 @@
 	<script src="http://code.highcharts.com/highcharts.js"></script>
 	<script src="http://code.highcharts.com/modules/exporting.js"></script>
 	<script>
-	
+	var hatArray = [];
+	var hatColor = [];
+	//var len = @hatElapsedTime.length;
+	@for(hTime <- hatElapsedTime){
+		var obj = {
+        value: @hTime._2,
+        label: '@hTime._1',
+    }
+    hatArray.push(obj);
+    hatColor.push("@hTime._1.toLowerCase")
+	}
+	Morris.Donut({
+		element: 'elapsed-time-chart-donut',
+			data: hatArray,
+			colors: hatColor
+});	
+	</script>
+	<script>
 	$(function() {
 	
 
