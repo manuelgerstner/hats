@@ -36,9 +36,8 @@ case class Event(
   }
 
   def getEventData: java.util.Map[String, String] = {
-
     val baseData = HashMap[String, String](
-      "thinkinSession" -> thinkingSession.id.toString,
+      "thinkingSession" -> thinkingSession.id.toString,
       "hat" -> hat.name.toLowerCase,
       "time" -> time.getTime().toString(),
       "username" -> userName,
