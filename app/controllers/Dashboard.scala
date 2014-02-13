@@ -26,6 +26,9 @@ object Dashboard extends Controller {
     val hatNameTime = Map[String, Long]() //mutable
     //hatTime: Map[String, Long] = Map()
     var hatName: String = "White"
+    var creTime: DateTime = new DateTime
+    var creatTime: DateTime = new DateTime
+    var eTime: DateTime = new DateTime
     val test = request.cookies.get(User.idCookie)
     request.cookies.get(User.idCookie) match {
       case Some(cookie) => // found user cookie
@@ -35,28 +38,35 @@ object Dashboard extends Controller {
               case Some(session) => // session exists
                 if (ThinkingSession.checkUser(session, user)) // check if user is part of session
                 {
-                  /*var crTime: Date = ThinkingSession.checkCreationDate(id, user.id)
-                  val eventList: List[Event] = Event.byThinkingSession(id)
-                  Logger.debug("Session creation time" + crTime)
-                  var creatTime: DateTime = new DateTime(crTime)
-                  for (sEvent <- eventList) {
-                    val eTime: DateTime = new DateTime(sEvent.time)
-                    val elapsedTime = (eTime.getMillis() - creatTime.getMillis()) / 1000
-                    Logger.debug("Elapsed TIme::" + elapsedTime)
-                    //adding elapsed time 
-                    Logger.debug("Hat name:" + hatName)
-                    hatNameTime += (hatName -> elapsedTime)
-                    creatTime = eTime
-                    hatName = sEvent.hat.name
+                  val eventList: List[Event] = Event.byThinkingSession(id) // all event List for Current Session
+                  val hats: List[Hat] = Hat.all()
+                  for (sHat <- hats) {
+                    for (sEvent <- eventList) {
+                      if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "createSession")) {
+                        var crTime: Date = sEvent.time;
+                        creatTime = new DateTime(crTime)
+                        creTime = creatTime
+                        //Logger.debug("CreateWhite::" + creTime)
+                      } else if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "moveHat")) {
+                        var crTime: Date = sEvent.time;
+                        eTime = new DateTime(crTime)
+                        //Logger.debug("ETIme::" + eTime)
+                        val elapsedTime = (eTime.getMillis() - creTime.getMillis()) / 1000
+                        hatNameTime += (hatName -> elapsedTime)
+                        creTime = eTime
+                      }
 
+                    }
+                    hatName = sHat.name
+                    //Logger.debug("Hatname::" + hatName)
                   }
                   var endTime = DateTime.now()
-                  Logger.debug("Hat name:" + hatName)
-                  val elapsedTime1 = (endTime.getMillis() - creatTime.getMillis()) / 1000
+                  val elapsedTime1 = (endTime.getMillis() - creTime.getMillis()) / 1000
                   hatNameTime += ((hatName -> elapsedTime1))
-                  val hatElapsedTime: List[(String, Long)] = hatNameTime.toList*/
+                  val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
+                  //Logger.debug("Elapsed TIme::" + hatElapsedTime)
                   //Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
-                  Ok(views.html.dashboard(Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
+                  Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
                 } else
                   BadRequest
               case None =>
