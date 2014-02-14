@@ -1,14 +1,14 @@
-@(hatElapsedTime:List[(String, Long)], usrIDs: List[Long], userWithHats:List[(String, List[Long])],events:List[Event],cardDetails: List[(String, List[(String, Long)])])
+@(hatElapsedTime:List[(String, Long)], cardDetails: List[(String, List[(String, Long)])])
 @import models._
 
 @main("Dashboard", null) {
 	<div class="row">
 		<h1>Dashboard <small>Statistics Overview</small></h1>
-		<ol class="breadcrumb">
-			<li class="active"><i class="fa fa-dashboard"></i>Dashboard @cardDetails 
-			
-				 </li>
-		</ol>
+	</div><!-- /.row -->
+	<div class="row">
+		<div class="well col-lg-12" id="progressbar">
+			@progressbar.render
+		</div>
 	</div><!-- /.row -->
 	<div class="row">
 		<div class="panel panel-primary">
@@ -42,8 +42,7 @@
 	</div><!-- /.row -->
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 	<script type="text/javascript" src="//cdn.jsdelivr.net/morris.js/0.4.1/morris.min.js"></script>
-	<script src="http://code.highcharts.com/highcharts.js"></script>
-	<script src="http://code.highcharts.com/modules/exporting.js"></script>
+	<script type='text/javascript' src="https://raw.github.com/xuanluo/flot-axislabels/master/jquery.flot.axislabels.js"></script>
 	<script>
 	var hatArray = [];
 	var hatColor = [];
@@ -66,29 +65,43 @@
 		$(function () {
 			var cardArray1 = [];
 			var resultArray1 =[];
+			var labelArray = [];
+			var labelArr = [];
+			var m = 0;
 			@for( (key, values) <- cardDetails) {
 				var k = 0;
 		 		 @values.map { value =>
-		    		cardArray1.push([k, @value._2])
-		    		k += 1
+		    		cardArray1.push([k, @value._2]);
+		    		labelArray.push([k,"@value._1.toLowerCase"]);
+		    		k += 1;
 		  			}
-		  			resultArray1.push(cardArray1);
+		  			if(m == 0){
+		  				labelArr =labelArray.slice(0);
+		  			}
+		  			m += 1;
+		  			var obj = {
+        			data: cardArray1,
+        			label: '@key',
+        			color: '@key.toLowerCase'
+    				}
+		  			resultArray1.push(obj);
 		  			cardArray1 =[];
 				}
-		    var stack = 0, bars = true, lines = false, steps = false;
-		    
 		    function plotWithOptions() {
 		        $.plot($("#cards-user-current-session"), resultArray1, {
 		            series: {
-		                stack: stack,
-		                lines: { show: lines, fill: true, steps: steps },
-		                bars: { show: bars, barWidth: 0.6 }
-		            }
+		                stack: 1,
+		                lines: { show: false, fill: true, steps: false },
+		                bars: { show: true, barWidth: 0.15, align: "center" }
+		            },
+		            xaxis: {axisLabel:'User Names',ticks: labelArr,position: 'bottom', axisLabelFontSizePixels: 15, axisLabelFontFamily: 'Arial',minTickSize: 1},
+		            yaxis:{ position: 'left', axisLabel: 'Total Cards',axisLabelFontSizePixels: 15, axisLabelFontFamily: 'Arial'},
+		            grid: { hoverable: true, show: true }
 		        });
 		    }
-		
 		    plotWithOptions();
+		    $("#cards-user-current-session").UseTooltip();
 		});
-</script>
+	</script>
 
 }
