@@ -55,7 +55,6 @@ object Dashboard extends Controller {
                         hatNameTime += (hatName -> elapsedTime)
                         creTime = eTime
                       }
-
                     }
                     hatName = sHat.name
                     //Logger.debug("Hatname::" + hatName)
@@ -66,7 +65,7 @@ object Dashboard extends Controller {
                   val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
                   //Logger.debug("Elapsed TIme::" + hatElapsedTime)
                   //Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
-                  Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
+                  Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id), countHatsforUser(id)))
                 } else
                   BadRequest
               case None =>
@@ -98,5 +97,23 @@ object Dashboard extends Controller {
       mUList += Card.byCardsforUser(id, sHat.id, sUsr)
     }
     mUList.toList
+  }
+  def countHatsforUser(id: Long): List[(String, List[(String, Long)])] = {
+    var usrIDs: List[Long] = Card.byOnlyInSession(id) //only the Users
+    var uName: String = new String()
+    //var mUList = scala.collection.mutable.ListBuffer[Long]()
+    val uCards = Map[String, Long]() //mutable 
+    val resultVal = Map[String, List[(String, Long)]]() //mutable 
+    val hats: List[Hat] = Hat.all();
+    for (sHat <- hats) {
+      for (sUsr <- usrIDs) {
+        uName = User.getUserName(sUsr)
+        val cardNo: Long = Card.byCardsforUser(id, sHat.id, sUsr)
+        uCards += (uName -> cardNo)
+      }
+      resultVal += (sHat.name -> uCards.toList)
+    }
+    Logger.debug("UserId With Cards: " + resultVal.toList)
+    resultVal.toList
   }
 }
