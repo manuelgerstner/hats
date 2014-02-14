@@ -114,6 +114,12 @@ object User {
         'userId -> userId).executeUpdate()
     }
   }
+  def getUserName(usrId: Long): String = {
+    DB.withConnection { implicit connection =>
+      SQL("""select name  from user where id = {usrId}""").on(
+        'usrId -> usrId).as(get[String]("name").single)
+    }
+  }
 
   /**
    * some dummy users for dev purposes

@@ -155,20 +155,20 @@ function timeSince(date) {
 
 function onEvent(topic, event) {
 
-	// add switch case for topic here:
+    // add switch case for topic here:
 
-	//console.log("Message from topic: " + topic + ":");
-	// event holds the actual message that is being sent
-	//console.log(event);
-	// event.username = "FooUser";
-	// event.id = 1e4;
-	//if (userid != incoming user) OR use skip paramters in session.send
-	if (event.eventType === "addCard") {
-		addCard(event.eventData, true);
-	} else if (event.eventType === "moveHat") {
-		moveTo(event.eventData.hat);
-	}
-	window.progressBar.add(event.eventData);
+    //console.log("Message from topic: " + topic + ":");
+    // event holds the actual message that is being sent
+    //console.log(event);
+    // event.username = "FooUser";
+    // event.id = 1e4;
+    //if (userid != incoming user) OR use skip paramters in session.send
+    if (event.eventType === "addCard") {
+        addCard(event.eventData, true);
+    } else if (event.eventType === "moveHat") {
+        moveTo(event.eventData.hat);
+    }
+    // window.progressBar.add(event.eventData);
 }
 
 function moveTo(hat) {
@@ -192,6 +192,8 @@ function moveTo(hat) {
 	if (HAT === "blue") {
 		prepareBlueHat();
 	}
+
+	window.progressBar.render()
 
 	setSessionData();
 
