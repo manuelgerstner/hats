@@ -9,15 +9,23 @@
 	<div class="row">
 		<div id="content" class="container">
 			<div class="row">
-				<div class="col-md-6 col-md-offset-3">				 	
+				<div class="col-md-6 col-md-offset-3" style="margin-top: 20px;">				 	
+					<div class="row text-center">
+						<div class="well">
+							<img src="assets/img/hats.png" width="300"/>
+						</div>
+						<h1>Six Thinking Hats</h1>
+					</div>
+				</div>
+				<div class="col-md-8 col-md-offset-2">	
 					<div class="row">
-						<img src="assets/img/hats.png" class="pull-right" width="300"/>
-						<p class="lead">
-							<h2>Six Thinking Hats</h2>
+						<p class="lead text-center">
 							We use a parallel thinking process in order to help you and the
 							people in your group to be more productive, focused, and mindfully involved.
 						</p>
 					</div>
+				</div>
+				<div class="col-md-6 col-md-offset-3">	
 					<div class="row" style="margin-top: 20px;">
 						@helper.form(action = routes.ThinkingSessions.createSession,
 							'id -> "session-form", 'role->"form", 'class -> "") {
