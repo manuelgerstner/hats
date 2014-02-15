@@ -158,6 +158,8 @@ function onEvent(topic, event) {
     	addBucket(event.eventData);
     } else if (event.eventType === "renameBucket") {
     	renameBucket(event.eventData);
+    } else if (event.eventType === "userJoin") {
+    	console.log(event);
     }
     // window.progressBar.add(event.eventData);
 }
