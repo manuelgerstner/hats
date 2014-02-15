@@ -115,7 +115,7 @@ ProgressBar.prototype.setBubbleSizes = function(bubbles) {
         "black": 0
     };
     CARDS.forEach(function(card) {
-        hatCards[card.hat] = hatCards[card.hat] + 1;
+        hatCards[card.hat]++;
     });
 
     var max = 0;
@@ -123,13 +123,13 @@ ProgressBar.prototype.setBubbleSizes = function(bubbles) {
         if (hatCards[hat] > max) max = hatCards[hat];
     }
 
-    console.log("max Cards is " + max);
+    //console.log("max Cards is " + max);
 
     var params = window.progressBar.algorithmParams;
     for (var hat in hatCards) {
         var cirque = $(this.container).find('circle.' + hat);
         var size = bubbleSize(hatCards[hat], max, params);
-        console.log("hat " + hat + " gets size " + size);
+        //console.log("hat " + hat + " gets size " + size);
         cirque.attr("r", size);
     }
     // for(var hat in bubbles) {
@@ -159,9 +159,10 @@ ProgressBar.prototype.addTooltips = function(update) {
         } 
         
         if(!update) {
-            $(this.container).find('circle.' + hats[hat]).qtip({
+            var color = hats[hat];
+            $(this.container).find('circle.' + color).qtip({
                 content: {
-                    text: 'Number of cards in ' + hats[hat] + ' hat: ' + addedCards + '<br/> Contributors: ' + contributors
+                    text: users.length + 'users have added ' + addedCards + ' cards to the ' + color + ' hat so far: ' + contributors
                 }, 
                 style: {
                     classes: 'qtip-bootstrap'

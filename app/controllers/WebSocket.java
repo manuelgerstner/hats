@@ -22,7 +22,6 @@ import ws.wamplay.controllers.WAMPlayServer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @URIPrefix("http://sixhats.com/cards")
@@ -35,12 +34,15 @@ public class WebSocket extends WAMPlayContoller {
 		return "thinkingSession_" + id;
 	}
 
+	// @onRPC("#addBucket")
+
+	// @onRPC("#addCardToBucket")
+
 	// call addCard server-side
 	@onRPC("#addCard")
 	public static void add(String sessionId, JsonNode[] args)
 			throws JsonProcessingException, IOException {
-		JsonNode eventData = new ObjectMapper().readTree(args[0].asText()).get(
-				"eventData");
+		JsonNode eventData = args[0];
 		// check if user exists
 		long userId = eventData.get("userId").asLong();
 
@@ -51,18 +53,17 @@ public class WebSocket extends WAMPlayContoller {
 		long thinkingSessionId = eventData.get("thinkingSession").asLong();
 
 		if (User.byId(userId).isDefined()
-				&& ThinkingSession.byId(thinkingSessionId).isDefined()) {;
+				&& ThinkingSession.byId(thinkingSessionId).isDefined()) {
 			ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
 					.get();
 			String content = eventData.get("content").asText();
 			long cardId = Card.create(content, tSession, hat, user.get());
 			Option<Card> card = Card.byId(cardId);
 
-			
 			long eventId = Event.create("addCard", tSession, hat, user, card,
 					noBucket, new Date());
 			Option<Event> event = Event.byId(eventId);
-			
+
 			publishEvent(event.get(), thinkingSessionId);
 		} else {
 			throw new IOException();
@@ -70,21 +71,13 @@ public class WebSocket extends WAMPlayContoller {
 
 	}
 
-	@onRPC("#deleteCard")
-	public static void deleteCard(String sessionId, JsonNode[] args) {
-		// long eventId = Event.create("deleteCard", thinkingSessionId,
-		// nextHatId,
-		// none, none, new Date());
-	}
-
 	@onRPC("#moveHat")
 	public static void moveHat(String sessionId, JsonNode[] args)
 			throws JsonProcessingException, IOException {
 
-		JsonNode data = new ObjectMapper().readTree(args[0].asText());
+		JsonNode eventData = args[0];
 
-		long thinkingSessionId = data.get("eventData").get("thinkingSession")
-				.asLong();
+		long thinkingSessionId = eventData.get("thinkingSession").asLong();
 		long nextHatId = HatFlow.nextDefaultHatId(ThinkingSession.byId(
 				thinkingSessionId).get());
 		// final Hat nextHat = Hat.byId(nextHatId).get();
@@ -115,7 +108,6 @@ public class WebSocket extends WAMPlayContoller {
 
 	@onPublish
 	public static JsonNode onPublish(String sessionID, JsonNode event) {
-
 		return Json.toJson(event);
 	}
 

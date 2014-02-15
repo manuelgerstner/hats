@@ -120,25 +120,23 @@
 <script id="bucket-template" type="text/x-handlebars-template">
 <div class="col-md-6">
 	<div class="bucket" data-bucketid="{{bucketId}}" id="bucket-{{bucketId}}">
-		<form>
-			<h4 class="hide"></h4>
-			<input type="text" class="form-control bucketname" data-bucketid="{{bucketId}}" placeholder="Name this Bucket"/>
-			<div class="row">
-				<div class="col-md-12">
-					<div class="cards">
-						<div class="placeholder text-center">Drag cards here</span>
-					</div>
+		<h4 class="hide"></h4>
+		<input type="text" class="form-control bucketname" data-bucketid="{{bucketId}}" placeholder="Name this Bucket"/>
+		<div class="row">
+			<div class="col-md-12">
+				<div class="cards">
+					<div class="placeholder text-center">Drag cards here</span>
 				</div>
 			</div>
-			<div class="row">
-				<div class="col-md-12">
-					<button type="button" class="pull-right btn btn-success addbucket">
-						Add Bucket
-						<span class="glyphicon glyphicon-plus"></span>
-					</button>
-				</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<button type="button" class="pull-right btn btn-success addbucket">
+					Add Bucket
+					<span class="glyphicon glyphicon-plus"></span>
+				</button>
 			</div>
-		</form>
+		</div>
 	</div>
 </div>
 </script>

@@ -6,8 +6,7 @@
 	<meta charset="utf-8">
 	<title>@title</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		
-	<!-- less is compiled client-side -->
+
 	<link href="@routes.Assets.at("css/bootstrap.min.css")" rel="stylesheet">
 	<link href="@routes.Assets.at("css/tooltipster.css")" rel="stylesheet">
 	<link href="@routes.Assets.at("css/tooltipster.css")" rel="stylesheet">
@@ -16,7 +15,6 @@
 	<link href="@routes.Assets.at("css/progress.css")" rel="stylesheet">
 	<link href="@routes.Assets.at("css/jquery-ui-1.10.3.custom.css")" rel="stylesheet">
 	<link href="@routes.Assets.at("css/jquery.fancybox.css")" rel="stylesheet">
-	<!-- Page Specific CSS -->
 	 
 		
 	<!-- all styles specific to our app, with timestamp to force refresh -->
@@ -44,17 +42,24 @@
 	<script type="text/javascript" src="@routes.Assets.at("js/jquery.flot.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/jquery.flot.stack.js")"></script>
 	<script type="text/javascript" src="@routes.Assets.at("js/tooltip.js")"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/functions.js")"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/options.js")"></script>
 </head>
 
 
 <body class="@(if (hat != null) (hat.name.toLowerCase) else "")">
 
 	<div class="container">
-	
-		<section id="topnav" class="row">
-			@topnav.render(title)
-		</section>
-		
+		@if(hat != null) {
+			<section id="topnav" class="row">
+				@topnav.render(title)
+			</section>
+		} else {
+			<br/>
+			<br/>
+			<br/>
+		}
+
 		<main>
 			@content
 		</main>
