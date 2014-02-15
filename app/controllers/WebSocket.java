@@ -1,5 +1,6 @@
 package controllers;
 
+import java.io.IOException;
 import java.util.Date;
 
 import models.Bucket;
@@ -19,7 +20,9 @@ import ws.wamplay.annotations.onSubscribe;
 import ws.wamplay.controllers.WAMPlayContoller;
 import ws.wamplay.controllers.WAMPlayServer;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @URIPrefix("http://sixhats.com/cards")
@@ -141,6 +144,35 @@ public class WebSocket extends WAMPlayContoller {
 			sendError(thinkingSessionId, "User not defined");
 		}
 
+	}
+
+	public static void userJoined(String sessionId, JsonNode[] args)
+			throws JsonProcessingException, IOException {
+		JsonNode eventData = new ObjectMapper().readTree(args[0].asText()).get(
+				"eventData");
+		long thinkingSessionId = eventData.get("thinkingSession").asLong();
+		Hat hat = Hat.byName(eventData.get("hat").asText());
+		long userId = eventData.get("userId").asLong();
+		Option<User> user = User.byId(userId);
+
+		if (User.byId(userId).isDefined()
+				&& ThinkingSession.byId(thinkingSessionId).isDefined()) {
+			ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
+					.get();
+			long eventId = Event.create("userJoined", tSession, hat, user,
+					noCard, noBucket, new Date());
+			Option<Event> event = Event.byId(eventId);
+
+			if (event.isDefined()) {
+				publishEvent(event.get(), thinkingSessionId);
+			} else {
+				JsonNode error = Json.newObject();
+				((ObjectNode) error).put("error", "500");
+				WAMPlayServer.publish(String.valueOf(thinkingSessionId), error);
+			}
+		}
+
+		// hat color
 	}
 
 	@onRPC("#moveHat")
