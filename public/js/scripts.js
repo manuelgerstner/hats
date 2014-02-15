@@ -2,20 +2,14 @@ $(function() {
 
 	window.progressBar = new ProgressBar('#progressBar');
 	window.session = false;
-	// default socket eventData json, will be reused but never overwritten
-	window.eventData = {
-		thinkingSessionId: SESSION_ID,
-		userId: USER_ID,
-		hat: HAT
-	};
-
 
 	// setup initial card setup
 	if (typeof CARDS !== "undefined" && CARDS.length > 0) {
 		$(CARDS).each(function() {
-			injectCard(this);
+			addCard(this);
 		});
 	}
+
 
 	$('#modal-button').click(function() {
 		/* new user? */
@@ -44,28 +38,34 @@ $(function() {
 	});
 	
 	$("#btnAddCard").click(function() {
-		var newCard = $.extend({}, eventData, {
-			"content" : $("#content").val()
-		});
+		var newCard = {
+			"thinkingSession" : SESSION_ID,
+			"hat" : HAT,
+			"content" : $("#content").val(),
+			"username" : USER_NAME,
+			"userId" : USER_ID
+		};
 		window.session.call(CALL_URI + "#addCard", newCard);
 		// store 
 		CARDS.push(newCard);
 	});
 
 	$('#indicate-ready').click(function() {
-		window.session.call(CALL_URI + "#moveHat", eventData);
+		window.session.call(CALL_URI + "#moveHat", {
+			"thinkingSession" : SESSION_ID,
+			"hat" : HAT
+		});
 	});	
 
 
 	$(document).on('click', '.addbucket', function() {
-		window.session.call(CALL_URI + "#addBucket", eventData);
+		window.session.call(CALL_URI + "#addBucket");
 	});
-
 	$(document).on('blur', '.bucketname', function() {
-		window.session.call(CALL_URI + "#renameBucket", $.extend({}, eventData, {
+		window.session.call(CALL_URI + "#renameBucket", {
 			name: $(this).val(),
-			bucketId: $(this).data('bucketid')
-		}));
+			bucketId: $(this).data('bucketId')
+		});
 	});
 	$(document).on('click', 'a.fancybox', function(e) {
 		e.preventDefault();
@@ -94,6 +94,23 @@ function instantiateSocket() {
 		// store session
 		window.session = session;
 		session.subscribe(SESSION_ID.toString(), onEvent);
+<<<<<<< Updated upstream
+=======
+		//console.log("Subscribed to session number " + SESSION_ID);
+		// publish join session for all participants
+		var newUser = {
+			"thinkingSession" : SESSION_ID,
+			"hat" : HAT,
+			"username" : USER_NAME,
+			"userId" : USER_ID
+		}
+		var userJoinedEvent = {
+			"eventType" : "userJoined",
+			"eventData" : newUser
+		}
+		var message = JSON.stringify(userJoinedEvent);
+		session.call(CALL_URI + "#userJoined", message);
+>>>>>>> Stashed changes
 	},
 
 	// WAMP session is gone
@@ -112,25 +129,54 @@ function setSessionData() {
     $('#session-info').html('Session time: ' + timeSince(new Date(CREATION_TIME)));
     var date = $.datepicker.formatDate('dd/mm/yy', new Date(CREATION_TIME));
     $('#feed-creation-time').html('Session was created on <strong>' + date + '</strong> by <strong>' + CREATOR_NAME + '</strong>');
+<<<<<<< Updated upstream
+=======
+}
+
+function timeSince(date) {
+
+    var seconds = Math.floor((new Date() - date) / 1000);
+
+    var interval = Math.floor(seconds / 31536000);
+
+    interval = Math.floor(seconds / 3600);
+    if (interval > 1) {
+        return interval + " hours";
+    }
+
+    interval = Math.floor(seconds / 60);
+    if (interval > 1) {
+        return interval + " minutes";
+    } else {
+    	return "less than a minute"
+    }
+>>>>>>> Stashed changes
 }
 
 // debugging handler for websocket events coming in
 
 function onEvent(topic, event) {
+    // add switch case for topic here:
+<<<<<<< Updated upstream
+=======
 
-	console.log("received event %s, data: ", event.eventType, event.eventData);
-
-	// this is dirty.
+    //console.log("Message from topic: " + topic + ":");
+    // event holds the actual message that is being sent
+    console.log(event);
+    // event.username = "FooUser";
+    // event.id = 1e4;
+    //if (userid != incoming user) OR use skip paramters in session.send
+>>>>>>> Stashed changes
     if (event.eventType === "addCard") {
-        injectCard(event.eventData);
+        addCard(event.eventData, true);
     } else if (event.eventType === "moveHat") {
         moveTo(event.eventData.hat);
     } else if (event.eventType === "addBucket") {
-    	injectBucket(event.eventData);
+    	addBucket(event.eventData);
     } else if (event.eventType === "renameBucket") {
     	renameBucket(event.eventData);
-    } else if (event.eventType === "moveCardToBucket") {
     }
+    // window.progressBar.add(event.eventData);
 }
 
 function moveTo(hat) {
@@ -148,8 +194,6 @@ function moveTo(hat) {
 
 	// overwrite global HAT var
 	HAT = hat.toLowerCase();
-	window.eventData.hat = HAT;
-
 	location.hash = HAT;
 
 	if (HAT === "blue") {
@@ -162,6 +206,15 @@ function moveTo(hat) {
 
 }
 
+// bucket should be {id, name}
+
+function addBucket() {
+	// get bucket info from server
+	console.log("send this through the websocket");
+	window.session.call(CALL_URI +"#addBucket");
+
+}
+
 function injectBucket(bucket) {
 	var template = Handlebars.compile($('#bucket-template').html());
 	var compiled = template(bucket).toString(); // workaround   
@@ -170,12 +223,21 @@ function injectBucket(bucket) {
 }
 
 
-function renameBucket(eventData) {
-	var bucketId = ''+eventData.bucketId,
-		bucketName = eventData.bucketName;
-	var bucket = $('div#bucket-' + bucketId)
-	bucket.find("h4").removeClass("hide").text(bucketName);
-	bucket.find("input").remove();
+function renameBucket(elem) {
+	// post bucketname to server
+	var name = $(elem).val();
+	// ajax to bucket name change
+	var bucketId = $(elem).data("bucketid");
+	jsRoutes.controllers.Cards.renameBucket(bucketId).ajax({
+		data : {
+			"name" : name
+		},
+		// have to use complete since no data is returned
+		complete : function(e) {
+			$(elem).parent().find("h4").removeClass("hide").text(name);
+			$(elem).remove();
+		}
+	});
 }
 
 function enableDragDrop() {
@@ -192,7 +254,7 @@ function prepareBlueHat() {
 	$('#buckets').removeClass("hide"); 
 }
 
-function injectCard(card) {
+function addCard(card, effect) {
 
 	if (card.content.trim() === "")
 		return;
@@ -202,6 +264,9 @@ function injectCard(card) {
 	var compiled = template(card);
 
 	$('#cards-list').append(compiled);
+
+	//if (effect) markup.effect('highlight', {}, 1000);
+
 	// reset card content field
 	$('#content').val("");
 	$('#nocardsyet').remove();
