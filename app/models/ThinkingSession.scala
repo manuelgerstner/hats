@@ -157,19 +157,27 @@ object ThinkingSession {
    * returns the join token for the user
    */
   def addUser(sessionId: Long, userId: Long): Long = {
-    val createTime = (new Date()).getTime().toString()
     DB.withConnection { implicit connection =>
-      val token = (sessionId + userId + (new Date()).getTime() + Random.nextLong).hashCode
-      SQL("""
+      if (!ThinkingSession.checkUser(sessionId, userId)) {
+        val token = (sessionId + userId + (new Date()).getTime() + Random.nextLong).hashCode
+        SQL("""
           insert into participating (thinking_session,user,token) 
           values ({sessionId},{userId},{token})
           """).on(
-        'sessionId -> sessionId,
-        'userId -> userId,
-        'token -> token)
-        .executeUpdate()
-      Logger.debug("token = " + token + " for session " + sessionId)
-      token
+          'sessionId -> sessionId,
+          'userId -> userId,
+          'token -> token)
+          .executeUpdate()
+        token
+      } else {
+        SQL("""
+          SELECT token
+          FROM participating
+          WHERE thinking_session = {sessionId} AND user = {userId}  
+          """).on(
+          'sessionId -> sessionId,
+          'userId -> userId).as(get[Long]("token").single)
+      }
     }
   }
 
