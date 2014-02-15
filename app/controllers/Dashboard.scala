@@ -33,7 +33,7 @@ object Dashboard extends Controller with UserCookieHandler {
       var creTime: DateTime = new DateTime
       var creatTime: DateTime = new DateTime
       var eTime: DateTime = new DateTime
-      val eventList: List[Event] = Event.byThinkingSession(id) // all event List for Current Session
+      val eventList: List[Event] = Event.byThinkingSessionId(id) // all event List for Current Session
       val hats: List[Hat] = Hat.all
       for (sHat <- hats) {
         for (sEvent <- eventList) {

@@ -20,7 +20,7 @@ object Application extends Controller with UserCookieHandler {
     Logger.debug("Application.index")
     val user = cookieUser(request) match {
       case Some(u) => u
-      case None    => User.byId(User.create("New User", None)).get
+      case None => User.byId(User.create("New User", None)).get
     }
 
     val cookie = Cookie(User.idCookie, user.id.toString, Some(Int.MaxValue))
@@ -34,9 +34,6 @@ object Application extends Controller with UserCookieHandler {
     Ok(
       Routes.javascriptRouter("jsRoutes")(
         routes.javascript.ThinkingSessions.createSession,
-        routes.javascript.Cards.createBucket,
-        routes.javascript.Cards.renameBucket,
-        routes.javascript.Cards.addCardToBucket,
         routes.javascript.Users.saveName)).as("text/javascript")
   }
 

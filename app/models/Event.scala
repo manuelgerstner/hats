@@ -85,7 +85,8 @@ case class Event(
 
 object EventType {
   val createSession = "createSession"
-  val addCard = "createSession"
+  val addCard = "addCard"
+  val addBucket = "addBucket"
   val renameBucket = "renameBucket"
   val addCardToBucket = "addCardToBucket"
   val userJoin = "userJoin"
@@ -150,10 +151,10 @@ object Event {
   }
 
   def byThinkingSession(thinkingSession: ThinkingSession): List[Event] = {
-    byThinkingSession(thinkingSession.id)
+    byThinkingSessionId(thinkingSession.id)
   }
 
-  def byThinkingSession(thinkingSessionId: Long): List[Event] = {
+  def byThinkingSessionId(thinkingSessionId: Long): List[Event] = {
     DB.withConnection { implicit connection =>
       SQL("select * from event where thinking_session={id}").on(
         'id -> thinkingSessionId).as(DBParser *)

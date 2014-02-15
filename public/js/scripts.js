@@ -10,12 +10,21 @@ $(function() {
 	};
 
 
+	if (typeof BUCKETS !== "undefined" && BUCKETS.length > 0) {
+		$(BUCKETS).each(function() {
+			injectBucket(this);
+		});
+	}
 	// setup initial card setup
 	if (typeof CARDS !== "undefined" && CARDS.length > 0) {
 		$(CARDS).each(function() {
 			injectCard(this);
+			if (HAT === "blue" && this.bucketId !== null) {
+				addCardToBucket(this)
+			}
 		});
 	}
+
 
 	$('#modal-button').click(function() {
 		/* new user? */
@@ -175,6 +184,9 @@ function injectBucket(bucket) {
 	var template = Handlebars.compile($('#bucket-template').html());
 	var compiled = template(bucket).toString(); // workaround   
 	// workaround
+
+	// if name
+
 	$('#buckets-list').append(compiled).find('div.bucket').droppable(options.droppable);
 }
 

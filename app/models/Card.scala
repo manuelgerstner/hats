@@ -39,7 +39,7 @@ case class Card(
 
   def bucketId: String = bucket match {
     case Some(b) => b.id.toString
-    case None    => null
+    case None => null
   }
 }
 
@@ -57,10 +57,10 @@ object Card {
       get[String]("content") ~
       get[Long]("hat") ~
       get[Long]("creator") ~
-      get[Long]("bucket") map {
+      (get[Long]("bucket")?) map {
         case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId ~ bucketId =>
           Card(id, ThinkingSession.byId(thinkingSessionId).get, content, Hat.byId(hatId).get,
-            User.byId(creatorId).get, Bucket.byId(bucketId));
+            User.byId(creatorId).get, bucketId match { case Some(id) => Bucket.byId(id) case None => None });
       }
   }
 

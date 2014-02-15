@@ -1,4 +1,4 @@
-@(session: ThinkingSession, cards: List[Card], hat: Hat, user: User, creationEvent: Option[Event])
+@(session: ThinkingSession, cards: List[Card], buckets: List[Bucket], hat: Hat, user: User, creationEvent: Option[Event])
 
 @main(session.title, hat) {
 
@@ -22,12 +22,16 @@
 			  }
 			}		
 			var CARDS = @Html(Card.listToJson(cards).toString);
+
+			var BUCKETS = @Html(Bucket.listToJson(buckets).toString);
+
+			
 			var SESSION_ID = @session.id;
 			var HAT = "@hat.name.toLowerCase";
 			var WSURI = "ws://" + window.location.host + "/wamp";
 			var CALL_URI = "http://sixhats.com/cards";
 			var USER_NAME = "@user.name";
-			var USER_ID = "@user.id"
+			var USER_ID = "@user.id";
 			var CREATOR = @session.isOwner(user);
 			var TOOLTIPS = {
 				"white": "The White Hat calls for information known or needed. The facts, just the facts.",
@@ -125,8 +129,12 @@
 <script id="bucket-template" type="text/x-handlebars-template">
 <div class="col-md-6">
 	<div class="bucket" data-bucketid="{{bucketId}}" id="bucket-{{bucketId}}">
-		<h4 class="hide"></h4>
-		<input type="text" class="form-control bucketname" data-bucketid="{{bucketId}}" placeholder="Name this Bucket"/>
+		{{#if name}}
+			<h4>{{name}}</h4>
+		{{else}}
+			<h4 class="hide"></h4>
+			<input type="text" class="form-control bucketname" data-bucketid="{{bucketId}}" placeholder="Name this Bucket"/>
+		{{/if}}
 		<div class="row">
 			<div class="col-md-12">
 				<div class="cards">

@@ -79,9 +79,9 @@ public class WebSocket extends WAMPlayContoller {
 		if (bucket.isDefined()) {
 			String name = eventData.get("name").asText();
 			Bucket.saveName(name, bucketId);
-
-			long eventId = Event.create(EventType.renameBucket(), tSession,
-					Hat.byId(6).get(), user, noCard, bucket, new Date());
+			long eventId = Event.create(EventType.renameBucket(), tSession, Hat
+					.byId(6).get(), user, noCard, Bucket.byId(bucketId),
+					new Date());
 			Option<Event> event = Event.byId(eventId);
 			publishEvent(event.get(), thinkingSessionId);
 		} else {
@@ -105,9 +105,12 @@ public class WebSocket extends WAMPlayContoller {
 				.get();
 
 		if (bucket.isDefined()) {
-			
-			long eventId = Event.create(EventType.addCardToBucket(), tSession, Hat
-					.byId(6).get(), user, card, bucket, new Date());<Event> event = Event.byId(eventId);
+
+			Card.addToBucket(cardId, bucketId);
+
+			long eventId = Event.create(EventType.addCardToBucket(), tSession,
+					Hat.byId(6).get(), user, card, bucket, new Date());
+			Option<Event> event = Event.byId(eventId);
 			publishEvent(event.get(), thinkingSessionId);
 		} else {
 			sendError(0, "Bucket not defined");
@@ -116,7 +119,7 @@ public class WebSocket extends WAMPlayContoller {
 
 	// call addCard server-side
 	@onRPC("#addCard")
-	public static void add(String sessionId, JsonNode[] args) {
+	public static void addCard(String sessionId, JsonNode[] args) {
 		JsonNode eventData = args[0];
 
 		// check if user exists
@@ -234,8 +237,8 @@ public class WebSocket extends WAMPlayContoller {
 				.get();
 
 		if (bucket.isDefined()) {
-			long eventId = Event.create("addBucketEventType.addBucket(),
-					Hat.byName("blue"), noUser, noCard, bucket, new Date());
+			long eventId = Event.create(EventType.addBucket(), tSession, Hat
+					.byId(6).get(), noUser, noCard, bucket, new Date());
 			Option<Event> event = Event.byId(eventId);
 			publishEvent(event.get(), thinkingSessionId);
 		} else {

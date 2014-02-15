@@ -27,7 +27,7 @@ CREATE TABLE thinking_session (
 CREATE TABLE bucket (
   id                  BIGINT NOT NULL PRIMARY KEY,
   thinking_session    BIGINT NOT NULL REFERENCES thinking_session(id),
-  name               text DEFAULT 'My Bucket'
+  name               text DEFAULT ''
 );
 
 

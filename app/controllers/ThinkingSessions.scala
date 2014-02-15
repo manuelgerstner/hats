@@ -34,9 +34,10 @@ object ThinkingSessions extends Controller with UserCookieHandler {
       case Some(session) => // session exists
         if (ThinkingSession.checkUser(session, user)) { // check if user is part of session
           if (session isRunning) {
-            val eventList: List[Event] = Event.byThinkingSession(id);
+            val eventList: List[Event] = Event.byThinkingSessionId(id);
+            val bucketList: List[Bucket] = Bucket.byThinkingSessionId(id);
             val createSessionEvent = eventList.filter((x: Event) => x.eventType == EventType.createSession).headOption
-            Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user.get, createSessionEvent))
+            Ok(views.html.cards(session, Card.byThinkingSession(id), bucketList, session.currentHat, user.get, createSessionEvent))
           } else
             Redirect(routes.Dashboard.showReport(id))
         } else
@@ -73,7 +74,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
     val sessionOption = ThinkingSession.byId(id)
     val user = request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie)
-      case None         => None
+      case None => None
     }
 
     val session = ThinkingSession.byId(id)
