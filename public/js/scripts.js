@@ -110,8 +110,8 @@ function instantiateSocket() {
 
 function setSessionData() {
     $('#session-info').html('Session time: ' + timeSince(CREATION_TIME));
-    var date = $.datepicker.formatDate('dd/mm/yy', CREATION_TIME);
-    $('#feed-creation-time').html('Session was created on <strong>' + date + '</strong>');
+    var date = $.datepicker.formatDate('dd/mm/yy', new Date(CREATION_TIME));
+    $('#feed-creation-time').html('Session was created on <strong>' + date + '</strong> by <strong>' + CREATOR_NAME) + '</strong>';
 }
 
 // debugging handler for websocket events coming in
