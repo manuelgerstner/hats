@@ -35,7 +35,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
         if (ThinkingSession.checkUser(session, user)) { // check if user is part of session
           if (session isRunning) {
             val eventList: List[Event] = Event.byThinkingSession(id);
-            val createSessionEvent = eventList.filter((x: Event) => x.eventType == Event.createSession).headOption
+            val createSessionEvent = eventList.filter((x: Event) => x.eventType == EventType.createSession).headOption
             Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user.get, createSessionEvent))
           } else
             Redirect(routes.Dashboard.showReport(id))
@@ -54,7 +54,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
         Logger.debug("User " + userId + " joined session " + id)
         val session = ThinkingSession.byId(id).get;
         val user = User.byId(userId)
-        val eventId = Event.create("userJoin", session, session.currentHat, user, None, None, new Date())
+        val eventId = Event.create(EventType.userJoin, session, session.currentHat, user, None, None, new Date())
         val event = Event.byId(eventId)
         WebSocket.publishEvent(event, id)
 
@@ -73,7 +73,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
     val sessionOption = ThinkingSession.byId(id)
     val user = request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie)
-      case None => None
+      case None         => None
     }
 
     val session = ThinkingSession.byId(id)
@@ -83,7 +83,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
       ThinkingSession.finish(session);
 
       // publish event about the finished session
-      val eventId = Event.create("closeSession", session, session.currentHat, userOption, None, None, new Date())
+      val eventId = Event.create(EventType.closeSession, session, session.currentHat, userOption, None, None, new Date())
       val event = Event.byId(eventId);
       WebSocket.publishEvent(event, id);
 
@@ -134,7 +134,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
             sendInviteMails(mailsAndTokens, form.topic, newSessionId)
 
             // publish websocket event
-            Event.create("createSession", session, session.currentHat, Some(creator), None, None, new Date())
+            Event.create(EventType.createSession, session, session.currentHat, Some(creator), None, None, new Date())
             WAMPlayServer.addTopic(newSessionId.toString)
 
             Logger.debug("Creating session " + newSessionId)
