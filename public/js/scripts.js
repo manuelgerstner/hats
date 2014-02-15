@@ -94,8 +94,6 @@ function instantiateSocket() {
 		// store session
 		window.session = session;
 		session.subscribe(SESSION_ID.toString(), onEvent);
-<<<<<<< Updated upstream
-=======
 		//console.log("Subscribed to session number " + SESSION_ID);
 		// publish join session for all participants
 		var newUser = {
@@ -110,7 +108,6 @@ function instantiateSocket() {
 		}
 		var message = JSON.stringify(userJoinedEvent);
 		session.call(CALL_URI + "#userJoined", message);
->>>>>>> Stashed changes
 	},
 
 	// WAMP session is gone
@@ -129,8 +126,6 @@ function setSessionData() {
     $('#session-info').html('Session time: ' + timeSince(new Date(CREATION_TIME)));
     var date = $.datepicker.formatDate('dd/mm/yy', new Date(CREATION_TIME));
     $('#feed-creation-time').html('Session was created on <strong>' + date + '</strong> by <strong>' + CREATOR_NAME + '</strong>');
-<<<<<<< Updated upstream
-=======
 }
 
 function timeSince(date) {
@@ -150,23 +145,11 @@ function timeSince(date) {
     } else {
     	return "less than a minute"
     }
->>>>>>> Stashed changes
 }
 
 // debugging handler for websocket events coming in
 
 function onEvent(topic, event) {
-    // add switch case for topic here:
-<<<<<<< Updated upstream
-=======
-
-    //console.log("Message from topic: " + topic + ":");
-    // event holds the actual message that is being sent
-    console.log(event);
-    // event.username = "FooUser";
-    // event.id = 1e4;
-    //if (userid != incoming user) OR use skip paramters in session.send
->>>>>>> Stashed changes
     if (event.eventType === "addCard") {
         addCard(event.eventData, true);
     } else if (event.eventType === "moveHat") {
