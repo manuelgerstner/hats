@@ -37,12 +37,13 @@ case class Event(
 
   def getEventData: java.util.Map[String, String] = {
     val baseData = HashMap[String, String](
-      "thinkingSession" -> thinkingSession.id.toString,
+      "thinkingSessionId" -> thinkingSession.id.toString,
       "hat" -> hat.name.toLowerCase,
       "time" -> time.getTime().toString(),
       "username" -> userName,
-      "cardid" -> cardId,
-      "bucket" -> bucketId,
+      "cardId" -> cardId,
+      "bucketId" -> bucketId,
+      "bucketName" -> bucketName,
       "content" -> cardContent)
     JavaConversions.mapAsJavaMap(baseData)
   }
@@ -52,6 +53,10 @@ case class Event(
     case None    => "null"
   }
 
+  def bucketName: String = bucket match {
+    case Some(b) => b.name
+    case None => "null"
+  }
   def bucketId: String = bucket match {
     case Some(b) => b.id.toString
     case None    => "null"
