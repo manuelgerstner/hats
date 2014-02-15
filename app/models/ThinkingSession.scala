@@ -16,8 +16,10 @@ import play.Logger
  * The ThinkingSession models a whole session of the process. Don't read the code, read the comments ;-D
  * @author Nemo
  */
-case class ThinkingSession(id: Long, owner: User, title: String, currentHat: Hat) {
+case class ThinkingSession(id: Long, owner: User, title: String, currentHat: Hat, finished: Boolean) {
   def isOwner(user: User): Boolean = owner.id == user.id
+  val isFinished: Boolean = finished
+  val isRunning: Boolean = !finished
 }
 
 object ThinkingSession {
@@ -35,9 +37,10 @@ object ThinkingSession {
     get[Long]("id") ~
       get[Long]("owner") ~
       get[String]("title") ~
-      get[Long]("current_hat") map {
-        case id ~ ownerId ~ title ~ hatId =>
-          ThinkingSession(id, User.byId(ownerId).get, title, Hat.byId(hatId).get);
+      get[Long]("current_hat") ~
+      get[Boolean]("finished") map {
+        case id ~ ownerId ~ title ~ hatId ~ finished =>
+          ThinkingSession(id, User.byId(ownerId).get, title, Hat.byId(hatId).get, finished);
       }
   }
 
@@ -96,7 +99,10 @@ object ThinkingSession {
   def create(ownerId: Long, title: String, hatId: Long): Long = {
     val id = nextId()
     DB.withConnection { implicit connection =>
-      SQL("insert into thinking_session (id,owner,title,current_hat) values ({id},{ownerId},{title},{hatId})").on(
+      SQL("""
+          insert into thinking_session (id,owner,title,current_hat) 
+          values ({id},{ownerId},{title},{hatId})
+          """).on(
         'id -> id,
         'ownerId -> ownerId,
         'title -> title,
@@ -140,6 +146,9 @@ object ThinkingSession {
     }
   }
 
+  /**
+   * returns the join token for the user
+   */
   def addUser(session: ThinkingSession, user: User): Long = {
     addUser(session.id, user.id)
   }
@@ -284,6 +293,21 @@ object ThinkingSession {
         .as((get[Date]("time").single))
     }
 
+  }
+
+  def finish(session: ThinkingSession): Int = {
+    finish(session.id)
+  }
+
+  def finish(sessionId: Long): Int = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          update thinking_session
+          set finsihed = 1
+          where id = {sessionId}
+          """).on(
+        'sessionId -> sessionId).executeUpdate()
+    }
   }
 
   def allUsersReady(session: ThinkingSession): Boolean = allUsersReady(session.id)
