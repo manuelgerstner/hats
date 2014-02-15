@@ -130,6 +130,8 @@ function onEvent(topic, event) {
     } else if (event.eventType === "renameBucket") {
     	renameBucket(event.eventData);
     } else if (event.eventType === "moveCardToBucket") {
+    } else if (event.eventType === "userJoin") {
+    	feedUserJoin(event.eventData);
     }
 }
 
@@ -213,4 +215,8 @@ function injectCard(card) {
 		enableDragDrop();
 	}
 
+}
+
+function feedUserJoin(user) {
+	$('#feed').append('<li>User <strong>' + user.username + '</strong> joined.</li>');
 }
