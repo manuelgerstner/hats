@@ -54,7 +54,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
         Logger.debug("User " + userId + " joined session " + id)
         val session = ThinkingSession.byId(id).get;
         val user = User.byId(userId)
-        val eventId = Event.create(EventType.userJoin, session, session.currentHat, user, None, None, new Date())
+        val eventId = Event.create("userJoin", session, session.currentHat, user, None, None, new Date())
         val event = Event.byId(eventId)
         WebSocket.publishEvent(event, id)
 
@@ -83,7 +83,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
       ThinkingSession.finish(session);
 
       // publish event about the finished session
-      val eventId = Event.create(EventType.closeSession, session, session.currentHat, userOption, None, None, new Date())
+      val eventId = Event.create("closeSession", session, session.currentHat, userOption, None, None, new Date())
       val event = Event.byId(eventId);
       WebSocket.publishEvent(event, id);
 
@@ -128,13 +128,13 @@ object ThinkingSessions extends Controller with UserCookieHandler {
             // add creator
             val token = ThinkingSession.addUser(session, creator)
             sendCreatorMail(creator, token, form.topic, session)
-            // add all invitees
 
+            // add all invitees
             val mailsAndTokens = addUsersToSessions(form.mailAddressList, newSessionId)
             sendInviteMails(mailsAndTokens, form.topic, newSessionId)
 
             // publish websocket event
-            Event.create(EventType.createSession, session, session.currentHat, Some(creator), None, None, new Date())
+            Event.create("createSession", session, session.currentHat, Some(creator), None, None, new Date())
             WAMPlayServer.addTopic(newSessionId.toString)
 
             Logger.debug("Creating session " + newSessionId)
