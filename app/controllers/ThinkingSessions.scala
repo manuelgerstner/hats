@@ -16,6 +16,7 @@ import scala.collection.JavaConversions
 import java.util.Date
 import ws.wamplay.controllers.WAMPlayServer
 import play.templates.BaseScalaTemplate
+import org.joda.time.DateTime
 
 /**
  * Controls all changes in ThinkingSession state.
@@ -32,9 +33,11 @@ object ThinkingSessions extends Controller with UserCookieHandler {
     ThinkingSession.byId(id) match {
       case Some(session) => // session exists
         if (ThinkingSession.checkUser(session, user)) { // check if user is part of session
-          if (session isRunning)
-            Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user.get, Event.byThinkingSession(id)))
-          else
+          if (session isRunning) {
+            val eventList: List[Event] = Event.byThinkingSession(id);
+            val createSessionEvent = eventList.filter((x: Event) => x.eventType == Event.createSession).headOption
+            Ok(views.html.cards(session, Card.byThinkingSession(id), session.currentHat, user.get, createSessionEvent))
+          } else
             Redirect(routes.Dashboard.showReport(id))
         } else
           Unauthorized
@@ -68,7 +71,12 @@ object ThinkingSessions extends Controller with UserCookieHandler {
   def closeSession(id: Long) = Action { implicit request =>
     val userOption = cookieUser(request)
     val sessionOption = ThinkingSession.byId(id)
+    val user = request.cookies.get(User.idCookie) match {
+      case Some(cookie) => User.byCookie(cookie)
+      case None => None
+    }
 
+    val session = ThinkingSession.byId(id)
     if (ThinkingSession.checkUser(sessionOption, userOption)) {
       // persist finished state
       val session = sessionOption.get;

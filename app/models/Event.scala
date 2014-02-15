@@ -84,6 +84,7 @@ case class Event(
 }
 
 object Event {
+  val createSession = "createSession"
   val dummy = Event(0, "dummyEvent", ThinkingSession.dummy, Hat.dummy, None, None, None, new Date())
 
   val DBParser = {
