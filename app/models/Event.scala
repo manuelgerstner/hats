@@ -83,8 +83,18 @@ case class Event(
   }
 }
 
-object Event {
+object EventType {
   val createSession = "createSession"
+  val addCard = "createSession"
+  val renameBucket = "renameBucket"
+  val addCardToBucket = "addCardToBucket"
+  val userJoin = "userJoin"
+  val moveHat = "moveHat"
+  val closeSession = "closeSession"
+}
+
+object Event {
+
   val dummy = Event(0, "dummyEvent", ThinkingSession.dummy, Hat.dummy, None, None, None, new Date())
 
   val DBParser = {
@@ -161,3 +171,4 @@ object Event {
     }
   }
 }
+
