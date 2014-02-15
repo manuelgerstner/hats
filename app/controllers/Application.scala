@@ -22,7 +22,8 @@ object Application extends Controller with UserCookieHandler {
       case Some(u) => u
       case None    => User.byId(User.create("New User", None)).get
     }
-    val cookie = Cookie(User.idCookie, user.id.toString, Some(Int.MaxValue), "/", Some(request.domain), false, true)
+
+    val cookie = Cookie(User.idCookie, user.id.toString, Some(Int.MaxValue))
     Ok(views.html.index("Six Thinking Hats", user, sessionConfigForm)).withCookies(cookie)
   }
 
