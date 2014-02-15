@@ -16,49 +16,56 @@ import scala.collection.mutable.Map
  *
  * @author: Anamika
  */
-object Dashboard extends Controller {
+object Dashboard extends Controller with UserCookieHandler {
 
   /**
    * show summary report
    */
   def showReport(id: Long) = Action { implicit request =>
-    // val hatTime = new Map[String, Long]()
-    val hatNameTime = Map[String, Long]() //mutable
-    //hatTime: Map[String, Long] = Map()
-    var hatName: String = "White"
-    var creTime: DateTime = new DateTime
-    var creatTime: DateTime = new DateTime
-    var eTime: DateTime = new DateTime
-    val eventList: List[Event] = Event.byThinkingSession(id) // all event List for Current Session
-    val hats: List[Hat] = Hat.all()
-    for (sHat <- hats) {
-      for (sEvent <- eventList) {
-        if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "createSession")) {
-          var crTime: Date = sEvent.time;
-          creatTime = new DateTime(crTime)
-          creTime = creatTime
-          //Logger.debug("CreateWhite::" + creTime)
-        } else if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "moveHat")) {
-          var crTime: Date = sEvent.time;
-          eTime = new DateTime(crTime)
-          //Logger.debug("ETIme::" + eTime)
-          val elapsedTime = (eTime.getMillis() - creTime.getMillis()) / 1000
-          hatNameTime += (hatName -> elapsedTime)
-          creTime = eTime
-        }
-      }
-      hatName = sHat.name
-      //Logger.debug("Hatname::" + hatName)
-    }
-    var endTime = DateTime.now()
-    val elapsedTime1 = (endTime.getMillis() - creTime.getMillis()) / 1000
-    hatNameTime += ((hatName -> elapsedTime1))
-    val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
-    //Logger.debug("Elapsed TIme::" + hatElapsedTime)
-    //Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
-    Ok(views.html.dashboard(hatElapsedTime, countHatsforUser(id)))
+    val userOption = cookieUser(request)
+    val sessionOption = ThinkingSession.byId(id)
+    if (ThinkingSession.checkUser(sessionOption, userOption)) {
 
+      // val hatTime = new Map[String, Long]()
+      val hatNameTime = Map[String, Long]() //mutable
+      //hatTime: Map[String, Long] = Map()
+      var hatName: String = "White"
+      var creTime: DateTime = new DateTime
+      var creatTime: DateTime = new DateTime
+      var eTime: DateTime = new DateTime
+      val eventList: List[Event] = Event.byThinkingSession(id) // all event List for Current Session
+      val hats: List[Hat] = Hat.all
+      for (sHat <- hats) {
+        for (sEvent <- eventList) {
+          if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "createSession")) {
+            var crTime: Date = sEvent.time;
+            creatTime = new DateTime(crTime)
+            creTime = creatTime
+            //Logger.debug("CreateWhite::" + creTime)
+          } else if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "moveHat")) {
+            var crTime: Date = sEvent.time;
+            eTime = new DateTime(crTime)
+            //Logger.debug("ETIme::" + eTime)
+            val elapsedTime = (eTime.getMillis() - creTime.getMillis()) / 1000
+            hatNameTime += (hatName -> elapsedTime)
+            creTime = eTime
+          }
+        }
+        hatName = sHat.name
+        //Logger.debug("Hatname::" + hatName)
+      }
+      var endTime = DateTime.now()
+      val elapsedTime1 = (endTime.getMillis() - creTime.getMillis()) / 1000
+      hatNameTime += ((hatName -> elapsedTime1))
+      val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
+      //Logger.debug("Elapsed TIme::" + hatElapsedTime)
+      //Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
+      Ok(views.html.dashboard(hatElapsedTime, countHatsforUser(id)))
+    } else {
+      Unauthorized
+    }
   }
+
   def countHatsforUser(id: Long): List[(String, List[(String, Long)])] = {
     var usrIDs: List[Long] = Card.byOnlyInSession(id) //only the Users
     var uName: String = new String()

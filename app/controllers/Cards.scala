@@ -20,15 +20,11 @@ import ws.wamplay.controllers.WAMPlayServer
  *
  * @author: NemoOudeis
  */
-object Cards extends Controller {
+object Cards extends Controller with UserCookieHandler {
 
   def createBucket(id: Long) = Action { implicit request =>
 
-    val user =
-      request.cookies.get(User.idCookie) match {
-        case Some(cookie) => User.byCookie(cookie)
-        case None         => None
-      }
+    val user = cookieUser(request)
     ThinkingSession.byId(id) match {
       case Some(session) =>
         if (ThinkingSession.checkUser(session, user)) {
@@ -45,12 +41,7 @@ object Cards extends Controller {
   }
 
   def addCardToBucket(bucketId: Long, cardId: Long) = Action { implicit request =>
-    val user = request.cookies.get(User.idCookie) match {
-      case Some(cookie) => // found user cookie
-        User.byCookie(cookie)
-      case None => None
-    }
-
+    val user = cookieUser(request)
     val bucket = Bucket.byId(bucketId)
     Bucket.addCard(bucketId, cardId);
     val session = ThinkingSession.byId(bucket.get.sessionId).get;
@@ -66,12 +57,7 @@ object Cards extends Controller {
   // no return necessary
   def renameBucket(bucketId: Long) = Action { implicit request =>
     Logger.debug("Rename Bucket " + bucketId)
-    val user = request.cookies.get(User.idCookie) match {
-      case Some(cookie) => // found user cookie
-        User.byCookie(cookie)
-      case None => None
-    }
-
+    val user = cookieUser(request)
     val name = request.body.asFormUrlEncoded match {
       case Some(map) => map.get("name")
       case None      => None
