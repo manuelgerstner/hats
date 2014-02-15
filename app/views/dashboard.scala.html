@@ -10,13 +10,20 @@
 			@progressbar.render
 		</div>
 	</div><!-- /.row -->
+<div id="hat" class="blue">
+	<div style="display:none" class = "card blue"></div>
+	<div style="display:none" class = "card black"></div>
+	<div style="display:none" class = "card red"></div>
+	<div style="display:none" class = "card green"></div>
+	<div style="display:none" class = "card white"></div>
+	<div style="display:none" class = "card yellow"></div>
 	<div class="row">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
 				<h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Bucket Thing(Not Ready Yet)</h3>
 			</div>
 			<div class="panel-body">
-				<div id="cards-user-bucket"> </div>
+				<div id="mytest"> </div>
 			</div>
 		</div>	
 	</div><!-- /.row -->
@@ -40,6 +47,7 @@
 			</div>
 		</div>
 	</div><!-- /.row -->
+<div>
 	<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
 	<script type="text/javascript" src="//cdn.jsdelivr.net/morris.js/0.4.1/morris.min.js"></script>
 	<script type='text/javascript' src="https://raw.github.com/xuanluo/flot-axislabels/master/jquery.flot.axislabels.js"></script>
@@ -53,7 +61,8 @@
         label: '@hTime._1',
     }
     hatArray.push(obj);
-    hatColor.push("@hTime._1.toLowerCase")
+    var setColor = $("#hat.blue div.card.@hTime._1.toLowerCase").css("background-color");
+    hatColor.push(setColor);
 	}
 	Morris.Donut({
 		element: 'elapsed-time-chart-donut',
@@ -78,11 +87,12 @@
 		  			if(m == 0){
 		  				labelArr =labelArray.slice(0);
 		  			}
+		  			var setColor = $("#hat.blue div.card.@key.toLowerCase").css("background-color");
 		  			m += 1;
 		  			var obj = {
         			data: cardArray1,
         			label: '@key',
-        			color: '@key.toLowerCase'
+        			color: setColor
     				}
 		  			resultArray1.push(obj);
 		  			cardArray1 =[];
