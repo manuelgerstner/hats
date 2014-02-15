@@ -218,5 +218,7 @@ function injectCard(card) {
 }
 
 function feedUserJoin(user) {
-	$('#feed').append('<li>User <strong>' + user.username + '</strong> joined.</li>');
+	var userGlyph = '<span class="glyphicon glyphicon-user"></span>';
+	$('#feed').append('<li>' + userGlyph + ' User <strong>' + user.username + '</strong> joined.</li>');
+	$('#feed').children().last().effect('highlight',{}, 3000);
 }
