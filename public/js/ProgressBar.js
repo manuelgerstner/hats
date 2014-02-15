@@ -29,9 +29,10 @@ function ProgressBar(container, bubbles) {
         "blue"
     ];
     this.algorithmParams = {
-    	maxBubbleSize : 20,
-    	minBubbleSize : 5,
-    	stretch : 4 // bigger strecht -> need more cards to reach max size (scales linear)
+        maxBubbleSize: 20,
+        minBubbleSize: 5,
+        stretch: 3, // bigger strecht -> need more cards to reach max size (scales linear)
+        tippingPoint: 10
     }
     this.render();
     this.addTooltips(false);
@@ -64,25 +65,14 @@ ProgressBar.prototype.render = function() {
         cirque.attr("cx", percentage);
     }
 
-    /**
-     * Calculate bubble size using logistic distribution, see https://de.wikipedia.org/wiki/Logistische_Verteilung
-     * to play with the parameters see plots at
-     * http://fooplot.com/#W3sidHlwZSI6MCwiZXEiOiIzKzIwLygxK2V4cCgteC81KzIpKSIsImNvbG9yIjoiIzAwMDAwMCJ9LHsidHlwZSI6MTAwMCwid2luZG93IjpbIi05LjEzNzI3NTE1OTk5OTk3IiwiMzQuNDgzNDg2NDM5OTk5OTYiLCItMC42ODgzODQ2NTM4ODI4MTAyIiwiMjYuMTU1MTYwOTQ2MTE3MTY3Il19XQ--
-     **/
-    var getSize = function(count) {
-        /**
-         * stretch changes how many contributions are needed for full size
-         * stretch = 1 -> ~ 10 cards yield full size
-         * stretch = 2 -> ~ 20 cards yield full size
-         * etc
-         **/
-        var stretch = 2;
-        var fullSize = 20; // initial size is about 5
-        // initial size for 0 cards is about 4
-        return Math.ceil((3 + fullSize / (1 + Math.exp((-count / stretch) + 2))));
-    }
+
 };
 
+/**
+ * Calculate bubble size using logistic distribution, see https://de.wikipedia.org/wiki/Logistische_Verteilung
+ * to play with the parameters see plots at
+ * http://fooplot.com/#W3sidHlwZSI6MCwiZXEiOiIyOC8oMStleHAoLXgvMykpLTgiLCJjb2xvciI6IiMwMDAwMDAifSx7InR5cGUiOjEwMDAsIndpbmRvdyI6WyItMjAuMDI2ODk0MzU5OTk5OTQiLCI0NC45NzMxMDU2Mzk5OTk4NiIsIi04LjExNjYxMTg1Mzg4Mjc5MSIsIjMxLjg4MzM4ODE0NjExNzEyNCJdLCJzaXplIjpbNjQ5LDM5OV19XQ--
+ **/
 
 function bubbleSize(count, max, params) {
     /**
@@ -91,17 +81,18 @@ function bubbleSize(count, max, params) {
      * stretch = 2 -> ~ 20 cards yield full size
      * etc
      **/
-
-    var scaledCount = (max > 25) ? (25 * count / max) : count;
-    if(max > 25){
-    	console.log("Max = "+max+" scaled original count "+count+" to scaled count "+scaledCount);
-    }
     var stretch = params.stretch;
-    var fullSize = params.maxBubbleSize; 
+    var fullSize = params.maxBubbleSize;
     var minSize = params.minBubbleSize;
-    var algoSize = Math.ceil((3 + (fullSize - 3) / (1 + Math.exp(-(scaledCount / stretch) + 2))));
 
-    return Math.max(algoSize,minSize);
+    var scaledCount = (max > params.tippingPoint) ? (params.tippingPoint * count / max) : count;
+    if (max > params.tippingPoint) {
+        console.log("Max = " + max + " scaled original count " + count + " to scaled count " + scaledCount);
+    }
+    
+    var algoSize = Math.ceil( (fullSize + 8) / (1 + Math.exp( -( scaledCount / stretch ) ) ) -8);
+
+    return Math.max(algoSize, minSize);
 }
 
 
@@ -144,26 +135,26 @@ ProgressBar.prototype.addTooltips = function(update) {
         var addedCards = 0;
         var users = [];
         CARDS.forEach(function(card) {
-            if(card.hat === hats[hat]) {
+            if (card.hat === hats[hat]) {
                 addedCards++;
-                if(users.indexOf(card.username) === -1) {
+                if (users.indexOf(card.username) === -1) {
                     users.push(card.username);
                 }
             }
         });
 
         var contributors = "";
-        if(users.length != 0) {
+        if (users.length != 0) {
             var userList = "<li>" + users.join(",") + "</li>";
             var contributors = '<br/> Contributors: ' + userList;
-        } 
-        
-        if(!update) {
+        }
+
+        if (!update) {
             var color = hats[hat];
             $(this.container).find('circle.' + color).qtip({
                 content: {
                     text: users.length + 'users have added ' + addedCards + ' cards to the ' + color + ' hat so far: ' + contributors
-                }, 
+                },
                 style: {
                     classes: 'qtip-bootstrap'
                 }
