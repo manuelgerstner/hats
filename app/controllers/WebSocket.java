@@ -33,6 +33,7 @@ public class WebSocket extends WAMPlayContoller {
 	static Option<Object> none = scala.Option.apply(null);
 	static Option<Bucket> noBucket = scala.Option.apply(null);
 	static Option<Card> noCard = scala.Option.apply(null);
+	static Option<User> noUser = scala.Option.apply(null);
 
 	public static String getTopicName(long id) {
 		return "thinkingSession_" + id;
@@ -54,7 +55,7 @@ public class WebSocket extends WAMPlayContoller {
 				.get();
 
 		if (user.isDefined() && bucket.isDefined()) {
-			long eventId = Event.create(EventType.addCard(), tSession, hat,
+			long eventId = Event.create(EventType.addBucket(), tSession, hat,
 					user, noCard, bucket, new Date());
 			Option<Event> event = Event.byId(eventId);
 			publishEvent(event.get(), thinkingSessionId);
@@ -75,13 +76,12 @@ public class WebSocket extends WAMPlayContoller {
 		ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
 				.get();
 
-		Hat hat = Hat.byName("blue");
-
 		if (bucket.isDefined()) {
 			String name = eventData.get("name").asText();
 			Bucket.saveName(name, bucketId);
+
 			long eventId = Event.create(EventType.renameBucket(), tSession,
-					hat, user, noCard, bucket, new Date());
+					Hat.byId(6).get(), user, noCard, bucket, new Date());
 			Option<Event> event = Event.byId(eventId);
 			publishEvent(event.get(), thinkingSessionId);
 		} else {
@@ -93,21 +93,21 @@ public class WebSocket extends WAMPlayContoller {
 	public static void addCardToBucket(String sessionId, JsonNode[] args) {
 		JsonNode eventData = args[0];
 		long bucketId = eventData.get("bucketId").asLong();
+		long cardId = eventData.get("cardId").asLong();
 		long thinkingSessionId = eventData.get("thinkingSessionId").asLong();
 		long userId = eventData.get("userId").asLong();
+
 		Option<Bucket> bucket = Bucket.byId(bucketId);
+		Option<Card> card = Card.byId(cardId);
 		Option<User> user = User.byId(userId);
+
 		ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
 				.get();
 
-		Hat hat = Hat.byName("blue");
-
 		if (bucket.isDefined()) {
-			String name = eventData.get("name").asText();
-			Bucket.saveName(name, bucketId);
-			long eventId = Event.create(EventType.addCardToBucket(), tSession,
-					hat, user, noCard, noBucket, new Date());
-			Option<Event> event = Event.byId(eventId);
+			
+			long eventId = Event.create(EventType.addCardToBucket(), tSession, Hat
+					.byId(6).get(), user, card, bucket, new Date());<Event> event = Event.byId(eventId);
 			publishEvent(event.get(), thinkingSessionId);
 		} else {
 			sendError(0, "Bucket not defined");
@@ -195,6 +195,11 @@ public class WebSocket extends WAMPlayContoller {
 		} else {
 			sendError(thinkingSessionId, "Event undefined");
 		}
+		// special case for blue hat - create a bucket automatically
+		if (nextHatId == 6) {
+			autoAddBucket(thinkingSessionId);
+		}
+
 	}
 
 	@onSubscribe
@@ -218,6 +223,23 @@ public class WebSocket extends WAMPlayContoller {
 	public static void publishEvent(Option<Event> event, long sessionId) {
 		if (event.isDefined()) {
 			publishEvent(event.get(), sessionId);
+		}
+	}
+
+	private static void autoAddBucket(long thinkingSessionId) {
+		long bucketId = Bucket.create(thinkingSessionId);
+
+		Option<Bucket> bucket = Bucket.byId(bucketId);
+		ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
+				.get();
+
+		if (bucket.isDefined()) {
+			long eventId = Event.create("addBucketEventType.addBucket(),
+					Hat.byName("blue"), noUser, noCard, bucket, new Date());
+			Option<Event> event = Event.byId(eventId);
+			publishEvent(event.get(), thinkingSessionId);
+		} else {
+			sendError(thinkingSessionId, "bucket creation failed");
 		}
 	}
 

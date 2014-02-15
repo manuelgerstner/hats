@@ -29,7 +29,7 @@ case class Card(
 
   def toJson: JsObject = {
     Json.obj(
-      "id" -> this.id,
+      "cardId" -> this.id,
       "hat" -> this.hat.name.toLowerCase,
       "thinkingSessionId" -> this.thinkingSession.id,
       "content" -> this.content,

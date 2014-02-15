@@ -10,23 +10,8 @@ var options = {
 
 	droppable : {
 		hoverClass : "dropit",
-		drop : function(event, ui) {
-			// grab bucket id
-			var bucketId = $(event.target).data('bucketid');
-			// kill placeholder
-			$(this).find(".placeholder").remove();
-			// bind card
-			var card = ui.draggable, cardId = card.data('cardid');f			
-			// css fix
-			card.css("position", "").off(); // unbind all drag shit
-			card.draggable("disable"); // disable further dragging
-			// inject into container
-			$(this).find(".cards").append(card);
-			// finally, post
-			window.session.call(CALL_URI + "#addCardToBucket", {
-				cardId: cardId,
-				bucketId: bucketId
-			});
+		drop : function(e,ui) {
+			return dropCard(e,ui);
 		}
 	},
 	fancybox : {

@@ -58,7 +58,7 @@ $(function() {
 
 
 	$(document).on('click', '.addbucket', function() {
-		window.session.call(CALL_URI + "#addBucket", eventData);
+		window.session.call(CALL_URI + "#addBucket", window.eventData);
 	});
 
 	$(document).on('blur', '.bucketname', function() {
@@ -70,7 +70,8 @@ $(function() {
 	$(document).on('click', 'a.fancybox', function(e) {
 		e.preventDefault();
 		var options = {
-			speed : "slow"
+			speed : "slow",
+			type: null
 		}
 		var href = $(this).attr("href");
 		if (!!~href.indexOf("youtube.com/watch?v=")) {
@@ -78,7 +79,12 @@ $(function() {
 			options.type = "swf";
 			//options.swf= {"wmode":'transparent','allowfullscreen':'true'}
 		}
-		$.fancybox.open(this, options);
+		// either youtube link or image link
+		if (options.type != null && /(png|jp?eg)/test.href.toLowerCase()) {
+			$.fancybox.open(this, options);
+		} else {
+			window.open(href, "_blank"); // for marin
+		}
 	});
 
 	$('#indicate-finish').click(function() {
@@ -129,7 +135,8 @@ function onEvent(topic, event) {
     	injectBucket(event.eventData);
     } else if (event.eventType === "renameBucket") {
     	renameBucket(event.eventData);
-    } else if (event.eventType === "moveCardToBucket") {
+    } else if (event.eventType === "addCardToBucket") {
+    	addCardToBucket(event.eventData);
     } else if (event.eventType === "userJoin") {
     	feedUserJoin(event.eventData);
     }
@@ -194,6 +201,7 @@ function prepareBlueHat() {
 	$('#buckets').removeClass("hide"); 
 }
 
+
 function injectCard(card) {
 
 	if (card.content.trim() === "")
@@ -214,8 +222,39 @@ function injectCard(card) {
 		// do this again for all cards (easier than grabbing just added card)
 		enableDragDrop();
 	}
-
 }
+
+function dropCard(event, ui) {
+	// grab bucket id
+	var bucketId = $(event.target).data('bucketid'),
+		bucket = $(event.target);
+	// kill placeholder
+	bucket.find(".placeholder").remove();
+
+	// bind card
+	var card = ui.draggable, cardId = card.data('cardid');
+
+	window.session.call(CALL_URI + "#addCardToBucket", $.extend({}, window.eventData, {
+		cardId: cardId,
+		bucketId: bucketId
+	}));
+}
+
+function addCardToBucket(eventData) {
+
+	var cardId = ''+eventData.cardId,
+		bucketId = ''+eventData.bucketId;
+	var card = $('#card-'+cardId), bucket = $('#bucket-'+bucketId);
+
+	console.log(card, bucket);
+
+	// css fix
+	card.css("position", "").off(); // unbind all drag shit
+	card.draggable("disable"); // disable further dragging
+	// inject into container
+	bucket.find(".cards").append(card);
+}
+
 
 function feedUserJoin(user) {
 	var userGlyph = '<span class="glyphicon glyphicon-user"></span>';
