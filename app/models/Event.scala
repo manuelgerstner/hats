@@ -50,36 +50,36 @@ case class Event(
 
   def cardId: String = card match {
     case Some(c) => c.id.toString
-    case None    => "null"
+    case None => null
   }
 
   def bucketName: String = bucket match {
     case Some(b) => b.name
-    case None => "null"
+    case None => null
   }
   def bucketId: String = bucket match {
     case Some(b) => b.id.toString
-    case None    => "null"
+    case None => null
   }
 
   def cardContent = card match {
     case Some(c) => c.content
-    case None    => "null"
+    case None => null
   }
 
   def userName = user match {
     case Some(u) => u.name
-    case None    => "null"
+    case None => null
   }
 
   val hasCard: Boolean = card match {
     case Some(_) => true
-    case None    => false
+    case None => false
   }
 
   val hasUser: Boolean = user match {
     case Some(_) => true
-    case None    => false
+    case None => false
   }
 }
 
@@ -127,7 +127,7 @@ object Event {
     }
   }
 
-  def create(eventType: String, thinkingSession: ThinkingSession, hat: Hat, user: Option[User] = None, card: Option[Card] = None, bucket: Option[Bucket] = None, time: Date = new Date()): Long = {
+  def create(eventType: String, thinkingSession: ThinkingSession, hat: Hat, user: Option[User], card: Option[Card], bucket: Option[Bucket], time: Date): Long = {
     create(eventType, thinkingSession.id, hat.id, user.collect({ case u: User => u.id }),
       card.collect({ case c: Card => c.id }), bucket.collect({ case b: Bucket => b.id }), time)
   }
