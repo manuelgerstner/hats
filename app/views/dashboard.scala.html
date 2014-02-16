@@ -10,6 +10,7 @@
 		@progressbar.render
 	</div>
 </div><!-- /.row -->
+<!-- Reused the CSS from style.css -->
 <div id="hat" class="blue">
 	<div style="display:none" class = "card blue"></div>
 	<div style="display:none" class = "card black"></div>
@@ -17,6 +18,7 @@
 	<div style="display:none" class = "card green"></div>
 	<div style="display:none" class = "card white"></div>
 	<div style="display:none" class = "card yellow"></div>
+	<!-- Buckets for Cards-->
 	<div class="row">
 		<div class="panel panel-primary">
 			<div class="panel-heading">
@@ -28,6 +30,7 @@
 		</div>	
 	</div><!-- /.row -->
 	<div class="row">
+		<!-- Stacked bar chart for Cards of each User-->
 		<div class="col-lg-6">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
@@ -38,6 +41,7 @@
 				</div>
 			</div>
 		</div>
+		<!-- Donut Chart: Elapsed time per hats  -->
 		<div class="col-lg-6">
 			<div class="panel panel-primary">
 				<div class="panel-heading">
@@ -53,51 +57,57 @@
 		<script>
 			var hatArray = [];
 			var hatColor = [];
-			//var len = @hatElapsedTime.length;
+			// Gets time for each hats
+			//sets label and  value for Donut Chart
 			@for(hTime <- hatElapsedTime){
 				var obj = {
 					value: @hTime._2,
 					label: '@hTime._1',
 				}
 				hatArray.push(obj);
+				// Sets color for each hat
 				var setColor = $("#hat.blue div.card.@hTime._1.toLowerCase").css("background-color");
 				hatColor.push(setColor);
 			}
+			// Plot the Donut Chart
 			Morris.Donut({
 				element: 'elapsed-time-chart-donut',
 				data: hatArray,
 				colors: hatColor
 			});	
 		</script>
-		<script id="source">
+		<script>
+		//  Plot the stacked bar chart
 			$(function () {
-				var cardArray1 = [];
-				var resultArray1 =[];
-				var labelArray = [];
+				var cardArrForHats = []; // card numbers for user in each hat
+				var cardsForUser =[]; //card numbers for each user
+				var labelArray = []; // user name labels
 				var labelArr = [];
 				var m = 0;
-				@for( (key, values) <- cardDetails) {
+				@for( (key, values) <- cardDetails) { //For Each Hat user and total cards details
 					var k = 0;
 					@values.map { value =>
-						cardArray1.push([k, @value._2]);
-						labelArray.push([k,"@value._1.toLowerCase"]);
+						cardArrForHats.push([k, @value._2]); //Arrays for saving total cards for each user
+						labelArray.push([k,"@value._1.toLowerCase"]); //Arrays for saving usernames
 						k += 1;
 					}
 					if(m == 0){
 						labelArr =labelArray.slice(0);
 					}
+					// sets color for each hats
 					var setColor = $("#hat.blue div.card.@key.toLowerCase").css("background-color");
 					m += 1;
+					//  Now sets all the user along with cards for each hats into cardsForUser Array
 					var obj = {
-						data: cardArray1,
+						data: cardArrForHats,
 						label: '@key',
 						color: setColor
 					}
-					resultArray1.push(obj);
-					cardArray1 =[];
+					cardsForUser.push(obj);
+					cardArrForHats =[];
 				}
 				function plotWithOptions() {
-					$.plot($("#cards-user-current-session"), resultArray1, {
+					$.plot($("#cards-user-current-session"), cardsForUser, {
 						series: {
 							stack: 1,
 							lines: { show: false, fill: true, steps: false },
@@ -112,6 +122,5 @@
 				$("#cards-user-current-session").UseTooltip();
 			});
 		</script>
-	</div>
 
 }
