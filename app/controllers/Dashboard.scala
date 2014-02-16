@@ -60,7 +60,8 @@ object Dashboard extends Controller with UserCookieHandler {
       val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
       //Logger.debug("Elapsed TIme::" + hatElapsedTime)
       //Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
-      Ok(views.html.dashboard(hatElapsedTime, countHatsforUser(id)))
+      val bucketList: List[Bucket] = Bucket.byThinkingSessionId(id);
+      Ok(views.html.dashboard(hatElapsedTime, countHatsforUser(id), Card.byThinkingSession(id), bucketList))
     } else {
       Unauthorized
     }
