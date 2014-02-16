@@ -47,8 +47,6 @@
 		var CARDS = @Html(Card.listToJson(cards).toString);
 		var BUCKETS = @Html(Bucket.listToJson(buckets).toString);
 
-
-
 		// generic colors
 		var colors = {
 			white: "#fff",
@@ -141,7 +139,10 @@
 			Morris.Donut({
 				element: elemId,
 				data: times,
-				colors: _colors
+				colors: _colors,
+				formatter: function(y) {
+					return formatTime(y);
+				}
 			});
 		}
 
