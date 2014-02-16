@@ -35,6 +35,7 @@ object Dashboard extends Controller with UserCookieHandler {
       var eTime: DateTime = new DateTime
       val eventList: List[Event] = Event.byThinkingSessionId(id) // all event List for Current Session
       val hats: List[Hat] = Hat.all
+      // This will measures the Elapsed time for each hats
       for (sHat <- hats) {
         for (sEvent <- eventList) {
           if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "createSession")) {
@@ -58,15 +59,15 @@ object Dashboard extends Controller with UserCookieHandler {
       val elapsedTime1 = (endTime.getMillis() - creTime.getMillis()) / 1000
       hatNameTime += ((hatName -> elapsedTime1))
       val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
-      //Logger.debug("Elapsed TIme::" + hatElapsedTime)
-      //Ok(views.html.dashboard(hatElapsedTime, Card.byOnlyInSession(id), byUserCardList(id), Event.byThinkingSession(id)))
       val bucketList: List[Bucket] = Bucket.byThinkingSessionId(id);
       Ok(views.html.dashboard(hatElapsedTime, countHatsforUser(id), Card.byThinkingSession(id), bucketList))
     } else {
       Unauthorized
     }
   }
-
+  /**
+   * Return List of Hats which is a List of Users along with card numbers for the current session
+   */
   def countHatsforUser(id: Long): List[(String, List[(String, Long)])] = {
     var usrIDs: List[Long] = Card.byOnlyInSession(id) //only the Users
     var uName: String = new String()
