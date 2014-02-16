@@ -54,7 +54,8 @@ $(function() {
 	
 	$("#btnAddCard").click(function() {
 		var newCard = $.extend({}, eventData, {
-			"content" : $("#content").val()
+			"content" : $("#content").val(),
+			"username" : USER_NAME
 		});
 		window.session.call(CALL_URI + "#addCard", newCard);
 		// store 
