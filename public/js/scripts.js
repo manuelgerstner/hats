@@ -241,8 +241,6 @@ function dropCard(event, ui) {
 	// grab bucket id
 	var bucketId = $(event.target).data('bucketid'),
 		bucket = $(event.target);
-	// kill placeholder
-	bucket.find(".placeholder").remove();
 
 	// bind card
 	var card = ui.draggable, cardId = card.data('cardid');
@@ -260,6 +258,9 @@ function addCardToBucket(eventData) {
 	var card = $('#card-'+cardId), bucket = $('#bucket-'+bucketId);
 
 	console.log(card, bucket);
+
+	// kill placeholder
+	bucket.find(".placeholder").remove();
 
 	// css fix
 	card.css("position", "").off(); // unbind all drag shit
