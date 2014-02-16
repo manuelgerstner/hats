@@ -145,8 +145,8 @@ ProgressBar.prototype.addTooltips = function(update) {
 
 		var contributors = "";
 		if (users.length != 0) {
-			var userList = "<li>" + users.join(",") + "</li>";
-			var contributors = userList;
+			var userList = "<li>" + users.join("</li><li>") + "</li>";
+			contributors = '<br/> Contributors: ' + userList;
 		}
 
 		var color = hats[hat];
@@ -154,7 +154,7 @@ ProgressBar.prototype.addTooltips = function(update) {
 		if (!update) {
 			$(this.container).find('circle.' + color).qtip({
 				content: {
-					text: users.length + ' users have added ' + addedCards + ' cards to the ' + color + ' hat so far: ' + contributors
+					text: users.length + ' users have added ' + addedCards + ' cards to the ' + color + ' hat so far. ' + contributors
 				},
 				style: {
 					classes: 'qtip-bootstrap'
