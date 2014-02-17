@@ -70,11 +70,12 @@ object ThinkingSessions extends Controller with UserCookieHandler {
    * Redirects to Dashboard controller
    */
   def closeSession(id: Long) = Action { implicit request =>
+    Logger.info("Session " + id + "closed");
     val userOption = cookieUser(request)
     val sessionOption = ThinkingSession.byId(id)
     val user = request.cookies.get(User.idCookie) match {
       case Some(cookie) => User.byCookie(cookie)
-      case None => None
+      case None         => None
     }
 
     val session = ThinkingSession.byId(id)

@@ -311,7 +311,7 @@ object ThinkingSession {
     DB.withConnection { implicit connection =>
       SQL("""
           update thinking_session
-          set finsihed = 1
+          set finished = 1
           where id = {sessionId}
           """).on(
         'sessionId -> sessionId).executeUpdate()
