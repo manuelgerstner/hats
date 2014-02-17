@@ -2,7 +2,7 @@
 @import models._
 
 @main("Dashboard", null) {
-
+<div id="printArea">
 	<div class="row">
 		<div class="col-md-12">
 			<h1>@session.title - Summary and Statistics</h1>
@@ -44,7 +44,14 @@
 			</div>
 		</div>
 	</div>
+</div>
+		<button type="button" class="btn btn-success btn-lg" id="printButton">
+						Print
+			<span class="glyphicon glyphicon-print"></span>
+		</button>
+	
 	<script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")?@System.currentTimeMillis"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/jquery.PrintArea.js")?@System.currentTimeMillis"></script>
 
 	<script>
 
@@ -75,6 +82,10 @@
 			// Add bubble size to ProgressBar
 			$(CARDS).each(function() {
 				window.progressBar.add(this);
+			});
+			$('#printButton').click(function() {
+				$('#printArea').printArea();
+				return false;
 			});
 		});
 
