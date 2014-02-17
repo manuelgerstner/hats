@@ -1,57 +1,72 @@
 @(hatElapsedTime:List[(String, Long)], cards: List[Card], hat: Hat, buckets: List[Bucket], session: ThinkingSession)
 @import models._
 
-@main("Dashboard", null) {
-<div id="printArea">
-	<div class="row">
-		<div class="col-md-12">
-			<h1>@session.title - Summary and Statistics</h1>
-		</div>
-	</div>
+@main((session.title + " | Summary"), null) {
 
-	<div class="row">
-		<div class="col-md-12">
-			<h3><span class="glyphicon glyphicon-road"></span> Progress Outline</h3>
-			<div class="well" id="progressBar">
-				@progressbar.render
+	<div id="dashboard">
+		<div class="row">
+			<div class="col-md-8">
+				<h1 class="pull-left">@session.title - Summary and Statistics</h1>
 			</div>
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-md-12" id="buckets" class="well">
-			<h3><span class="glyphicon glyphicon-inbox"></span> Cards and Buckets</h3>
-			<div class="well" id="cardsAndBuckets">
-			</div>
-		</div>
-
-		<div class="col-md-6" >
-			<div style="padding-right: 8px;">
-				<h3><span class="glyphicon glyphicon-list-alt"></span> Card Count per User</h3>
-				<div class="well">
-					<div id="barchart" style="height: 400px;"></div>
-				</div>
-			</div>
-		</div>
-		
-
-		<div class="col-md-6">
-			<div style="padding-left: 8px;">
-				<h3><span class="glyphicon glyphicon-time"></span> Time Spent in each Hat</h3>
-				<div class="well">
-					<div id="donutchart" style="height: 400px;"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
-		<button type="button" class="btn btn-success btn-lg" id="printButton">
+			<div class="col-md-4">
+				<div class="pull-right" style="margin-top: 20px;">
+					<button type="button" class="btn btn-success btn-lg" id="printButton">
 						Print
-			<span class="glyphicon glyphicon-print"></span>
-		</button>
+						<span class="glyphicon glyphicon-print"></span>
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<h3><span class="glyphicon glyphicon-road"></span> Progress Outline</h3>
+				<div class="well" id="progressBar">
+					@progressbar.render
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-md-12">
+				<h3><span class="glyphicon glyphicon-inbox"></span> Cards and Buckets</h3>
+				<div class="row" id="buckets-list">
+					<!-- to be filled by handlebars -->
+				</div>
+				<!-- only used for injecting -->
+				<div id="cards-list"></div>
+			</div>
+
+		</div>
+
+		<div class="row">
+
+			<div class="col-md-6" >
+				<div style="padding-right: 8px;">
+					<h3><span class="glyphicon glyphicon-list-alt"></span> Card Count per User</h3>
+					<div class="well">
+						<div id="barchart" style="height: 400px;"></div>
+					</div>
+				</div>
+			</div>
+			
+
+			<div class="col-md-6">
+				<div style="padding-left: 8px;">
+					<h3><span class="glyphicon glyphicon-time"></span> Time Spent in each Hat</h3>
+					<div class="well">
+						<div id="donutchart" style="height: 400px;"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	
-	<script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")?@System.currentTimeMillis"></script>
-	<script type="text/javascript" src="@routes.Assets.at("js/jquery.PrintArea.js")?@System.currentTimeMillis"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/jquery.PrintArea.js")"></script>
+	<script type="text/javascript" src="@routes.Assets.at("js/scripts.js")"></script>
+
+	@handlebars.render
 
 	<script>
 
@@ -77,15 +92,29 @@
 		}
 
 		$(function() {
+
+			//
+			if (typeof BUCKETS !== "undefined" && BUCKETS.length > 0) {
+				$(BUCKETS).each(function() {
+					injectBucket(this);
+				});
+			}
+			// setup initial card setup
+			if (typeof CARDS !== "undefined" && CARDS.length > 0) {
+				$(CARDS).each(function() {
+					// only add cards that have been put into a bucket
+					if (this.bucketId === null) return;
+					injectCard(this);
+					window.progressBar.add(this);
+					addCardToBucket(this)					
+				});
+			}
+
 			drawDonutChart("donutchart");
 			drawBarChart("#barchart");
-			// Add bubble size to ProgressBar
-			$(CARDS).each(function() {
-				window.progressBar.add(this);
-			});
+			
 			$('#printButton').click(function() {
-				$('#printArea').printArea();
-				return false;
+				$('#dashboard').printArea();
 			});
 		});
 
@@ -214,7 +243,7 @@
 				},
 				series: [{
 					name: 'White', // not used
-					// first user 5, second user 3 and so on
+					// first user added 5, second user 3 and so on
 					data: [5, 3, 0, 3],
 					color: colors["white"]
 				}, {

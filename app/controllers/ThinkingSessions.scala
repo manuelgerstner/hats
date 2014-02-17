@@ -173,7 +173,7 @@ object ThinkingSessions extends Controller with UserCookieHandler {
         val url = routes.ThinkingSessions.join(session.id, toHexString(token)).absoluteURL(false)(request)
         val body = new Body(views.txt.email.creator.render(title, url).toString(),
           views.html.email.creator.render(title, url).toString());
-        Mailer.getDefaultMailer().sendMail("Invite to Thinking Session", body, mail);
+        Mailer.getDefaultMailer().sendMail("Your Thinking Session is now Online!", body, mail);
         Logger.debug("Invited Creator " + creator.mail + " to thinking session " + title)
       case None =>
         Logger.info("Creator could not be invited, no mail address found " + title)

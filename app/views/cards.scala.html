@@ -128,6 +128,112 @@
 @handlebars.render
 
 <script type="text/javascript">
+
+	$(function() {
+
+		window.progressBar = new ProgressBar('#progressBar');
+		window.session = false;
+		// default socket eventData json, will be reused but never overwritten
+		window.eventData = {
+			thinkingSessionId: SESSION_ID,
+			userId: USER_ID,
+			hat: HAT
+		};
+
+
+		if (typeof BUCKETS !== "undefined" && BUCKETS.length > 0) {
+			$(BUCKETS).each(function() {
+				injectBucket(this);
+			});
+		}
+		// setup initial card setup
+		if (typeof CARDS !== "undefined" && CARDS.length > 0) {
+			$(CARDS).each(function() {
+				injectCard(this);
+				if (HAT === "blue" && this.bucketId !== null) {
+					addCardToBucket(this)
+				}
+			});
+		}
+
+
+		$('#modal-button').click(function() {
+			/* new user? */
+			var isNewUser = (USER_NAME === "New User");
+			/* force new user to enter name */
+			if (isNewUser) {
+				var name = $('#modal-username');
+				if (name.val() === "") {
+					name.parent().addClass('has-error');
+				} else {
+					jsRoutes.controllers.Users.saveName().ajax({
+						data : {
+							"name" : name.val()
+						},
+						success : function() {
+							USER_NAME = name.val();
+							name.parent().removeClass('has-error');
+							$('#first-time').remove();
+							$('#hatchange-modal').modal('hide');
+						}
+					});
+				}
+			} else {
+				$('#hatchange-modal').modal('hide');
+			}
+		});
+		
+		$("#btnAddCard").click(function() {
+			var newCard = $.extend({}, eventData, {
+				"content" : $("#content").val(),
+				"username" : USER_NAME
+			});
+			window.session.call(CALL_URI + "#addCard", newCard);
+			// store 
+			CARDS.push(newCard);
+		});
+
+		$('#indicate-ready').click(function() {
+			window.session.call(CALL_URI + "#moveHat", eventData);
+		});	
+
+
+		$(document).on('click', '.addbucket', function() {
+			window.session.call(CALL_URI + "#addBucket", window.eventData);
+		});
+
+		$(document).on('blur', '.bucketname', function() {
+			window.session.call(CALL_URI + "#renameBucket", $.extend({}, eventData, {
+				name: $(this).val(),
+				bucketId: $(this).data('bucketid')
+			}));
+		});
+		$(document).on('click', 'a.fancybox', function(e) {
+			e.preventDefault();
+			var options = {
+				speed : "slow",
+				type: null
+			}
+			var href = $(this).attr("href");
+			if (!!~href.indexOf("youtube.com/watch?v=")) {
+				$(this).attr("href", href.replace("watch?v=", "v/"));
+				options.type = "swf";
+				//options.swf= {"wmode":'transparent','allowfullscreen':'true'}
+			} else if (/(png|jpe?g)$/.test(href.toLowerCase())) {
+				options.type = "image"
+			} else {
+				options.type = "iframe"; // for marin
+			}
+			$.fancybox.open(this, options);
+		});
+
+		$('#indicate-finish').click(function() {
+			location.href = "/" + SESSION_ID + "/dashboard";
+		});
+
+
+	});
+
 	//set up initial tooltip
 	$(window).load(function() {
 		instantiateSocket();

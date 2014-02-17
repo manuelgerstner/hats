@@ -55,7 +55,9 @@ object Dashboard extends Controller with UserCookieHandler {
         hatName = sHat.name
         //Logger.debug("Hatname::" + hatName)
       }
+      // this doesn't work god damn it
       var endTime = DateTime.now()
+
       val elapsedTime1 = (endTime.getMillis() - creTime.getMillis()) / 1000
       hatNameTime += ((hatName -> elapsedTime1))
       val hatElapsedTime: List[(String, Long)] = hatNameTime.toList

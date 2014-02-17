@@ -146,7 +146,7 @@ ProgressBar.prototype.addTooltips = function(update) {
 		var contributors = "";
 		if (users.length != 0) {
 			var userList = "<li>" + users.join("</li><li>") + "</li>";
-			contributors = '<br/> Contributors: ' + userList;
+			contributors = '<hr/>' + userList;
 		}
 
 		var color = hats[hat];
