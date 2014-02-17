@@ -57,7 +57,6 @@ object ThinkingSessions extends Controller with UserCookieHandler {
         val user = User.byId(userId)
         val eventId = Event.create("userJoin", session, session.currentHat, user, None, None, new Date())
         val event = Event.byId(eventId)
-        WebSocket.publishEvent(event, id)
 
         Redirect(routes.ThinkingSessions.index(id)).withCookies(Cookie(User.idCookie, userId.toString))
       case None =>
