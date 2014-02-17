@@ -16,7 +16,7 @@ GET    /:id/join/:token						controllers.ThinkingSessions.join(id: Long, token: 
 
 # Session control
 GET    /:id                             	controllers.ThinkingSessions.index(id: Long)
-POST   /:id/closeSession                	controllers.ThinkingSessions.closeSession(id: Long)
+GET   /:id/closeSession                	controllers.ThinkingSessions.closeSession(id: Long)
 
 # User controls
 POST   /user/saveName	                	controllers.Users.saveName
