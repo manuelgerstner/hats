@@ -121,6 +121,10 @@ object User {
     }
   }
 
+  def bySession(id: Long): List[User] = {
+    ThinkingSession.userIds(id).map(User.byId(_)).filter(_.isDefined).map(_.get)
+  }
+
   /**
    * some dummy users for dev purposes
    */

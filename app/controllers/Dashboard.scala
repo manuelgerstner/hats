@@ -10,6 +10,11 @@ import models._
 import java.util.Date
 import org.joda.time._
 import scala.collection.mutable.Map
+import play.api.libs.json.JsArray
+import play.api.libs.json.JsString
+import play.api.libs.json.Json
+import play.api.libs.json.JsNumber
+import play.api.libs.json.JsObject
 
 /**
  * Dashboard Controller responsible for showing the summary report
@@ -33,11 +38,11 @@ object Dashboard extends Controller with UserCookieHandler {
       var creTime: DateTime = new DateTime
       var creatTime: DateTime = new DateTime
       var eTime: DateTime = new DateTime
-      val eventList: List[Event] = Event.byThinkingSessionId(id) // all event List for Current Session
+      val events: List[Event] = Event.byThinkingSessionId(id) // all event List for Current Session
       val hats: List[Hat] = Hat.all
       // This will measures the Elapsed time for each hats
       for (sHat <- hats) {
-        for (sEvent <- eventList) {
+        for (sEvent <- events) {
           if ((sHat.id == sEvent.hat.id) && (sEvent.eventType == "createSession")) {
             var crTime: Date = sEvent.time;
             creatTime = new DateTime(crTime)
@@ -55,18 +60,54 @@ object Dashboard extends Controller with UserCookieHandler {
         hatName = sHat.name
         //Logger.debug("Hatname::" + hatName)
       }
-      // this doesn't work god damn it
-      var endTime = DateTime.now()
+      var endTime = events.filter((e: Event) => e.eventType == EventType.closeSession).headOption match {
+        case Some(event) => new DateTime(event.time)
+        case None        => DateTime.now()
+      }
+      //  xAxis: {
+      //		categories: ['User 1', 'User 2', 'User 3', 'User 4']
+      //	},
+      val users: List[User] = User.bySession(id);
+
+      val userJson = JsArray(
+        users.map((u: User) => JsString(u.name))
+      )
+
+      def sortCardsByHat(hats: List[Hat], cards: List[Card]): List[(Hat, List[Card])] = {
+        hats match {
+          case h :: hs => (h, cards.filter(_.hat.name == h.name)) :: sortCardsByHat(hs, cards.filterNot(_.hat.name == h.name))
+          case Nil     => Nil
+        }
+      }
+
+      def countUserCards(users: List[User], cards: List[Card]): List[Int] = {
+        users match {
+          case u :: us => cards.count(_.creator.id == u.id) :: countUserCards(us, cards.filterNot(_.creator.id == u.id))
+          case Nil     => Nil
+        }
+      }
+
+      val cards = Card.byThinkingSession(id)
+      val hatz: List[Hat] = HatFlow.defaultHatFlow.map((hf: HatFlow) => Hat.byId(hf.hat).get)
+      val sortedCards: List[(Hat, List[Card])] = sortCardsByHat(hatz, cards)
+      val seriesJson = JsArray(sortedCards.map(
+        (x) => Json.obj(
+          "name" -> x._1.name,
+          "data" -> JsArray(countUserCards(users, x._2).map(JsNumber(_))),
+          "colorKey" -> x._1.name.toLowerCase
+        )
+      ))
 
       val elapsedTime1 = (endTime.getMillis() - creTime.getMillis()) / 1000
       hatNameTime += ((hatName -> elapsedTime1))
       val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
       val bucketList: List[Bucket] = Bucket.byThinkingSessionId(id);
-      Ok(views.html.dashboard(hatElapsedTime, Card.byThinkingSession(id), sessionOption.get.currentHat, bucketList, sessionOption.get))
+      Ok(views.html.dashboard(hatElapsedTime, Card.byThinkingSession(id), sessionOption.get.currentHat, bucketList, sessionOption.get, Json.stringify(userJson), Json.stringify(seriesJson)))
     } else {
       Unauthorized
     }
   }
+
   /**
    * Return List of Hats which is a List of Users along with card numbers for the current session
    */

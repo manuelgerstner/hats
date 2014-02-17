@@ -1,5 +1,7 @@
-@(hatElapsedTime:List[(String, Long)], cards: List[Card], hat: Hat, buckets: List[Bucket], session: ThinkingSession)
+@(hatElapsedTime:List[(String, Long)], cards: List[Card], hat: Hat, buckets: List[Bucket], session: ThinkingSession, userJson: String, seriesJson: String)
 @import models._
+@import play.api.libs.json.JsObject
+@import play.api.libs.json.JsArray
 
 @main((session.title + " | Summary"), null) {
 
@@ -75,6 +77,9 @@
 		var BUCKETS = @Html(Bucket.listToJson(buckets).toString);
 		var HAT = "@hat.name.toLowerCase";
 		window.progressBar = new ProgressBar('#progressBar');
+
+		var scalaUsers = @Html(userJson)
+		var scalaSeries = @Html(seriesJson)
 
 		// generic colors
 		var colors = {

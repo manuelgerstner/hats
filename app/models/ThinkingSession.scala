@@ -191,7 +191,7 @@ object ThinkingSession {
           select user 
           from participating 
           where thinking_session = {sessionId}
-          """").on(
+          """).on(
         'sessionId -> sessionId)
         .as(get[Long]("user") *)
     }
@@ -215,7 +215,7 @@ object ThinkingSession {
           select count(*) as num
           from participating 
           where thinking_session = {sessionId}
-          """").on(
+          """).on(
         'sessionId -> sessionId)
         .as(get[Int]("num").single)
     }
@@ -231,7 +231,7 @@ object ThinkingSession {
           select count(*) as num
           from participating 
           where thinking_session = {sessionId} and ready = 1
-          """").on(
+          """).on(
         'sessionId -> sessionId)
         .as(get[Int]("num").single)
     }
