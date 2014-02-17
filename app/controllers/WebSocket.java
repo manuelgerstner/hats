@@ -23,7 +23,6 @@ import ws.wamplay.controllers.WAMPlayServer;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 @URIPrefix("http://sixhats.com/cards")
@@ -34,6 +33,7 @@ public class WebSocket extends WAMPlayContoller {
 	static Option<Bucket> noBucket = scala.Option.apply(null);
 	static Option<Card> noCard = scala.Option.apply(null);
 	static Option<User> noUser = scala.Option.apply(null);
+	static Option<User> noHat = scala.Option.apply(null);
 
 	public static String getTopicName(long id) {
 		return "thinkingSession_" + id;
@@ -150,33 +150,21 @@ public class WebSocket extends WAMPlayContoller {
 
 	}
 
-	public static void userJoined(String sessionId, JsonNode[] args)
+	public static void userJoined(User user, long thinkingSessionId)
 			throws JsonProcessingException, IOException {
-		JsonNode eventData = new ObjectMapper().readTree(args[0].asText()).get(
-				"eventData");
-		long thinkingSessionId = eventData.get("thinkingSession").asLong();
-		Hat hat = Hat.byName(eventData.get("hat").asText());
-		long userId = eventData.get("userId").asLong();
-		Option<User> user = User.byId(userId);
-
-		if (User.byId(userId).isDefined()
-				&& ThinkingSession.byId(thinkingSessionId).isDefined()) {
-			ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
-					.get();
-			long eventId = Event.create(EventType.userJoin(), tSession, hat,
-					user, noCard, noBucket, new Date());
-			Option<Event> event = Event.byId(eventId);
-
-			if (event.isDefined()) {
-				publishEvent(event.get(), thinkingSessionId);
-			} else {
-				JsonNode error = Json.newObject();
-				((ObjectNode) error).put("error", "500");
-				WAMPlayServer.publish(String.valueOf(thinkingSessionId), error);
-			}
+		ThinkingSession tSession = ThinkingSession.byId(thinkingSessionId)
+				.get();
+		Option<User> userOpt = scala.Option.apply(user);
+		long eventId = Event.create(EventType.userJoin(), tSession,
+				tSession.currentHat(), userOpt, noCard, noBucket, new Date());
+		Option<Event> event = Event.byId(eventId);
+		if (event.isDefined()) {
+			publishEvent(event.get(), thinkingSessionId);
+		} else {
+			JsonNode error = Json.newObject();
+			((ObjectNode) error).put("error", "500");
+			WAMPlayServer.publish(String.valueOf(thinkingSessionId), error);
 		}
-
-		// hat color
 	}
 
 	@onRPC("#moveHat")
