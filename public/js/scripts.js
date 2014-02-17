@@ -1,5 +1,3 @@
-// get websocket up and running
-
 function instantiateSocket() {
 	ab.connect(WSURI, function(session) {
 		// store session
@@ -29,7 +27,7 @@ function setSessionData() {
 
 function onEvent(topic, event) {
 
-	console.log("received event %s, data: ", event.eventType, event.eventData);
+	//console.log("received event %s, data: ", event.eventType, event.eventData);
 
 	// this is dirty.
     if (event.eventType === "addCard") {
@@ -110,9 +108,8 @@ function prepareBlueHat() {
 
 function injectCard(card) {
 
-	if (card.content.trim() === "")
-		return;
-	card.content = linkify(card.content);
+	// insert a href etc to card
+	card = linkify(card);
 
 	var template = Handlebars.compile($('#card-template').html());
 	var compiled = template(card);
@@ -150,7 +147,7 @@ function addCardToBucket(eventData) {
 		bucketId = ''+eventData.bucketId;
 	var card = $('#card-'+cardId), bucket = $('#bucket-'+bucketId);
 
-	console.log(card, bucket);
+	//console.log(card, bucket);
 
 	// kill placeholder
 	bucket.find(".placeholder").remove();
@@ -165,6 +162,16 @@ function addCardToBucket(eventData) {
 
 function feedUserJoin(user) {
 	var userGlyph = '<span class="glyphicon glyphicon-user"></span>';
-	$('#feed').append('<li>' + userGlyph + ' User <strong>' + user.username + '</strong> joined.</li>');
-	$('#feed').children().last().effect('highlight',{}, 3000);
+	$('#feed').prepend('<li>' + userGlyph + ' User <strong>' + user.username + '</strong> joined.</li>');
+	$('#feed').children().first().effect('highlight',{}, 3000);
 }
+
+Handlebars.registerHelper('shortLink', function(str) {
+	// strip protocol
+	str =  str.split("//")[1];
+	// we only want 12 chars of the link, plus "..." = 3 chars = 15 max.
+	if (str.length > 15) {
+		str = str.substr(0,12) + "...";
+	}
+    return new Handlebars.SafeString(str)
+});

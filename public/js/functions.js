@@ -28,8 +28,25 @@ function formatTime(secs) {
 	return str.reverse().join(" ");
 }
 
-function linkify(text) {
+function linkify(card) {
+
 	// only use direct jp(e)g/png links or youtube links
-	var exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
-	return text.replace(exp, "<a class='fancybox' href='$1'>$1</a>");
+	var re = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig;
+	var matches = card.content.match(re);
+
+	// no url found, just return card as it is
+	if (matches === null) return card;
+
+	var url = matches[0];
+	// strip url from card
+	card.content = card.content.replace(url, "<br/>");
+	// if it's an image, append additional field
+	if (/(png|jpe?g)$/.test(url.toLowerCase())) {
+		card.imageUrl = url;
+	} else {
+		// no image link, just display text
+		card.url = url;
+	}
+
+	return card;
 }

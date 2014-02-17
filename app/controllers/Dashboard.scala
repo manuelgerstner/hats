@@ -62,7 +62,7 @@ object Dashboard extends Controller with UserCookieHandler {
       }
       var endTime = events.filter((e: Event) => e.eventType == EventType.closeSession).headOption match {
         case Some(event) => new DateTime(event.time)
-        case None        => DateTime.now()
+        case None => DateTime.now()
       }
       //  xAxis: {
       //		categories: ['User 1', 'User 2', 'User 3', 'User 4']
@@ -70,20 +70,19 @@ object Dashboard extends Controller with UserCookieHandler {
       val users: List[User] = User.bySession(id);
 
       val userJson = JsArray(
-        users.map((u: User) => JsString(u.name))
-      )
+        users.map((u: User) => JsString(u.name)))
 
       def sortCardsByHat(hats: List[Hat], cards: List[Card]): List[(Hat, List[Card])] = {
         hats match {
           case h :: hs => (h, cards.filter(_.hat.name == h.name)) :: sortCardsByHat(hs, cards.filterNot(_.hat.name == h.name))
-          case Nil     => Nil
+          case Nil => Nil
         }
       }
 
       def countUserCards(users: List[User], cards: List[Card]): List[Int] = {
         users match {
           case u :: us => cards.count(_.creator.id == u.id) :: countUserCards(us, cards.filterNot(_.creator.id == u.id))
-          case Nil     => Nil
+          case Nil => Nil
         }
       }
 
@@ -94,15 +93,14 @@ object Dashboard extends Controller with UserCookieHandler {
         (x) => Json.obj(
           "name" -> x._1.name,
           "data" -> JsArray(countUserCards(users, x._2).map(JsNumber(_))),
-          "colorKey" -> x._1.name.toLowerCase
-        )
-      ))
+          "colorKey" -> x._1.name.toLowerCase)))
 
       val elapsedTime1 = (endTime.getMillis() - creTime.getMillis()) / 1000
       hatNameTime += ((hatName -> elapsedTime1))
       val hatElapsedTime: List[(String, Long)] = hatNameTime.toList
       val bucketList: List[Bucket] = Bucket.byThinkingSessionId(id);
-      Ok(views.html.dashboard(hatElapsedTime, Card.byThinkingSession(id), sessionOption.get.currentHat, bucketList, sessionOption.get, Json.stringify(userJson), Json.stringify(seriesJson)))
+      Ok(views.html.dashboard(hatElapsedTime, Card.byThinkingSession(id), sessionOption.get.currentHat, bucketList, sessionOption.get,
+        Json.stringify(userJson), Json.stringify(seriesJson), userOption.get))
     } else {
       Unauthorized
     }

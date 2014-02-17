@@ -140,6 +140,10 @@
 			hat: HAT
 		};
 
+		if (CREATOR === false) {
+			$('#indicate-ready, #indicate-finish').remove();
+		}
+
 
 		if (typeof BUCKETS !== "undefined" && BUCKETS.length > 0) {
 			$(BUCKETS).each(function() {
@@ -149,7 +153,7 @@
 		// setup initial card setup
 		if (typeof CARDS !== "undefined" && CARDS.length > 0) {
 			$(CARDS).each(function() {
-				injectCard(this);
+				injectCard(linkify(this));
 				if (HAT === "blue" && this.bucketId !== null) {
 					addCardToBucket(this)
 				}
@@ -168,7 +172,8 @@
 				} else {
 					jsRoutes.controllers.Users.saveName().ajax({
 						data : {
-							"name" : name.val()
+							"name" : name.val(),
+							"thinkingSessionId" : SESSION_ID
 						},
 						success : function() {
 							USER_NAME = name.val();
@@ -182,10 +187,13 @@
 				$('#hatchange-modal').modal('hide');
 			}
 		});
-		
+
 		$("#btnAddCard").click(function() {
+			var content = $("#content").val();
+			if (content.trim() === "") return; // no empty cards.
+
 			var newCard = $.extend({}, eventData, {
-				"content" : $("#content").val(),
+				"content" : content,
 				"username" : USER_NAME
 			});
 			window.session.call(CALL_URI + "#addCard", newCard);
@@ -210,19 +218,24 @@
 		});
 		$(document).on('click', 'a.fancybox', function(e) {
 			e.preventDefault();
+			
 			var options = {
 				speed : "slow",
 				type: null
-			}
-			var href = $(this).attr("href");
-			if (!!~href.indexOf("youtube.com/watch?v=")) {
-				$(this).attr("href", href.replace("watch?v=", "v/"));
-				options.type = "swf";
-				//options.swf= {"wmode":'transparent','allowfullscreen':'true'}
-			} else if (/(png|jpe?g)$/.test(href.toLowerCase())) {
-				options.type = "image"
+			};
+
+			var $this = $(this);
+
+			if ($this.hasClass("image")) {
+				options.type = "image";
 			} else {
-				options.type = "iframe"; // for marin
+				var href = $this.attr("href");
+				if (!!~href.indexOf("youtube.com/watch?v=")) {
+					$(this).attr("href", href.replace("watch?v=", "v/"));
+					options.type = "swf";
+				} else {
+					options.type = "iframe";
+				}
 			}
 			$.fancybox.open(this, options);
 		});

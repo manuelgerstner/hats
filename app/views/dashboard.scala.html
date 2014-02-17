@@ -1,4 +1,4 @@
-@(hatElapsedTime:List[(String, Long)], cards: List[Card], hat: Hat, buckets: List[Bucket], session: ThinkingSession, userJson: String, seriesJson: String)
+@(hatElapsedTime:List[(String, Long)], cards: List[Card], hat: Hat, buckets: List[Bucket], session: ThinkingSession, userJson: String, seriesJson: String, user: User)
 @import models._
 @import play.api.libs.json.JsObject
 @import play.api.libs.json.JsArray
@@ -70,16 +70,15 @@
 
 	@handlebars.render
 
-	<script>
+	<script type="text/javascript">
 
 		var SESSION_ID = @session.id;
 		var CARDS = @Html(Card.listToJson(cards).toString);
 		var BUCKETS = @Html(Bucket.listToJson(buckets).toString);
+		var USER_ID = @user.id;
 		var HAT = "@hat.name.toLowerCase";
 		window.progressBar = new ProgressBar('#progressBar');
 
-		var scalaUsers = @Html(userJson)
-		var scalaSeries = @Html(seriesJson)
 
 		// generic colors
 		var colors = {
@@ -93,7 +92,7 @@
 
 		// array_values()
 		function colorValues() {
-			return $.map(colors, function(e,name) { return name ;});
+			return $.map(colors, function(e,name) { return e ;});
 		}
 
 		$(function() {
@@ -101,15 +100,18 @@
 			//
 			if (typeof BUCKETS !== "undefined" && BUCKETS.length > 0) {
 				$(BUCKETS).each(function() {
+					if (this.name === "") this.name = "Unnamed Bucket";
 					injectBucket(this);
 				});
+				// TODO: don't render empty buckets.
 			}
 			// setup initial card setup
 			if (typeof CARDS !== "undefined" && CARDS.length > 0) {
 				$(CARDS).each(function() {
 					// only add cards that have been put into a bucket
 					if (this.bucketId === null) return;
-					injectCard(this);
+					injectCard(linkify(this));
+
 					window.progressBar.add(this);
 					addCardToBucket(this)					
 				});
@@ -201,17 +203,26 @@
 			});
 		}
 
+		var series = @Html(seriesJson);
+		function prepareSeries(s) {
+			$(s).each(function() {
+				this.color = colors[this.colorKey];
+			});
+			return s.reverse();
+		}
+		
 		function drawBarChart(selector) {
 			$(selector).highcharts({
 				chart: {
 					type: 'column',
-					backgroundColor: "#f5f5f5" // bootstrap well
+					backgroundColor: "#f5f5f5", // bootstrap well
+					colors: colorValues()
 				},
 				title: {
 					text: ""
 				},
 				xAxis: {
-					categories: ['User 1', 'User 2', 'User 3', 'User 4']
+					categories: @Html(userJson)
 				},
 				yAxis: {
 					min: 0,
@@ -246,7 +257,9 @@
 
 					}
 				},
-				series: [{
+				series: prepareSeries(series)
+/*
+				[{
 					name: 'White', // not used
 					// first user added 5, second user 3 and so on
 					data: [5, 3, 0, 3],
@@ -271,7 +284,7 @@
 					name: 'Blue',
 					data: [2, 4, 5, 6],
 					color: colors["blue"]
-				}].reverse() // render white hat first
+				}].reverse() // render white hat first*/
 			});
 		}
 
