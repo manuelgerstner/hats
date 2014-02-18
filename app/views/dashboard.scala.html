@@ -6,7 +6,9 @@
 @main((session.title + " | Summary"), null) {
 
 	<div id="dashboard">
+
 		<div class="row">
+			
 			<div class="col-md-8">
 				<h1 class="pull-left">@session.title - Summary and Statistics</h1>
 			</div>
@@ -30,18 +32,6 @@
 		</div>
 
 		<div class="row">
-			<div class="col-md-12">
-				<h3><span class="glyphicon glyphicon-inbox"></span> Cards and Buckets</h3>
-				<div class="row" id="buckets-list">
-					<!-- to be filled by handlebars -->
-				</div>
-				<!-- only used for injecting -->
-				<div id="cards-list"></div>
-			</div>
-
-		</div>
-
-		<div class="row">
 
 			<div class="col-md-6" >
 				<div style="padding-right: 8px;">
@@ -61,7 +51,24 @@
 					</div>
 				</div>
 			</div>
+
 		</div>
+
+
+
+		<div class="row">
+			<div class="col-md-12">
+				<h3><span class="glyphicon glyphicon-inbox"></span> Cards and Buckets</h3>
+				<div class="row" id="buckets-list">
+					<!-- to be filled by handlebars -->
+				</div>
+				<!-- only used for injecting -->
+				<div id="cards-list"></div>
+			</div>
+
+		</div>
+
+
 	</div>
 	
 	<script type="text/javascript" src="@routes.Assets.at("js/ProgressBar.js")"></script>
