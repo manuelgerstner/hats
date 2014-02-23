@@ -172,7 +172,7 @@ function feedUserJoin(user) {
 
 function feedMoveHat(hat) {
 	var hatGlyph = '<span class="glyphicon glyphicon-tag"></span>';
-	$('#feed').append('<hr/><li>' + hatGlyph + ' The group is now in the <strong>' + hat + '</strong> hat.</li>');
+	$('#feed').prepend('<li>' + hatGlyph + ' The group is now wearing the <strong>' + hat + '</strong> hat.</li><hr/>');
 	$('#feed').children().last().effect('highlight',{}, 3000);
 }
 
