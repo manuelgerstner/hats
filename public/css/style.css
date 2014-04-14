@@ -34,13 +34,18 @@ body.white {
 	padding: 15px 0;
 }
 
+ul {
+	list-style-type: none;
+	padding: 0px;
+	margin: 0px;
+}
+
 #hat-cards {
 	padding-right: 0;
 }
 #hat-feed {
 	margin: 0;
 }
-
 #card-create {
 	padding-right: 15px;
 }
@@ -50,23 +55,39 @@ body.white {
 	-webkit-column-count: 1;
 	-webkit-column-gap: 10px;
 	-webkit-column-fill: auto;
-	-moz-column-count: 3;
+	-moz-column-count: 1;
 	-moz-column-gap: 10px;
 	-moz-column-fill: auto;
-	column-count: 3;
+	column-count: 1;
 	column-gap: 15px;
 	column-fill: auto;
 	/*position: relative;*/
 }
+
+div.bucket {
+	background-color: #fcf8f2;
+	border-top: 3px solid #f0ad4e;
+	padding: 10px;
+}
+.addbucket {
+	margin-right: 15px;
+}
+div.bucket div.cards {
+	border : 1px dotted #aaaaaa;
+	padding: 10px;
+	margin: 10px 0;
+	min-height: 30px;
+}
+.dropit .cards { background: rgba(92, 184, 92, 0.41); }
+
 /**
  * Card colors:
  * Cards are only colored when they're shown in their corresponding hat or when they
  * are shown in the Blue hat. By default, cards will be white.
  */
-
 div.card {
 	display: inline-block;
-	background: #FEFEFE;
+	background-color: #FEFEFE;
 	border-color: #FAFAFA;
 	border-width: 2px;
 	border-style: solid;
@@ -78,54 +99,67 @@ div.card {
 	column-break-inside: avoid;
 	padding: 10px;
 	opacity: 0.3;
-	-webkit-transition: all .2s ease;
-	-moz-transition: all .2s ease;
-	-o-transition: all .2s ease;
-	transition: all .2s ease;
 	white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
-	white-space: -pre-wrap;      /* Opera 4-6 */
-	white-space: -o-pre-wrap;    /* Opera 7 */
-	white-space: pre-wrap;       /* css-3 */
-	word-wrap: break-word;       /* Internet Explorer 5.5+ */
+	white-space: -pre-wrap;      			/* Opera 4-6 */
+	white-space: -o-pre-wrap;    			/* Opera 7 */
+	white-space: pre-wrap;       			/* css-3 */
+	word-wrap: break-word;       			/* Internet Explorer 5.5+ */
 	word-break: break-all;
 	white-space: normal;
+	width: 180px;
+	vertical-align: top;
 }
-div.card:hover {
+
+div.card a {
+	color: inherit;
+	text-decoration: underline;
+	font-style: italic;
+}
+
+#dashboard .addbucket {
+	display: none;
+}
+
+div.card:hover, #dashboard div.card {
 	opacity: 1;
 }
-div.card.draggable {
+#hat.blue div.card {
 	cursor: move;
 }
 div.card span.name {
 	font-weight: bold;
 	font-style: italic;
 }
-#hat.blue div.card.blue {
+#hat.blue div.card.blue, #dashboard div.card.blue {
 	background-color: #36bcec;
 	border-color: blue;
 	opacity: 1;
 }
-#hat.blue div.card.white, #hat.white div.card.white {
+#hat.blue div.card.white, #hat.white div.card.white, #dashboard div.card.white {
 	background-color: #fff;
 	opacity: 1;
 }
-#hat.blue div.card.yellow, #hat.yellow div.card.yellow {
+#hat.blue div.card.yellow, #hat.yellow div.card.yellow, #dashboard div.card.yellow {
 	background-color: #F0D850;
 	border-color: #dabd16;
 	opacity: 1;
 }
-#hat.blue div.card.green, #hat.green div.card.green {
+#hat.blue div.card.green, #hat.green div.card.green, #dashboard div.card.green {
 	background-color: #5cb847;
 	opacity: 1;
 }
-#hat.blue div.card.black, #hat.black div.card.black {
+#hat.blue div.card.black, #hat.black div.card.black, #dashboard div.card.black {
 	background-color: #051a1a;
 	color: white;
 	opacity: 1;
 }
-#hat.blue div.card.red, #hat.red div.card.red {
+#hat.blue div.card.red, #hat.red div.card.red, #dashboard div.card.red {
 	background-color: #c25e3d;
 	border-color: #994225;
 	color: white;
 	opacity: 1;
+}
+
+#session-topic {
+	color: #000000;
 }

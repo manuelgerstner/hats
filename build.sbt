@@ -1,13 +1,17 @@
-name := "SixThinkingHats"
-
-version := "0.1-SNAPSHOT"
+import play.Project._
 
 libraryDependencies ++= Seq(
+  javaCore,
   jdbc,
   anorm,
-  cache
+  cache,
+  "com.typesafe" %% "play-plugins-mailer" % "2.1-RC2"
 )
 
-scalacOptions += " -feature"
+sources in doc in Compile := List()
+
+scalacOptions += "-feature"
+
+scalacOptions += "-language:postfixOps"
 
 play.Project.playScalaSettings

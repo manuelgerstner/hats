@@ -1,132 +1,187 @@
-// Scrolls the view down to the config pane on the frontpage
-$.fn.scrollView = function() {
-	return this.each(function() {
-		$('html, body').animate({
-			scrollTop: $(this).offset().top - 10
-		}, 1000);
-	});
-};
+// get websocket up and running
 
+function instantiateSocket() {
+	ab.connect(WSURI, function(session) {
+		// store session
+		window.session = session;
+		session.subscribe(SESSION_ID.toString(), onEvent);
+	},
 
-$(function() {
+	// WAMP session is gone
+	function(code, reason) {
+		if (confirm('an error occured, reload?'))
+			location.reload();
+	},
+	// additional options
+	{
+		skipSubprotocolCheck : true,
+		skipSubprotocolAnnounce : true
+	}); // Important! Play rejects all subprotocols for some reason...
+}
 
-	// only show first hat
-	if (typeof HAT !== "undefined") {
-		$('circle:not(.' + HAT + ')').hide();
-	}
-	
-	var progressBar = new ProgressBar('#progressBar');
-	
-	
-	// initialize tooltips
-	$('.tooltipster').tooltipster();
+function setSessionData() {
+    $('#session-info').html('Session time: ' + timeSince(CREATION_TIME));
+    var date = $.datepicker.formatDate('dd/mm/yy', new Date(CREATION_TIME));
+    $('#feed-creation-time').html('<span class="glyphicon glyphicon-play-circle"></span> Session was created on <strong>' + date + '</strong> by <strong>' + CREATOR_NAME) + '</strong>';
+}
 
-	// setup initial card setup
-	if (typeof CARDS !== "undefined" && CARDS.length > 0) {
-		$(CARDS).each(function() {
-			addCard(this);
-			progressBar.add(this);
-		});
-		
-		// initial drag
-		makeDraggable();
-	}
+// debugging handler for websocket events coming in
 
-	
-	$('#card-form').ajaxForm({
-		dataType: "json",
-		type: "post",
-		//beforeSubmit: showRequest,
-		success: function(card) {
-			if (card.error === true) {
-				alert(card.message);
-				return;
-			}
-			addCard(card); // post-submit callback
-			progressBar.add(card);
-		}
-	});
+function onEvent(topic, event) {
 
-	$('#indicate-ready').click(function(){
-		jsRoutes.controllers.ThinkingSessions.restChangeHat(SESSION_ID).ajax({
-			dataType: "json",
-			type: "post",
-			success: function(data) {
-				if (data.error === true) {
-					alert(data.message);
-					return;
-				}
-				$('circle.' + data.hat).show();
-				moveTo(data.hat);
-			}
-		});
-	});
+	//console.log("received event %s, data: ", event.eventType, event.eventData);
 
-
-	$('.tooltipster').tooltipster();
-	$('#tokenfield').tokenfield();
-	
-	$('#moveToConfig-button').click(function() {
-        $("#config-panel").scrollView();
-	});
-	$('#moveToInvite-button').click(function() {
-	        $("#invite-panel").scrollView();
-	});
-	
-	$('#start-button').click(function() {
-		$('#control-panel').removeClass('hidden');
-		$("#control-panel").scrollView();
-	});
-	$('#help-button').click(function() {
-		$('body').chardinJs('start');
-	});
-	
-});
-
-function makeDraggable() {
-	$('#cards-list div.card').draggable({
-		containment: "#cards-list",
-		cursor: "move",
-		stack: '.draggable',
-		start: function() {
-			$(this).siblings().css("z-index", 50);
-			$(this).css("z-index", 100);
-		}
-	});
-	
-	if (HAT !== "blue") {
-		$('#cards-list div.card').draggable('disable');
-	} else {
-		$('#cards-list div.card').draggable('enable');
-	}
+	// this is dirty.
+    if (event.eventType === "addCard") {
+        injectCard(event.eventData);
+    } else if (event.eventType === "moveHat") {
+        moveTo(event.eventData.hat);
+    } else if (event.eventType === "addBucket") {
+    	injectBucket(event.eventData);
+    } else if (event.eventType === "renameBucket") {
+    	renameBucket(event.eventData);
+    } else if (event.eventType === "addCardToBucket") {
+    	addCardToBucket(event.eventData);
+    } else if (event.eventType === "userJoin") {
+    	feedUserJoin(event.eventData);
+    }
 }
 
 function moveTo(hat) {
-	// change hat class of div
+	// CSS changes for mood
 	$('#hat').removeClass().addClass(hat.toLowerCase());
 	$('body').removeClass().addClass(hat.toLowerCase());
 	$('#form-hat').val(hat.toLowerCase());
-	
-	HAT = hat.toLowerCase();
 
-	makeDraggable();
+	// change tooltip text for input
+	var modal = $('#hatchange-modal');
+	$('.hat', modal).html(hat.toLowerCase());
+	$('.message', modal).html(TOOLTIPS[hat.toLowerCase()]);
+
+	modal.modal();
+
+	// overwrite global HAT var
+	HAT = hat.toLowerCase();
+	window.eventData.hat = HAT;
+
+	location.hash = HAT;
+
+	if (HAT === "blue") {
+		prepareBlueHat();
+	}
+
+	window.progressBar.render();
+
+	feedMoveHat(HAT);
+
 }
 
-function addCard(card, effect) {
-	
-	/**
-	 * card json: {"id":5, "hat": "Green", "content": "card content",
-	 * "username":"username"}
-	 */
+function injectBucket(bucket) {
+	var template = Handlebars.compile($('#bucket-template').html());
+	var compiled = template(bucket).toString(); // workaround   
+	// workaround
+
+	// if name
+
+	$('#buckets-list').append(compiled).find('div.bucket').droppable(options.droppable);
+}
+
+
+function renameBucket(eventData) {
+	var bucketId = ''+eventData.bucketId,
+		bucketName = eventData.bucketName;
+	var bucket = $('div#bucket-' + bucketId)
+	bucket.find("h4").removeClass("hide").text(bucketName);
+	bucket.find("input").remove();
+}
+
+function enableDragDrop() {
+	$('#cards-list div.card').draggable(options.draggable);
+}
+
+function prepareBlueHat() {
+	enableDragDrop();
+	// toggle buttons
+	$('#indicate-finish').removeClass('hide');
+	$('#indicate-ready').addClass('hide');
+
+	// enable buckets here
+	$('#buckets').removeClass("hide"); 
+}
+
+
+function injectCard(card) {
+
+	// insert a href etc to card
+	card = linkify(card);
 
 	var template = Handlebars.compile($('#card-template').html());
 	var compiled = template(card);
 
 	$('#cards-list').append(compiled);
-
-	//if (effect) markup.effect('highlight', {}, 1000);
-	
 	// reset card content field
 	$('#content').val("");
 	$('#nocardsyet').remove();
+
+	window.progressBar.add(card);
+
+	if (HAT === "blue") {
+		// do this again for all cards (easier than grabbing just added card)
+		enableDragDrop();
+	}
 }
+
+function dropCard(event, ui) {
+	// grab bucket id
+	var bucketId = $(event.target).data('bucketid'),
+		bucket = $(event.target);
+
+	// bind card
+	var card = ui.draggable, cardId = card.data('cardid');
+
+	window.session.call(CALL_URI + "#addCardToBucket", $.extend({}, window.eventData, {
+		cardId: cardId,
+		bucketId: bucketId
+	}));
+}
+
+function addCardToBucket(eventData) {
+
+	var cardId = ''+eventData.cardId,
+		bucketId = ''+eventData.bucketId;
+	var card = $('#card-'+cardId), bucket = $('#bucket-'+bucketId);
+
+	//console.log(card, bucket);
+
+	// kill placeholder
+	bucket.find(".placeholder").remove();
+
+	// css fix
+	card.css("position", "").off(); // unbind all drag shit
+	card.draggable("disable"); // disable further dragging
+	// inject into container
+	bucket.find(".cards").append(card);
+}
+
+
+function feedUserJoin(user) {
+	var userGlyph = '<span class="glyphicon glyphicon-user"></span>';
+	$('#feed').prepend('<li>' + userGlyph + ' User <strong>' + user.username + '</strong> joined.</li>');
+	$('#feed').children().first().effect('highlight',{}, 3000);
+}
+
+function feedMoveHat(hat) {
+	var hatGlyph = '<span class="glyphicon glyphicon-tag"></span>';
+	$('#feed').prepend('<li>' + hatGlyph + ' The group is now wearing the <strong>' + hat + '</strong> hat.</li><hr/>');
+	$('#feed').children().first().effect('highlight',{}, 3000);
+}
+
+Handlebars.registerHelper('shortLink', function(str) {
+	// strip protocol
+	str =  str.split("//")[1];
+	// we only want 12 chars of the link, plus "..." = 3 chars = 15 max.
+	if (str.length > 15) {
+		str = str.substr(0,12) + "...";
+	}
+    return new Handlebars.SafeString(str)
+});

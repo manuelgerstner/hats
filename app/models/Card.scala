@@ -3,11 +3,15 @@ package models
 import anorm._
 import anorm.SqlParser._
 import models._
+import models.forms._
 import play.api.db._
 import play.api.Play.current
 import play.api.libs.json._
 import akka.util.HashCode
 import forms.FormCard
+import scala.language.postfixOps
+import scala.util.Random
+import play.api.Logger
 
 /**
  * Cards models an idea created by a ThinkingSession participant in the course of the 6 Hats process.
@@ -15,31 +19,48 @@ import forms.FormCard
  * it belongs to and of course the content (for now only text)
  * @author Nemo
  */
-case class Card(id: Long, thinkingSession: ThinkingSession, content: String, hat: Hat, creator: User)
+case class Card(
+  id: Long,
+  thinkingSession: ThinkingSession,
+  content: String,
+  hat: Hat,
+  creator: User,
+  bucket: Option[Bucket]) {
+
+  def toJson: JsObject = {
+    Json.obj(
+      "cardId" -> this.id,
+      "hat" -> this.hat.name.toLowerCase,
+      "thinkingSessionId" -> this.thinkingSession.id,
+      "content" -> this.content,
+      "username" -> this.creator.name,
+      "bucketId" -> bucketId)
+  }
+
+  def bucketId: String = bucket match {
+    case Some(b) => b.id.toString
+    case None => null
+  }
+}
 
 object Card {
 
-  def dummy: Card = {
-    Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummyHat, User.dummyUser1);
-  }
+  val dummy: Card = Card(1, ThinkingSession.dummy, "dfsfafsd", Hat.dummy, User.dummy, None);
 
-  /**
-   * id                    	integer NOT NULL DEFAULT nextval('card_id_seq') PRIMARY KEY,
-   * thinking_session       integer NOT NULL REFERENCES thinking_session(id),
-   * content               	text NOT NULL,
-   * hat					integer REFERENCES hat(id),
-   * creator		      	integer REFERENCES `user`(id)
-   */
   /**
    * ORM simple
    */
+  //as(get[Option[String]]("something") ?).getOrElse(None)
   val DBParser = {
     get[Long]("id") ~
       get[Long]("thinking_session") ~
       get[String]("content") ~
       get[Long]("hat") ~
-      get[Long]("creator") map {
-        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId => Card(id, ThinkingSession.getById(thinkingSessionId), content, Hat.getById(hatId), User.getById(creatorId));
+      get[Long]("creator") ~
+      (get[Long]("bucket")?) map {
+        case id ~ thinkingSessionId ~ content ~ hatId ~ creatorId ~ bucketId =>
+          Card(id, ThinkingSession.byId(thinkingSessionId).get, content, Hat.byId(hatId).get,
+            User.byId(creatorId).get, bucketId match { case Some(id) => Bucket.byId(id) case None => None });
       }
   }
 
@@ -48,20 +69,25 @@ object Card {
    */
   def all(): List[Card] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from card").as(Card.DBParser *)
+      SQL("SELECT * FROM card ORDER BY time ASC").as(Card.DBParser *)
     }
   }
 
   /**
    * Get all cards of a given ThinkingSession
    */
-  def getThinkingSessionCards(thinkingSession: ThinkingSession): List[Card] = {
-    getThinkingSessionCards(thinkingSession.id)
+  def byThinkingSession(thinkingSession: ThinkingSession): List[Card] = {
+    byThinkingSession(thinkingSession.id)
   }
 
-  def getThinkingSessionCards(thinkingSessionId: Long): List[Card] = {
+  def byThinkingSession(thinkingSessionId: Long): List[Card] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from card where thinking_session={id}").on(
+      SQL("""
+          select * 
+          from card 
+          where thinking_session={id} 
+          ORDER BY time ASC
+          """).on(
         'id -> thinkingSessionId).as(Card.DBParser *)
     }
   }
@@ -69,13 +95,18 @@ object Card {
   /**
    * Get all cards created by a user
    */
-  def getUserCards(user: User): List[Card] = {
-    getUserCards(user.id)
+  def byUser(user: User): List[Card] = {
+    byUser(user.id)
   }
 
-  def getUserCards(userId: Long): List[Card] = {
+  def byUser(userId: Long): List[Card] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from card where creator = {id}").on(
+      SQL("""
+          SELECT * 
+          FROM card 
+          WHERE creator = {id} 
+          ORDER BY time ASC
+          """).on(
         'id -> userId).as(Card.DBParser *)
     }
   }
@@ -83,54 +114,59 @@ object Card {
   /**
    * Get all cards created by a user in a specific session
    */
-  def getUserCardsInSession(user: User, session: ThinkingSession): List[Card] = {
-    getUserCardsInSession(user.id, session.id)
+  def byUserInSession(user: User, session: ThinkingSession): List[Card] = {
+    byUserInSession(user.id, session.id)
   }
 
-  def getUserCardsInSession(userId: Long, sessionId: Long): List[Card] = {
+  def byUserInSession(userId: Long, sessionId: Long): List[Card] = {
     DB.withConnection { implicit connection =>
-      SQL("select * from card where creator = {userId} and thinking_session ={sessionId}").on(
+      SQL("""
+          SELECT * 
+          FROM card 
+          WHERE creator = {userId} and thinking_session ={sessionId} 
+          ORDER BY time ASC
+          """).on(
         'userId -> userId,
         'sessionId -> sessionId).as(Card.DBParser *)
     }
   }
 
-  /**
-   * Create a new card.
-   * This will return the id of the created card
-   */
-  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User): Int = {
-    create(content, thinkingSession.id, hat.id, creator.id)
+  def byId(id: Long): Option[Card] = {
+    DB.withConnection { implicit connection =>
+      SQL("select * from card where id = {id}").on(
+        'id -> id).as(Card.DBParser *).headOption
+    }
   }
 
   /**
    * Create a new card.
    * This will return the id of the created card
    */
-  def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long): Int = {
+  def create(content: String, thinkingSessionId: Long, hatId: Long, creatorId: Long): Long = {
     DB.withConnection { implicit connection =>
       // create unique id by hashing contents + timestamp
-      val id: Int = (content + thinkingSessionId + hatId + creatorId + System.currentTimeMillis).hashCode
-      SQL("insert into card (id,content,thinking_session,hat,creator) values ({id},{content},{thinkingSessionId},{hat},{creatorId})").on(
-        'id -> id,
-        'content -> content,
-        'thinkingSessionId -> thinkingSessionId,
-        'hat -> hatId,
-        'creatorId -> creatorId).executeUpdate()
+      val id: Long = (content + thinkingSessionId + hatId + creatorId + Random.nextLong + System.currentTimeMillis).hashCode
+      val sql = SQL(
+        """
+          INSERT INTO card (id,content,thinking_session,hat,creator) 
+          VALUES ({id},{content},{thinkingSessionId},{hat},{creatorId})
+          """).on(
+          'id -> id,
+          'content -> content,
+          'thinkingSessionId -> thinkingSessionId,
+          'hat -> hatId,
+          'creatorId -> creatorId)
+      sql.executeUpdate();
       id
     }
   }
 
   /**
-   * Convenience function creating a new Card from a formCard with bound values from a HTML form and the
-   * creating user.
+   * Create a new card.
+   * This will return the id of the created card
    */
-  def create(formCard: FormCard, thinkingSessionId: Long, userId: Long): Int = {
-    create(formCard.content, thinkingSessionId, Hat.getByName(formCard.hat).id, userId)
-  }
-
-  def create(formCard: FormCard, thinkingSession: ThinkingSession, user: User): Int = {
-    create(formCard, thinkingSession.id, user.id)
+  def create(content: String, thinkingSession: ThinkingSession, hat: Hat, creator: User): Long = {
+    create(content, thinkingSession.id, hat.id, creator.id)
   }
 
   /**
@@ -147,18 +183,37 @@ object Card {
     }
   }
 
-  def toJson(card: Card): JsObject = {
-    //case class Card(id: Long, thinkingSessionId: Long, content: String, hat: Hat, creator: User)
-    //{"id":5, "hat": "Green", "content": "card content", "user":"username"}
-    Json.obj(
-      "id" -> card.id,
-      "hat" -> card.hat.name.toLowerCase,
-      "thinkingSessionId" -> card.thinkingSession.id,
-      "content" -> card.content,
-      "username" -> card.creator.name)
+  def listToJson(cards: List[Card]) = {
+    Json.toJson(cards.map(card => card.toJson))
   }
 
-  def listToJson(cards: List[Card]) = {
-    Json.toJson(cards.map(card => Card.toJson(card)))
+  def byOnlyInSession(sessionId: Long): List[Long] = {
+    DB.withConnection { implicit connection =>
+      SQL("""select DISTINCT creator from card where thinking_session ={sessionId}""").on(
+        'sessionId -> sessionId).as(long("creator") map { case creator => creator } *)
+    }
   }
+
+  def byCardsforUser(sessionId: Long, hatID: Long, creatorID: Long): Long = {
+    DB.withConnection { implicit connection =>
+      SQL("""select count(card.id) as cNO  from card where thinking_session ={sessionId} and creator = {creatorID} and card.hat = {hatID}""").on(
+        'sessionId -> sessionId,
+        'creatorID -> creatorID,
+        'hatID -> hatID).as(get[Long]("cNO").single)
+    }
+  }
+
+  def addToBucket(cardId: Long, bucketId: Long): Int = {
+    DB.withConnection { implicit connection =>
+      SQL("""
+          update card
+          set bucket = {bucketId}
+          where id = {cardId}
+          """).on(
+        'cardId -> cardId,
+        'bucketId -> bucketId).executeUpdate()
+    }
+
+  }
+
 }
